@@ -1,0 +1,7 @@
+{
+    //mongoDb
+    "mongoDbSettings": {
+        "dbUser": "pbox_user",
+        "dbPassword": "pboxssap"
+    }
+}
