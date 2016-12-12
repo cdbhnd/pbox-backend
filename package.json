@@ -7,12 +7,18 @@
     "body-parser": "^1.15.2",
     "config": "^1.24.0",
     "express": "^4.14.0",
+    "inversify": "^3.0.0-rc.2",
     "mongodb": "^2.2.15",
     "multer": "^1.2.0",
     "reflect-metadata": "^0.1.8",
     "routing-controllers": "^0.6.6"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "gulp": "^3.9.1",
+    "gulp-clean": "^0.3.2",
+    "gulp-sequence": "^0.4.6",
+    "nodemon": "^1.11.0"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
