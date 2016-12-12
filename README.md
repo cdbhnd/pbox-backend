@@ -1,5 +1,4 @@
 # pbox-backend
-# travis-backend-node
 
 ## Install typescript and typings globally  
 `npm install typescript -g`  
