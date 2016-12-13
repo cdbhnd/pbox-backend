@@ -16,8 +16,8 @@ export class Action extends ActionBase<Entities.Job> {
     protected getConstraints() {
         return {
             'size': 'required',
-            'pickup.latitude': 'required',
-            'pickup.longitude': 'required'
+            'pickup.latitude': 'required|integer',
+            'pickup.longitude': 'required|integer'
         };
     }
 
