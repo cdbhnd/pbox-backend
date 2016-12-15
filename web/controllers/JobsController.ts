@@ -7,7 +7,7 @@ import {ExceptionTypes} from '../../exceptions';
 export class JobsController {
 
     @Post("/jobs")
-    @HttpCode(200)
+    @HttpCode(201)
     @HttpError(400, ExceptionTypes.ValidationException)
     async createJob( @Body() userCreateParams: any) {
         let createJobAction = new CreateJob.Action();

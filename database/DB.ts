@@ -6,6 +6,6 @@ export class DB {
     public static  db;
 
     public static async init() {
-        DB.db = await DB.dbDriver.MongoClient.connect('mongodb://'+config.get('mongoDbSettings.dbUser')+':'+config.get('mongoDbSettings.dbPassword')+'ds049641.mlab.com:49641/pbox');
+        DB.db = await DB.dbDriver.MongoClient.connect('mongodb://'+config.get('mongoDbSettings.dbUser')+':'+config.get('mongoDbSettings.dbPassword')+'@ds049641.mlab.com:49641/pbox');
     }
 }

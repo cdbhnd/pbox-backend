@@ -21,7 +21,7 @@ export function HttpError(errorCode: number, exception: string) {
                         let currentErrorConfig = actionErrConfig.getFromConfigurations(exceptionName, originalMethod.name);
                         let code = !!currentErrorConfig ? currentErrorConfig.code : 500;
                         let message = !!currentErrorConfig ? err.message : 'INTERNAL_SERVER_ERROR';
-                        return response.status(code).end(JSON.stringify({ message: message }));
+                        return response.status(code).end(JSON.stringify({ message: message, details: err.data }));
                     }
                     return err;
                 });
