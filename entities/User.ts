@@ -4,7 +4,8 @@ export interface User {
     lastName?: string,
     username: string,
     password: string,
-    type: userType
+    type: userType,
+    token?: string
 }
 
 const enum userType {
