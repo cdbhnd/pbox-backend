@@ -25,15 +25,11 @@ export class Action extends ActionBase<Entities.Job[]> {
     }
 
     protected async execute(context): Promise<Entities.Job[]> {
-        
         let userFromDb = await this._userRepository.findUserById(context.params.id);
-        
         if(!userFromDb) {
             throw new Exceptions.EntityNotFoundException('User', '');
         }
-
         let userJobs = await this._jobRepository.findByUser(context.params.id);
-
         return userJobs;
     }
 }

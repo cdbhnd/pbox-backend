@@ -22,10 +22,10 @@ export class JobsController {
     @Get('/jobs')
     @HttpCode(200)
     @HttpError(401, ExceptionTypes.ValidationException)
-    async getJobsByUser( @Param('userId') userId: number) {
+    async getJobsByUser( @Param('userId') userId: string) {
         let getJobsByUser = new GetJobsByUser.Action();
         let actionContext = new ActionBase.ActionContext;
-        actionContext.params.id = userId;
+        actionContext.params =  { id: userId };
         let userJobs = await getJobsByUser.run(actionContext);
         return userJobs;
     }
