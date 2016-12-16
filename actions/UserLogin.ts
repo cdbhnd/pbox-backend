@@ -1,6 +1,6 @@
-import {Types, kernel} from "../dependency-injection/";
-import {ValidationException} from "../exceptions/";
-import {InvalidCredentialsException} from "../exceptions/";
+import { Types, kernel } from "../dependency-injection/";
+import { ValidationException } from "../exceptions/";
+import { InvalidCredentialsException } from "../exceptions/";
 import * as Repositories from '../repositories/';
 import * as Entities from '../entities/';
 import { validate } from '../utility/Validator';
@@ -23,19 +23,19 @@ export class Action extends ActionBase<Entities.User> {
     }
 
     protected async execute(context): Promise<Entities.User> {
-       let userFromDb = (await this._userRepository.find({username:context.params.username}));
+        let userFromDb = (await this._userRepository.find({ username: context.params.username }));
 
-       if(typeof(userFromDb) == 'undefined') {
-           throw new InvalidCredentialsException(context.params.username, context.params.password);
-       }
-       
-       let submitedPasswordValid = await Password.comparePassword(context.params.password, userFromDb.password);     
+        if (userFromDb == null) {
+            throw new InvalidCredentialsException(context.params.username, context.params.password);
+        }
 
-        if(submitedPasswordValid) {
-            return userFromDb; 
-        }else{
+        let submitedPasswordValid = await Password.comparePassword(context.params.password, userFromDb.password);
+
+        if (submitedPasswordValid) {
+            return userFromDb;
+        } else {
             // throw error 
-            throw new InvalidCredentialsException(context.params.username,context.params.password);
+            throw new InvalidCredentialsException(context.params.username, context.params.password);
         }
     }
 }
