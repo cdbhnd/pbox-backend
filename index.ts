@@ -5,5 +5,6 @@ import {DB} from './database/DB';
 
 DB.init();
 let server: Server = new Server();
+let port = process.env.PORT || 8080;
 
-server.listen(8080, 'localhost');
+server.listen(port, 'localhost');

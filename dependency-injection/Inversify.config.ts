@@ -6,6 +6,6 @@ import * as DB from '../database/index';
 var kernel = new Kernel();
 
 kernel.bind<Repositories.JobsRepository>(Types.JobsRepository).to(DB.Jobs);
-kernel.bind<Repositories.UserRepository>(Types.UsersRepository).to(DB.Users);
+kernel.bind<Repositories.UserRepository>(Types.UserRepository).to(DB.User);
 export default kernel;
 

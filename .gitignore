@@ -45,3 +45,4 @@ typings/**
 
 # Compiled js files
 dist
+dist/**

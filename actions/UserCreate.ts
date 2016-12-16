@@ -6,11 +6,11 @@ import { ActionBase } from './ActionBase';
 import { ActionContext } from './ActionBase';
 
 export class Action extends ActionBase<Entities.User> {
-    _userRepository = Repositories.UsersRepository;
+     _userRepository: Repositories.UserRepository;
 
     constructor() {
         super();
-        this._userRepository = kernel.get<Repositories.UsersRepository>(Types.UsersRepository);
+        this._userRepository = kernel.get<Repositories.UserRepository>(Types.UserRepository);
     }
 
     protected getConstraints() {

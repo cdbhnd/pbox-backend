@@ -1,6 +1,6 @@
 let Types = {
     JobsRepository: Symbol("JobsRepository"),
-    UsersRepository: Symbol("UsersRepository")
+    UserRepository: Symbol("UserRepository")
 };
 
 export default Types;
