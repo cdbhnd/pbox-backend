@@ -9,7 +9,7 @@ import {HttpError} from '../decorators/httpError';
 @JsonController()
 export class UserController {
 
-    @Post('/users/login')
+    @Post('/token')
     @HttpCode(200)  
     @HttpError(401, ExceptionTypes.InvalidCredentialsException)
     async login( @Body() userSubmitedParams: any) {
