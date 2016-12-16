@@ -40,7 +40,6 @@ jspm_packages
 .vscode
 
 # TypeScript definitions
-typings
 
 # Compiled js files
 dist
