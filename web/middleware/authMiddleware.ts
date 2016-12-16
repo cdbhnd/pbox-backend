@@ -19,7 +19,7 @@ export class authMiddleware implements MiddlewareInterface {
          
             try{
                 var decodedToken = jwt.decode(authorizationString[1], secret);
-                request.params.authUserId = decodedToken.authUserId;    
+                request.params.userId = decodedToken.authUserId;    
             }catch(err){
                 return response.status(401).end();
             }

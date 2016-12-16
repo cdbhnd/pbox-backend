@@ -1,10 +1,10 @@
 import { DB } from './DB';
-import { JobsRepository } from '../repositories/';
+import { JobRepository } from '../repositories/';
 import * as Entities from '../entities';
 import { injectable } from 'inversify';
 
 @injectable()
-export class Jobs implements JobsRepository {
+export class Jobs implements JobRepository {
     public async create(job: Entities.Job): Promise<Entities.Job> {
         let result = await DB.db.collection('jobs').insertOne(job);
         let documentStringId = result.ops[0]._id.toString();
@@ -17,7 +17,7 @@ export class Jobs implements JobsRepository {
         }
     }
 
-    public async findOne(id: string): Promise<Entities.Job> {
+    public async findOneByQuery(id: string): Promise<Entities.Job> {
         let mongoObjectId = DB.dbDriver.ObjectID;
         let result = await DB.db.collection('jobs').findOne({ "_id": new mongoObjectId(id) });
         let documentStringId = result.ops[0]._id.toString();
@@ -28,5 +28,10 @@ export class Jobs implements JobsRepository {
             status: result.ops[0].status,
             timeStamp: result.ops[0].timeStamp
         }
+    }
+
+    public async findByUser(id: string): Promise<Entities.Job[]> {
+        let result = await DB.db.collection('jobs').find({ "userId": id }).toArray();
+        return result;
     }
 } 

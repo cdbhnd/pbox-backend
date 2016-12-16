@@ -17,8 +17,16 @@ export class User implements UserRepository {
         }
     }
 
-     public async find(query): Promise<Entities.User> {
+     public async findOneByQuery(query): Promise<Entities.User> {
         let result = await DB.db.collection('users').findOne(query);
         return result;
     }
+
+    public async findUserById(userId: string): Promise<Entities.User> {
+        let mongoObjectId = DB.dbDriver.ObjectID;
+        let result = await DB.db.collection('users').findOne({ "_id": new mongoObjectId(userId) });
+        return result;
+    }
 } 
+
+ 
