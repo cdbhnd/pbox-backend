@@ -6,7 +6,7 @@ var gulpSequence = require('gulp-sequence');
 gulp.task('default', gulpSequence('clean', 'compile', 'copy'));
 
 gulp.task('copy', function (done) {
-  return gulp.src(['./**/*.json', './**/*.wsdl', '!./dist/**/*.wsdl'])
+  return gulp.src(['./**/*.json', './Procfile', './**/*.wsdl', '!./dist/**/*.wsdl'])
     .pipe(gulp.dest('./dist'));
 });
 
@@ -32,4 +32,17 @@ gulp.task('compile', function (done) {
       done();
     }
   });
+});
+
+/** PREPARE HEROKU DEPLOY PACKAGE TASKS **/
+gulp.task('deploy', gulpSequence('deploy-clean', 'deploy-copy'));
+
+gulp.task('deploy-clean', function() {
+  return gulp.src(['./dist/deploy'])
+    .pipe(clean());
+});
+
+gulp.task('deploy-copy', function() {
+  return gulp.src(['./dist/**'])
+    .pipe(gulp.dest('./dist/deploy'));
 });
