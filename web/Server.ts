@@ -10,8 +10,8 @@ export class Server {
         this.app = createExpressServer();
     }
 
-    public listen(port: number, address: string) {
-        this.app.listen(port, address);
-        console.log(`Application listening at ${address}:${port}`);
+    public listen(port: number) {
+        this.app.listen(port);
+        console.log(`Application listening at port => ${port}`);
     }
 }
