@@ -14,7 +14,7 @@ export class UserController {
     @HttpCode(200)
     @HttpError(400, ExceptionTypes.ValidationException)
     async createUser( @Body() userSubmitedParams: any) {
-        let userCreateAction = new actions.UserCreate.Action();
+        let userCreateAction = new actions.CreateUser.Action();
         let actionContext = new actions.ActionContext;
         actionContext.params = userSubmitedParams;
         console.log(actionContext);
