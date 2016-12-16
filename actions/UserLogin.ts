@@ -23,16 +23,16 @@ export class Action extends ActionBase<Entities.User> {
     }
 
     protected async execute(context): Promise<Entities.User> {
-        let userFromDb = (await this._userRepository.findOneByQuery({ username: context.params.username }));
+        let userFromDb = await this._userRepository.find({ username: context.params.username });
 
         if (userFromDb == null) {
             throw new InvalidCredentialsException(context.params.username, context.params.password);
         }
 
-        let submitedPasswordValid = await Password.comparePassword(context.params.password, userFromDb.password);
+        let submitedPasswordValid = await Password.comparePassword(context.params.password, userFromDb[0].password);
 
         if (submitedPasswordValid) {
-            return userFromDb;
+            return userFromDb[0];
         } else {
             // throw error 
             throw new InvalidCredentialsException(context.params.username, context.params.password);

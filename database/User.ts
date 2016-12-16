@@ -17,16 +17,28 @@ export class User implements UserRepository {
         }
     }
 
-     public async findOneByQuery(query): Promise<Entities.User> {
-        let result = await DB.db.collection('users').findOne(query);
-        return result;
+    public async find(query: any): Promise<Entities.User[]> {
+        this.convetIdStringToObjectId(query);
+        let results = await DB.db.collection('users').find(query).toArray();
+        if (results != null) {
+            this.convertObjectIdToString(results);
+        }
+        return results;
     }
 
-    public async findUserById(userId: string): Promise<Entities.User> {
-        let mongoObjectId = DB.dbDriver.ObjectID;
-        let result = await DB.db.collection('users').findOne({ "_id": new mongoObjectId(userId) });
-        return result;
+    private convertObjectIdToString(results): void {
+        for (let i = 0; i < results.length - 1; i++) {
+            if (!!results[i]._id) {
+                results[i]._id = results[i]._id.toString();
+            }
+        }
     }
-} 
 
- 
+    private convetIdStringToObjectId(query) {
+        if ('_id' in query) {
+            let mongoObjectId = DB.dbDriver.ObjectID;
+            query._id = new mongoObjectId(query._id);
+        }
+    }
+}
+
