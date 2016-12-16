@@ -1,2 +1,2 @@
 export * from './JobsRepository'
-export * from './UsersRepository'
+export * from './UserRepository'
