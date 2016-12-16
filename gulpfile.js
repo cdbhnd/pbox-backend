@@ -19,7 +19,7 @@ gulp.task('watch', function () {
 });
 
 gulp.task('clean', function () {
-  return gulp.src('dist/', { read: false })
+  return gulp.src(['!./dist/deploy/', './dist/*'])
     .pipe(clean());
 });
 
@@ -38,11 +38,11 @@ gulp.task('compile', function (done) {
 gulp.task('deploy', gulpSequence('deploy-clean', 'deploy-copy'));
 
 gulp.task('deploy-clean', function() {
-  return gulp.src(['./dist/deploy'])
+  return gulp.src(['!./dist/deploy/.git/', './dist/deploy/*', ])
     .pipe(clean());
 });
 
 gulp.task('deploy-copy', function() {
-  return gulp.src(['./dist/**'])
+  return gulp.src(['!./dist/node_modules/', '!./dist/node_modules/**', './dist/**'])
     .pipe(gulp.dest('./dist/deploy'));
 });
