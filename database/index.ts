@@ -1,2 +1,2 @@
 export * from './Jobs';
-export * from './Users';
+export * from './User';

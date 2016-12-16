@@ -1,7 +1,13 @@
 {
+    "password": {
+        "saltRounds": 10
+    },
+
     //mongoDb
     "mongoDbSettings": {
         "dbUser": "pbox_user",
         "dbPassword": "pboxssap"
-    }
+    },
+    
+    "secret": "codebehind"
 }
