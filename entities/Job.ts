@@ -4,7 +4,7 @@ export interface Job {
     pickup: geolocation,
     size: packageSize,
     status: string,
-    timeStamp: string
+    createdAt: string
 }
 
 interface geolocation {

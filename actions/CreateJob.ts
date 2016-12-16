@@ -28,7 +28,7 @@ export class Action extends ActionBase<Entities.Job> {
             pickup: context.params.pickup,
             size: context.params.size,
             status: 'PENDING',
-            timeStamp: moment().format()
+            createdAt: moment().format()
         }
 
         let createdJob = await this._jobRepository.create(job);

@@ -13,7 +13,7 @@ export class Jobs implements JobRepository {
             pickup: result.ops[0].pickup,
             size: result.ops[0].size,
             status: result.ops[0].status,
-            timeStamp: result.ops[0].timeStamp
+            createdAt: result.ops[0].timeStamp
         }
     }
 
@@ -26,7 +26,8 @@ export class Jobs implements JobRepository {
             pickup: result.ops[0].pickup,
             size: result.ops[0].size,
             status: result.ops[0].status,
-            timeStamp: result.ops[0].timeStamp
+            createdAt: result.ops[0].timeStamp,
+            userId: result.ops[0].userId
         }
     }
 
