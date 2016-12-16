@@ -4,6 +4,7 @@ import * as Repositories from '../repositories/';
 import * as Entities from '../entities/';
 import { ActionBase } from './ActionBase';
 import { ActionContext } from './ActionBase';
+import { generateHash } from '../utility/Password';
 
 export class Action extends ActionBase<Entities.User> {
      _userRepository: Repositories.UserRepository;
@@ -15,8 +16,6 @@ export class Action extends ActionBase<Entities.User> {
 
     protected getConstraints() {
         return {
-            'first_name': 'optional',
-            'last_name': 'optional',
             'username': 'required',
             'password': 'required',
             'type': 'required'
@@ -29,7 +28,7 @@ export class Action extends ActionBase<Entities.User> {
             firstName: context.params.first_name,
             lastName: context.params.last_name,
             username: context.params.username,
-            password: context.params.password,
+            password: await generateHash(context.params.password),
             type: context.params.type 
         }
 
