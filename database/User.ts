@@ -1,12 +1,17 @@
-import { DB } from './DB';
-import { UserRepository } from '../repositories';
+import * as Repos from '../repositories';
 import * as Entities from '../entities';
-import { injectable } from 'inversify';
+import { injectable, inject } from 'inversify';
+import { BaseRepository } from './BaseRepository';
 
 @injectable()
-export class User implements UserRepository {
-    public async create(user: Entities.User): Promise<Entities.User> {
-        let result = await DB.db.collection('users').insertOne(user);
+export class User extends BaseRepository<Entities.User> implements Repos.UserRepository {
+    
+    constructor(@inject('entityName') entityName: string) {
+        super(entityName);
+    }
+
+    /*public async create(user: Entities.User): Promise<Entities.User> {
+        let result = await this.collection().insertOne(user);
         return {
             id: result.ops[0]._id.toString(),
             firstName: result.ops[0].firstName,
@@ -14,11 +19,7 @@ export class User implements UserRepository {
             username: result.ops[0].username,
             password: result.ops[0].password,
             type: result.ops[0].type
-        }
-    }
+        };
+    }*/
+}
 
-     public async find(query): Promise<Entities.User> {
-        let result = await DB.db.collection('users').findOne(query);
-        return result;
-    }
-} 

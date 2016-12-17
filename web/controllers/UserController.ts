@@ -11,13 +11,12 @@ import {HttpError} from '../decorators/httpError';
 export class UserController {
 
     @Post('/users')
-    @HttpCode(200)
+    @HttpCode(201)
     @HttpError(400, ExceptionTypes.ValidationException)
     async createUser( @Body() userSubmitedParams: any) {
         let userCreateAction = new actions.CreateUser.Action();
         let actionContext = new actions.ActionContext;
         actionContext.params = userSubmitedParams;
-        console.log(actionContext);
         let createdUser = await userCreateAction.run(actionContext);
         let secret: string = String(config.get('secret'));
         createdUser.token = jwt.encode({ authUserId: createdUser.id}, secret);
