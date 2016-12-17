@@ -1,9 +1,10 @@
 export interface Job {
     id?: number,
+    userId?: string,
     pickup: geolocation,
     size: packageSize,
     status: string,
-    timeStamp: string
+    createdAt: string
 }
 
 interface geolocation {
