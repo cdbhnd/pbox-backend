@@ -4,6 +4,9 @@ import { HttpError } from '../decorators/httpError';
 import { ExceptionTypes } from '../../exceptions';
 import { authMiddleware } from '../middleware/authMiddleware';
 
+import * as Repositories from '../../repositories/';
+import { Types, kernel } from "../../dependency-injection/";
+
 @JsonController()
 export class JobsController {
 

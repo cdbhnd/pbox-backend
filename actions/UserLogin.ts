@@ -3,7 +3,7 @@ import { ValidationException } from "../exceptions/";
 import { InvalidCredentialsException } from "../exceptions/";
 import * as Repositories from '../repositories/';
 import * as Entities from '../entities/';
-import { validate } from '../utility/Validator';
+import { validate } from '../utility/validator';
 import * as Password from '../utility/Password';
 import { ActionBase } from './ActionBase';
 
