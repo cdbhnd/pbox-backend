@@ -1,0 +1,30 @@
+{
+  "basePath": "/",
+  "host": "localhost:8080",
+  "info": {
+    "description": "Full PBox API specification",
+    "title": "PBox API",
+    "version": "0.0.1"
+  },
+  "paths": {
+    "/v1.0/token": {
+      "$ref": "paths/token.json"
+    },
+    "/v1.0/users": {
+      "$ref": "paths/users.json"
+    },
+    "/v1.0/jobs": {
+      "$ref": "paths/jobs.json"
+    }
+  },
+  "produces": [
+    "application/xml",
+    "application/json",
+    "application/octet-stream",
+    "text/plain"
+  ],
+  "schemes": [
+    "http"
+  ],
+  "swagger": "2.0"
+}

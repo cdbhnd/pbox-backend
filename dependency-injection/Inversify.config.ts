@@ -11,8 +11,5 @@ kernel.bind<string>('entityName').toConstantValue('jobs').whenInjectedInto(DB.Jo
 kernel.bind<Repositories.UserRepository>(Types.UserRepository).to(DB.User);
 kernel.bind<string>('entityName').toConstantValue('users').whenInjectedInto(DB.User);
 
-
-kernel.bind<actions.ActionBase>(Types.JobRepository).to(actions.CreateUser);
-
 export default kernel;
 

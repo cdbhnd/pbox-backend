@@ -1,0 +1,87 @@
+{
+    "get": {
+        "consumes": [
+            "application/json"
+        ],
+        "description": "Returns all User's jobs",
+        "parameters": [
+        {
+                "description": "Bearer access token (e.g. Bearer [token])",
+                "in": "header",
+                "name": "Authorization",
+                "required": true,
+                "type": "string"
+        }],
+        "produces": [
+            "application/json"
+        ],"responses": {
+            "200": {
+                "description": "OK",
+                "schema": {
+                    "$ref": "../definitions/job.json"
+                }
+            },
+            "401": {
+                "description": "Unauthorized"
+            },
+            "500": {
+                "description": "Internal server error"
+            }
+        },
+        "tags": [
+            "v1.0"
+        ]
+    },
+    "post": {
+        "consumes": [
+            "application/json"
+        ],
+        "description": "Create new Job",
+        "parameters": [
+            {
+                "description": "Bearer access token (e.g. Bearer [token])",
+                "in": "header",
+                "name": "Authorization",
+                "required": true,
+                "type": "string"
+            },
+            {
+                "description": "Pickup location",
+                "in": "body",
+                "name": "pickup",
+                "required": true,
+                "$ref": "../definitions/geolocation.json"
+            },
+            {
+                "description": "Size of package (S, M, L)",
+                "in": "body",
+                "name": "size",
+                "required": true,
+                "type": "string"
+            }
+        ],
+        "produces": [
+            "application/json"
+        ],
+        "responses": {
+            "201": {
+                "description": "CREATED",
+                "schema": {
+                    "$ref": "../definitions/job.json"
+                }
+            },
+            "400": {
+                "description": "Bad Request"
+            },
+            "401": {
+                "description": "Unauthorized"
+            },
+            "500": {
+                "description": "Internal server error"
+            }
+        },
+        "tags": [
+            "v1.0"
+        ]
+    }
+}

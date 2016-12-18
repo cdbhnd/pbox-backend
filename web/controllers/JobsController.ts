@@ -7,7 +7,7 @@ import { authMiddleware } from '../middleware/authMiddleware';
 @JsonController()
 export class JobsController {
 
-    @Post("/jobs")
+    @Post("/v1.0/jobs")
     @HttpCode(201)
     @HttpError(400, ExceptionTypes.ValidationException)
     async createJob( @Body() userCreateParams: any) {
@@ -19,7 +19,7 @@ export class JobsController {
     }
 
     @UseBefore(authMiddleware)
-    @Get('/jobs')
+    @Get('/v1.0/jobs')
     @HttpCode(200)
     @HttpError(401, ExceptionTypes.ValidationException)
     async getJobsByUser( @Param('userId') userId: string) {

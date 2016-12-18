@@ -10,7 +10,7 @@ import {HttpError} from '../decorators/httpError';
 @JsonController()
 export class UserController {
 
-    @Post('/users')
+    @Post('/v1.0/users')
     @HttpCode(201)
     @HttpError(400, ExceptionTypes.ValidationException)
     async createUser( @Body() userSubmitedParams: any) {
@@ -23,7 +23,7 @@ export class UserController {
         return createdUser;
     }
 
-    @Post('/token')
+    @Post('/v1.0/token')
     @HttpCode(200)  
     @HttpError(401, ExceptionTypes.InvalidCredentialsException)
     async login( @Body() userSubmitedParams: any) {
