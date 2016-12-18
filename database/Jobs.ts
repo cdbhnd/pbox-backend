@@ -8,17 +8,5 @@ export class Jobs extends BaseRepository<Entities.Job> implements Repos.JobRepos
     
     constructor(@inject('entityName') entityName: string) {
         super(entityName);
-    };
-    
-    public async create(job: Entities.Job): Promise<Entities.Job> {
-        let result = await this.collection().insertOne(job);
-        let documentStringId = result.ops[0]._id.toString();
-        return {
-            id: documentStringId,
-            pickup: result.ops[0].pickup,
-            size: result.ops[0].size,
-            status: result.ops[0].status,
-            createdAt: result.ops[0].timeStamp
-        };
-    };
+    }
 } 

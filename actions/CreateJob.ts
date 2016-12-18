@@ -16,6 +16,7 @@ export class Action extends ActionBase<Entities.Job> {
 
     protected getConstraints() {
         return {
+            'userId': 'required',
             'size': 'required',  //TODO write rules for size
             'pickup.latitude': 'required', //TODOwrite rule for number
             'pickup.longitude': 'required' //TODO write rule for number
@@ -28,7 +29,8 @@ export class Action extends ActionBase<Entities.Job> {
             pickup: context.params.pickup,
             size: context.params.size,
             status: 'PENDING',
-            createdAt: moment().format()
+            createdAt: moment().format(),
+            userId: context.params.userId
         }
 
         let createdJob = await this._jobRepository.create(job);

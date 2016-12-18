@@ -42,7 +42,19 @@ export class BaseRepository<T> {
 
     public async findAll(): Promise<T[]> {
         return await this.find({});
-    } 
+    }
+
+    public async create(user: T): Promise<T> {
+        let result = await this.collection().insertOne(user);
+        if (!!result && !!result.ops && !!result.ops.length) {
+            if (!!result.ops[0]._id) {
+                result.ops[0].id = this.serializeObjectId(result.ops[0]._id);
+                delete result.ops[0]._id;
+            }
+            return result.ops[0];
+        }
+        return null;
+    }
 
     protected collection(): mongodb.Collection {
         return this.db.collection(this.entityName);
