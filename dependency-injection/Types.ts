@@ -1,5 +1,5 @@
 let Types = {
-    JobsRepository: Symbol("JobsRepository"),
+    JobRepository: Symbol("JobRepository"),
     UserRepository: Symbol("UserRepository")
 };
 

@@ -1,0 +1,33 @@
+{
+  "type": "object",
+  "description": "Job Data",
+  "properties": {
+    "pickup": {
+      "type": "object",
+      "schema": {
+          "$ref": "./geolocation.json"
+      }
+    },
+    "size": {
+      "description": "Job package size (S, M, L)",
+      "type": "string"
+    },
+    "createdAt": {
+      "description": "ISO timestamp when Job is created",
+      "type": "string",
+      "format": "date-time"
+    },
+    "status": {
+      "description": "Job current status",
+      "type": "string"
+    },
+    "userId": {
+      "description": "Unique id of the User who created the job",
+      "type": "string"
+    },
+    "id": {
+      "description": "Unique id of the Job",
+      "type": "string"
+    }
+  }
+}
