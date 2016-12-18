@@ -8,6 +8,8 @@ export class Server {
 
     constructor() {
         this.app = createExpressServer();
+        this.app.use(express.static('assets'));
+        
     }
 
     public listen(port: number) {

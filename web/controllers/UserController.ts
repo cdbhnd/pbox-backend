@@ -26,6 +26,7 @@ export class UserController {
     @Post('/v1.0/token')
     @HttpCode(200)  
     @HttpError(401, ExceptionTypes.InvalidCredentialsException)
+    @HttpError(400, ExceptionTypes.ValidationException)
     async login( @Body() userSubmitedParams: any) {
         let userLoginAction = new actions.UserLogin.Action();
         let actionContext = new actions.ActionContext;

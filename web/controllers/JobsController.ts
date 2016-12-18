@@ -9,19 +9,22 @@ export class JobsController {
 
     @Post("/v1.0/jobs")
     @HttpCode(201)
+    @UseBefore(authMiddleware)
     @HttpError(400, ExceptionTypes.ValidationException)
-    async createJob( @Body() userCreateParams: any) {
+    async createJob( @Param('userId') userId: string, @Body() userCreateParams: any) {
         let createJobAction = new CreateJob.Action();
         let actionContext = new ActionBase.ActionContext;
         actionContext.params = userCreateParams;
+        actionContext.params.userId = userId;
         let createdJob = await createJobAction.run(actionContext);
         return createdJob;
     }
 
-    @UseBefore(authMiddleware)
+    
     @Get('/v1.0/jobs')
+    @UseBefore(authMiddleware)
     @HttpCode(200)
-    @HttpError(401, ExceptionTypes.ValidationException)
+    @HttpError(400, ExceptionTypes.ValidationException)
     async getJobsByUser( @Param('userId') userId: string) {
         let getJobsByUser = new GetJobsByUser.Action();
         let actionContext = new ActionBase.ActionContext;

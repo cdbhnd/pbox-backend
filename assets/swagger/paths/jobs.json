@@ -46,18 +46,23 @@
                 "type": "string"
             },
             {
-                "description": "Pickup location",
+                "name": "body",
                 "in": "body",
-                "name": "pickup",
+                "description": "New Job data",
                 "required": true,
-                "$ref": "../definitions/geolocation.json"
-            },
-            {
-                "description": "Size of package (S, M, L)",
-                "in": "body",
-                "name": "size",
-                "required": true,
-                "type": "string"
+                "schema": {
+                    "type": "object",
+                    "description": "New Job data",
+                    "properties": {
+                        "pickup": {
+                            "$ref": "../definitions/geolocation.json"
+                        },
+                        "size": {
+                            "required": true,
+                            "type": "string"
+                        }
+                    }
+                }
             }
         ],
         "produces": [
