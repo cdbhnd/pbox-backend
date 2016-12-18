@@ -3,11 +3,16 @@ var exec = require('child_process').exec;
 var clean = require('gulp-clean');
 var gulpSequence = require('gulp-sequence');
 
-gulp.task('default', gulpSequence('clean', 'compile', 'copy'));
+gulp.task('default', gulpSequence('clean', 'compile', 'copy', 'copy-assets'));
 
 gulp.task('copy', function (done) {
-  return gulp.src(['./**/*.json', './Procfile', './**/*.wsdl', '!./dist/**/*.wsdl'])
+  return gulp.src(['./**/*.json', './Procfile','./**/*.wsdl', '!./dist/**/*.wsdl'])
     .pipe(gulp.dest('./dist'));
+});
+
+gulp.task('copy-assets', function (done) {
+  return gulp.src(['./assets/**'])
+    .pipe(gulp.dest('./dist/assets'));
 });
 
 gulp.task('watch', function () {

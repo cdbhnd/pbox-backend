@@ -1,4 +1,4 @@
-import { validate } from '../utility/validator';
+import { validate } from '../utility/Validator';
 
 export abstract class ActionBase<TOut> {
 
