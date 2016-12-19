@@ -13,6 +13,7 @@ export class UserController {
     @Post('/v1.0/users')
     @HttpCode(201)
     @HttpError(400, ExceptionTypes.ValidationException)
+    @HttpError(400, ExceptionTypes.UsernameNotAvailableException)
     async createUser( @Body() userSubmitedParams: any) {
         let userCreateAction = new actions.CreateUser.Action();
         let actionContext = new actions.ActionContext;

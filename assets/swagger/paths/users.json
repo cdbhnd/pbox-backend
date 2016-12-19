@@ -6,7 +6,7 @@
         "description": "Create new User",
         "parameters": [
             {
-                "name": "body",
+                "name": "user_data",
                 "in": "body",
                 "description": "New user data",
                 "required": true,

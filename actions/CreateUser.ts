@@ -1,5 +1,5 @@
 import { Types, kernel } from "../dependency-injection/";
-import { ValidationException } from "../exceptions/";
+import * as Exceptions from "../exceptions/";
 import * as Repositories from '../repositories/';
 import * as Entities from '../entities/';
 import { ActionBase } from './ActionBase';
@@ -23,6 +23,11 @@ export class Action extends ActionBase<Entities.User> {
     }
 
     protected async execute(context): Promise<Entities.User> {
+        let existingUser = await this._userRepository.findOne({ username: context.params.username });
+
+        if (!!existingUser) {
+            throw new Exceptions.UsernameNotAvailableException(context.params.username);
+        }
 
         let user: Entities.User = {
             firstName: context.params.first_name,
@@ -30,7 +35,7 @@ export class Action extends ActionBase<Entities.User> {
             username: context.params.username,
             password: await generateHash(context.params.password),
             type: context.params.type 
-        }
+        };
 
         let createdUser = await this._userRepository.create(user);
 
