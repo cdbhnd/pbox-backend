@@ -56,6 +56,28 @@ export class BaseRepository<T> {
         return null;
     }
 
+    public async update(entity: T): Promise<T> 
+    {
+        let objt = entity as any;
+
+        let objId = this.deserializeObjectId(objt.id);
+
+        delete objt.id;
+
+        let result = await this.collection().updateOne({ '_id': objId }, { '$set': objt })
+
+        let updatedDoc = await this.collection().findOne({ '_id': objId });
+
+        if (!!updatedDoc) {
+            if (!!updatedDoc._id) {
+                updatedDoc.id = this.serializeObjectId(updatedDoc._id);
+                delete updatedDoc._id;
+            }
+       }
+
+       return updatedDoc;
+    }
+
     protected collection(): mongodb.Collection {
         return this.db.collection(this.entityName);
     }

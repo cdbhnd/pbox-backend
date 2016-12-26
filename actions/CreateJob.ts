@@ -26,11 +26,19 @@ export class Action extends ActionBase<Entities.Job> {
     protected async execute(context): Promise<Entities.Job> {
 
         let job: Entities.Job = {
+            id: null,
             pickup: context.params.pickup,
+            destination: {
+                latitude: null,
+                longitude: null,
+                address: null
+            },
             size: context.params.size,
             status: 'PENDING',
             createdAt: moment().format(),
-            userId: context.params.userId
+            userId: context.params.userId,
+            courierId: null,
+            box: null
         }
 
         let createdJob = await this._jobRepository.create(job);
