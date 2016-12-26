@@ -23,6 +23,10 @@ export class Action extends ActionBase<Entities.Job> {
         };
     }
 
+    protected getSanitizationPattern() {
+        return {}
+    }
+
     protected async execute(context): Promise<Entities.Job> {
 
         let job: Entities.Job = {

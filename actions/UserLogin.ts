@@ -23,6 +23,12 @@ export class Action extends ActionBase<Entities.User> {
         };
     }
 
+    protected getSanitizationPattern() {
+        return {
+            type: 'to_int'
+        }
+    }
+
     protected async execute(context): Promise<Entities.User> {
         let userFromDb = await this._userRepository.findOne({ username: context.params.username });
 
