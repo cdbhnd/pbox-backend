@@ -5,23 +5,31 @@ import * as Repositories from '../repositories/';
 import * as Entities from '../entities/';
 import { ActionBase, ActionContext, ErrorContext } from './ActionBase';
 
-export class Action extends ActionBase<Entities.Job> {
+export class Action extends ActionBase<Entities.Job> 
+{
     private _jobService: Services.IJobService;
     private _jobRepo: Repositories.JobRepository;
     private _userRepo: Repositories.UserRepository;
 
-    constructor() {
+    constructor() 
+    {
         super();
         this._jobService = kernel.get<Services.IJobService>(Types.JobService);
         this._jobRepo = kernel.get<Repositories.JobRepository>(Types.JobRepository);
         this._userRepo = kernel.get<Repositories.UserRepository>(Types.UserRepository);
     };
 
-    protected getConstraints() {
+    protected getConstraints() 
+    {
         return {
             'userId': 'required',
             'jobId': 'required'
         };
+    }
+
+    protected getSanitizationPattern() 
+    {
+        return {};
     }
 
     protected async onActionExecuting(context: ActionContext): Promise<ActionContext>

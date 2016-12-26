@@ -19,6 +19,13 @@ export class Action extends ActionBase<Entities.User> {
         return {
             'username': 'required',
             'password': 'required',
+            'type': 'required'
+        };
+    }
+
+    protected getSanitizationPattern() {
+        return {
+            type: 'to_int'
         };
     }
 
@@ -31,7 +38,7 @@ export class Action extends ActionBase<Entities.User> {
 
         let submitedPasswordValid = await Password.comparePassword(context.params.password, userFromDb.password);
 
-        if (submitedPasswordValid) {
+        if (submitedPasswordValid && context.params.type == userFromDb.type) {
             return userFromDb;
         } else {
             // throw error 
