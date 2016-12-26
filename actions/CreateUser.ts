@@ -7,7 +7,7 @@ import { ActionContext } from './ActionBase';
 import { generateHash } from '../utility/Password';
 
 export class Action extends ActionBase<Entities.User> {
-     _userRepository: Repositories.UserRepository;
+    _userRepository: Repositories.UserRepository;
 
     constructor() {
         super();
@@ -22,6 +22,10 @@ export class Action extends ActionBase<Entities.User> {
         }
     }
 
+    protected getSanitizationPattern() {
+        return {}
+    }
+
     protected async execute(context): Promise<Entities.User> {
         let existingUser = await this._userRepository.findOne({ username: context.params.username });
 
@@ -34,7 +38,7 @@ export class Action extends ActionBase<Entities.User> {
             lastName: context.params.last_name,
             username: context.params.username,
             password: await generateHash(context.params.password),
-            type: context.params.type 
+            type: context.params.type
         };
 
         let createdUser = await this._userRepository.create(user);
