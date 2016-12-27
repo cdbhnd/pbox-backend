@@ -12,7 +12,7 @@ export class EntityNotFoundException extends Error implements ApplicationExcepti
         this.name = 'ENTITY_NOT_FOUND'; 
         this.entity = entity;
         this.identifier = identifier;
-        this.message = !!message ? message : 'ENTITY_NOT_FOUND';
+        this.message = !!message ? message : entity.toString().toUpperCase() +  '_ENTITY_NOT_FOUND';
         this.data = data;
     }
 }

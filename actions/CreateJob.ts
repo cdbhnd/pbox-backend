@@ -6,15 +6,18 @@ import { ActionBase } from './ActionBase';
 import { ActionContext } from './ActionBase';
 var moment = require('moment-timezone');
 
-export class Action extends ActionBase<Entities.Job> {
-    _jobRepository: Repositories.JobRepository;
+export class Action extends ActionBase<Entities.Job> 
+{
+    private _jobRepository: Repositories.JobRepository;
 
-    constructor() {
+    constructor() 
+    {
         super();
         this._jobRepository = kernel.get<Repositories.JobRepository>(Types.JobRepository);
     };
 
-    protected getConstraints() {
+    protected getConstraints() 
+    {
         return {
             'userId': 'required',
             'size': 'required',  //TODO write rules for size
@@ -23,18 +26,28 @@ export class Action extends ActionBase<Entities.Job> {
         };
     }
 
-    protected getSanitizationPattern() {
-        return {}
+    protected getSanitizationPattern() 
+    {
+        return {};
     }
 
-    protected async execute(context): Promise<Entities.Job> {
+    public async execute(context): Promise<Entities.Job> 
+    {
 
         let job: Entities.Job = {
+            id: null,
             pickup: context.params.pickup,
+            destination: {
+                latitude: null,
+                longitude: null,
+                address: null
+            },
             size: context.params.size,
             status: 'PENDING',
             createdAt: moment().format(),
-            userId: context.params.userId
+            userId: context.params.userId,
+            courierId: null,
+            box: null
         }
 
         let createdJob = await this._jobRepository.create(job);
