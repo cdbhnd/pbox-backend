@@ -29,7 +29,7 @@ export class Action extends ActionBase<Entities.User> {
         };
     }
 
-    protected async execute(context): Promise<Entities.User> {
+    public async execute(context): Promise<Entities.User> {
         let userFromDb = await this._userRepository.findOne({ username: context.params.username });
 
         if (userFromDb == null) {

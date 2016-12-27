@@ -34,54 +34,36 @@ export class Action extends ActionBase<Entities.Job>
 
     protected async onActionExecuting(context: ActionContext): Promise<ActionContext>
     {
-        // check if job exists
+        // check job policies
         let job = await this._jobRepo.findOne({ id: context.params.jobId });
         if (!job) 
         {
             throw new Exceptions.EntityNotFoundException('Job', context.params.jobId);
         }
+        if (!job.courierId || job.status != Entities.JobStatuses.ACCEPTED) 
+        {
+            throw new Exceptions.ServiceLayerException('CHANGE_LOCATION_FAILED_INVALID_JOB_STATUS');
+        }
         context.params.job = job;
         delete context.params.jobId;
 
-        // check if user exists
+        // check courier policies
         let courier: Entities.User = await this._userRepo.findOne({ id: context.params.userId });
-        if (!courier) 
+        if (!courier)
         {
             throw new Exceptions.EntityNotFoundException('User', context.params.userId);
         }
-
-        // check if user is courier
-        if (courier.type != Entities.UserType.Courier) 
+        if (courier.type != Entities.UserType.Courier || courier.id != job.courierId) 
         {
             throw new Exceptions.UserNotAuthorizedException(courier.username, 'UpdateJob');
         }
-
-        // check if user is authorized to acces the Job
-        if (!!job.courierId && courier.id != job.courierId) 
-        {
-            throw new Exceptions.UserNotAuthorizedException(courier.username, 'UpdateJob');
-        }
-        context.params.courier = courier;
-        delete context.params.userId;
 
         return super.onActionExecuting(context);
     }
 
-    protected async execute(context: ActionContext): Promise<Entities.Job> 
+    public async execute(context: ActionContext): Promise<Entities.Job> 
     {
         let updatedJob: Entities.Job = context.params.job;
-
-        // check if status is CANCELED => jobService.cancelJob
-        if (!!context.params.status && context.params.status == Entities.JobStatuses.CANCELED) 
-        {
-            updatedJob = await this._jobService.cancelJob(updatedJob);
-        }
-
-        // check if status is COMPLETED => jobService.completeJob
-        if (!!context.params.status && context.params.status == Entities.JobStatuses.COMPLETED) 
-        {
-            updatedJob = await this._jobService.completeJob(updatedJob);
-        }
 
         // check if pickup is updated => jobService.updatePickup
         if (!!context.params.pickup) 
@@ -105,51 +87,6 @@ export class Action extends ActionBase<Entities.Job>
             updatedJob = await this._jobService.updateDestination(updatedJob, destinationLocation);
         }
 
-        // check if receiverName is updated AND/OR receiverPhone is updated => jobService.updateReceiver
-        if (!!context.params.receiverName || !!context.params.receiverPhone) 
-        {
-            updatedJob = await this._jobService.updateReceiver(updatedJob, context.params.receiverName, context.params.receiverPhone);
-        }
-
-        // check if courierId is updated => jobService.assignCourier
-        if (!!context.params.courierId) 
-        {
-            let courier: Entities.User = await this._userRepo.findOne({ id: context.params.courierId });
-
-            updatedJob = await this._jobService.assignCourier(updatedJob, courier);
-        }
-
-        // check if courierId is removed => jobService.unassignCourier
-        if (context.params.courierId == '') 
-        {
-            updatedJob = await this._jobService.unassignCourier(updatedJob);
-        }
-
-        // check if size is updated => jobService.updateSize
-        if (!!context.params.size) 
-        {
-            let pckSize: string = context.params.size.toString().toUpperCase();
-
-            updatedJob = await this._jobService.updateSize(updatedJob, pckSize);
-        }
-
-        // check if box is updated => jobService.attachBox
-        if (!!context.params.box) 
-        {
-            // get box from boxRepo
-            // call jobService.attachBox
-        }
-
         return updatedJob;
-    }
-
-    protected async onError(errorContext: ErrorContext<Entities.Job>): Promise<ErrorContext<Entities.Job>>
-    {
-        if (!!errorContext.context.params && !!errorContext.context.params.job) 
-        {
-            errorContext.result = await this._jobRepo.update(errorContext.context.params.job);
-            //errorContext.handled = true;
-        }
-        return super.onError(errorContext);
     }
 }

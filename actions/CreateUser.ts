@@ -30,7 +30,7 @@ export class Action extends ActionBase<Entities.User>
         return {};
     }
 
-    protected async execute(context): Promise<Entities.User> 
+    public async execute(context): Promise<Entities.User> 
     {
         let existingUser = await this._userRepository.findOne({ username: context.params.username });
 

@@ -4,7 +4,7 @@ import {sanitize} from '../utility/Sanitizor';
 
 export abstract class ActionBase<TOut> {
 
-    protected abstract execute(params?): Promise<TOut>;
+    public abstract execute(context?: ActionContext): Promise<TOut>;
     protected abstract getConstraints(): any;
     protected abstract getSanitizationPattern(): any;
 
@@ -23,6 +23,13 @@ export abstract class ActionBase<TOut> {
             context = await this.onActionExecuting(context);
         
             let result = await this.execute(context);
+
+            let subActions: Array<ActionBase<TOut>> = this.subActions();
+
+            for (let i = 0; i < subActions.length; i++) 
+            {
+                result = await subActions[i].execute(context);
+            }
 
             let resultPrepared = await this.onActionExecuted(result);
 
@@ -58,6 +65,11 @@ export abstract class ActionBase<TOut> {
     protected async onError(errorContext: ErrorContext<TOut>): Promise<ErrorContext<TOut>>
     {
         return errorContext;
+    }
+
+    protected subActions(): Array<ActionBase<TOut>> 
+    {
+        return new Array<ActionBase<TOut>>();
     }
 }
 

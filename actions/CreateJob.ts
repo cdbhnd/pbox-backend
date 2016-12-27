@@ -31,7 +31,7 @@ export class Action extends ActionBase<Entities.Job>
         return {};
     }
 
-    protected async execute(context): Promise<Entities.Job> 
+    public async execute(context): Promise<Entities.Job> 
     {
 
         let job: Entities.Job = {
