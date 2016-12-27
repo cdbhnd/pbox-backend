@@ -1,10 +1,15 @@
 export interface Job {
     id?: number,
-    userId?: string,
+    userId: string,
     pickup: geolocation,
+    destination?: geolocation,
     size: packageSize,
     status: string,
-    createdAt: string
+    createdAt: string,
+    receiverName?: string,
+    receiverPhone?: string,
+    courierId?: string,
+    box?: string
 }
 
 interface geolocation {

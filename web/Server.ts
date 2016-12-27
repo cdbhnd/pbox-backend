@@ -16,7 +16,7 @@ export class Server {
         this.app.use(function(req, res, next) {
             var radiusSerach;
             if(!!req.query.radiusSearch) {
-                radiusSerach = JSON.parse(req.query.radiusSearch);
+                radiusSerach = JSON.stringify(req.query.radiusSearch);
                 delete req.query.radiusSearch;
             }
             var parser = new Parser();

@@ -15,28 +15,8 @@ export class BaseRepository<T> {
     }
     
     public async find(query: any): Promise<T[]> {
-       var result;
        this.normalizeSearchQuery(query);
-       if(!!query.radiusSearch) {
-           let radiusSearchObj = {
-               loc:
-               {
-                   $geoWithin:
-                   {
-                       $centerSphere:
-                       [[query.radiusSearch.lon, query.radiusSearch.lat], query.radiusSearch.radius / 6,378.1]
-                   }
-               }
-           }
-           delete query.radiusSearch;
-
-           var searchObj = Object.assign(radiusSearchObj, query);
-
-           result = await DB.db.collection(this.entityName).find(searchObj).toArray();
-       } else {
-           result = await DB.db.collection(this.entityName).find(query).toArray();
-       }
-       
+       let result = await DB.db.collection(this.entityName).find(query).toArray();
        if (!!result && !!result.length) {
             for (let i = 0; i < result.length; i++) {
                 if (!!result[i]._id) {
@@ -64,8 +44,8 @@ export class BaseRepository<T> {
         return await this.find({});
     }
 
-    public async create(user: T): Promise<T> {
-        let result = await this.collection().insertOne(user);
+    public async create(entity: T): Promise<T> {
+        let result = await this.collection().insertOne(entity);
         if (!!result && !!result.ops && !!result.ops.length) {
             if (!!result.ops[0]._id) {
                 result.ops[0].id = this.serializeObjectId(result.ops[0]._id);
