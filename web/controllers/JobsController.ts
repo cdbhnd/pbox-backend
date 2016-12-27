@@ -7,7 +7,24 @@ import { authMiddleware } from '../middleware/authMiddleware';
 @JsonController()
 export class JobsController {
 
-    @Post("/v1.0/jobs")
+    @Put('/v1.0/jobs/:jobId')
+    @UseBefore(authMiddleware)
+    @HttpCode(200)
+    @HttpError(401, ExceptionTypes.UserNotAuthorizedException)
+    @HttpError(400, ExceptionTypes.ValidationException)
+    @HttpError(400, ExceptionTypes.ServiceLayerException)
+    @HttpError(404, ExceptionTypes.EntityNotFoundException)
+    async updateJob( @Param('jobId') jobId: string, @Param('userId') userId: string, @Body() jobUpdateParams: any ) {
+        let action = new actions.UpdateJob.Action();
+        let actionContext = new actions.ActionContext();
+        actionContext.params = jobUpdateParams;
+        actionContext.params.jobId = jobId;
+        actionContext.params.userId = userId;
+        let updatedJob = await action.run(actionContext);
+        return updatedJob;
+    }
+    
+    @Post('/v1.0/jobs')
     @HttpCode(201)
     @UseBefore(authMiddleware)
     @HttpError(400, ExceptionTypes.ValidationException)
@@ -32,20 +49,4 @@ export class JobsController {
         let userJobs = await getJobsByUser.run(actionContext);
         return userJobs;
     }
-
-    @Put('/v1.0/jobs/:jobId')
-    @UseBefore(authMiddleware)
-    @HttpCode(200)
-    @HttpError(401, ExceptionTypes.UserNotAuthorizedException)
-    @HttpError(400, ExceptionTypes.ValidationException)
-    async updateJob( @Param('jobId') jobId: string, @Param('userId') userId: string, @Body() jobUpdateParams: any ) {
-        let action = new actions.UpdateJob.Action();
-        let actionContext = new actions.ActionContext();
-        actionContext.params = jobUpdateParams;
-        actionContext.params.jobId = jobId;
-        actionContext.params.userId = userId;
-        let updatedJob = await action.run(actionContext);
-        return updatedJob;
-    }
-
 }

@@ -1,6 +1,6 @@
 {
   "basePath": "/",
-  "host": "pbox-server.herokuapp.com",
+  "host": "localhost:8080",
   "info": {
     "description": "Full PBox API specification",
     "title": "PBox API",
@@ -15,6 +15,9 @@
     },
     "/v1.0/jobs": {
       "$ref": "paths/jobs.json"
+    },
+    "/v1.0/jobs/{jobId}": {
+      "$ref": "paths/jobs_id.json"
     }
   },
   "produces": [

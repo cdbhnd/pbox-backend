@@ -4,14 +4,16 @@ import * as Entities from '../entities/';
 import * as Repositories from '../repositories/';
 import {Check} from '../utility/Check';
 import * as Exceptions from '../exceptions/';
+import { injectable } from 'inversify';
 
+@injectable()
 export class JobService implements IJobService 
 {
     private  _jobRepository: Repositories.JobRepository;
     private _moment: any;
 
-    constructor(jobRepository: Repositories.JobRepository) {
-        this._jobRepository = jobRepository;
+    constructor() {
+        this._jobRepository = kernel.get<Repositories.JobRepository>(Types.JobRepository);
         this._moment = require('moment-timezone');
     }
 

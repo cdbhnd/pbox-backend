@@ -102,7 +102,11 @@ export class BaseRepository<T> {
 
     protected deserializeObjectId(objectId: string): mongodb.ObjectID {
         if (!!objectId) {
-            return new mongodb.ObjectID(objectId);
+            try {
+                return new mongodb.ObjectID(objectId);
+            } catch(e) {
+                return null;
+            }
         }
         return null;
     }

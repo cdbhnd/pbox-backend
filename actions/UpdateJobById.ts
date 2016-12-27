@@ -44,7 +44,7 @@ export class Action extends ActionBase<Entities.Job>
         delete context.params.jobId;
 
         // check if user exists
-        let courier = await this._userRepo.findOne({ id: context.params.userId });
+        let courier: Entities.User = await this._userRepo.findOne({ id: context.params.userId });
         if (!courier) 
         {
             throw new Exceptions.EntityNotFoundException('User', context.params.userId);
