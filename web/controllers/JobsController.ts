@@ -1,8 +1,9 @@
-import { Controller, Param, Body, Get, Post, Put, Delete, HttpCode, JsonController, UseBefore } from "routing-controllers";
+import { Req, Res, Controller, Param, Body, Get, Post, Put, Delete, HttpCode, JsonController, UseBefore } from "routing-controllers";
 import { CreateJob, ActionBase, GetJobsByUser } from '../../actions/';
 import { HttpError } from '../decorators/httpError';
 import { ExceptionTypes } from '../../exceptions';
 import { authMiddleware } from '../middleware/authMiddleware';
+import {Request, Response} from "express";
 
 @JsonController()
 export class JobsController {
@@ -25,10 +26,11 @@ export class JobsController {
     @UseBefore(authMiddleware)
     @HttpCode(200)
     @HttpError(400, ExceptionTypes.ValidationException)
-    async getJobsByUser( @Param('userId') userId: string) {
+    async getJobsByUser(@Req() request: Request, @Param('userId') userId: string) {
         let getJobsByUser = new GetJobsByUser.Action();
         let actionContext = new ActionBase.ActionContext;
         actionContext.params =  { id: userId };
+        actionContext.query = request['parsedQuery'];
         let userJobs = await getJobsByUser.run(actionContext);
         return userJobs;
     }

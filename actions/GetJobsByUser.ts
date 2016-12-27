@@ -29,11 +29,21 @@ export class Action extends ActionBase<Entities.Job[]> {
     }
 
     protected async execute(context): Promise<Entities.Job[]> {
-        let userFromDb = await this._userRepository.find({ _id: context.params.id });
+        var userJobs: Entities.Job[];
+
+        let userFromDb = await this._userRepository.findOne({ id: context.params.id });
+
         if (!userFromDb) {
             throw new Exceptions.EntityNotFoundException('User', '');
         }
-        let userJobs = await this._jobRepository.find({ userId: context.params.id });
+
+        //courier user  can use generic query
+        if (userFromDb.type == 3) {
+            userJobs = await this._jobRepository.find(context.query);
+        } else {
+            userJobs = await this._jobRepository.find({ userId: context.params.id });
+        }
+
         return userJobs;
     }
 }

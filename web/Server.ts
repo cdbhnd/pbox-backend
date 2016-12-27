@@ -1,6 +1,6 @@
 import * as express from 'express';
 import './controllers/';
-
+import {Parser} from '../utility/Parser';
 import {createExpressServer, useExpressServer} from "routing-controllers";
 
 export class Server {
@@ -12,6 +12,20 @@ export class Server {
             res.header("Access-Control-Allow-Origin", "*");
             res.header("Access-Control-Allow-Headers", "content-type, Authorization");
             next();
+        });
+        this.app.use(function(req, res, next) {
+            var radiusSerach;
+            if(!!req.query.radiusSearch) {
+                radiusSerach = JSON.parse(req.query.radiusSearch);
+                delete req.query.radiusSearch;
+            }
+            var parser = new Parser();
+            req['parsedQuery'] = parser.mongodb(req.query);
+
+            if(!!radiusSerach) {
+                req['parsedQuery'].radiusSearch = radiusSerach;
+            }
+            return next();
         });
         this.app.use(express.static('assets'));
         useExpressServer(this.app);

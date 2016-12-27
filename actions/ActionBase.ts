@@ -20,4 +20,5 @@ export abstract class ActionBase<TOut> {
 export class ActionContext {
     entityId: number;
     params: any;
+    query: any;
 }
