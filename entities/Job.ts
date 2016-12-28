@@ -1,8 +1,10 @@
+import {Geolocation as gl} from './Geolocation';
+
 export interface Job {
-    id?: number,
+    id: number,
     userId: string,
-    pickup: geolocation,
-    destination?: geolocation,
+    pickup: gl,
+    destination: gl,
     size: packageSize,
     status: string,
     createdAt: string,
@@ -10,11 +12,6 @@ export interface Job {
     receiverPhone?: string,
     courierId?: string,
     box?: string
-}
-
-interface geolocation {
-    latitude: number,
-    longitude: number
 }
 
 export type packageSize  = 'S' | 'M' | 'L' | 'XL';

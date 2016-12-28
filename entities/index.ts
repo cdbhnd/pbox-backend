@@ -1,2 +1,6 @@
 export * from './Job'
 export * from './User'
+export * from './Geolocation'
+export * from './JobStatuses'
+export * from './Box'
+export * from './UserTypes'

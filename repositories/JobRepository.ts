@@ -5,4 +5,5 @@ export interface JobRepository {
     find(query: any): Promise<Entities.Job[]>
     findOne(query: any): Promise<Entities.Job>
     findAll(): Promise<Entities.Job[]>
+    update(job: Entities.Job): Promise<Entities.Job>
 }

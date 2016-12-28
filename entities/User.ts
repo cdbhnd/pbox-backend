@@ -1,15 +1,11 @@
+import {UserType} from './UserTypes';
+
 export interface User {
     id?: string
     firstName?: string,
     lastName?: string,
     username: string,
     password: string,
-    type: userType,
+    type: UserType,
     token?: string
-}
-
-const enum userType {
-    guest,
-    customer,
-    courier
 }

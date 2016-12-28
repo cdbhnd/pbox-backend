@@ -6,27 +6,32 @@ import { ActionBase } from './ActionBase';
 import { ActionContext } from './ActionBase';
 import { generateHash } from '../utility/Password';
 
-export class Action extends ActionBase<Entities.User> {
-    _userRepository: Repositories.UserRepository;
+export class Action extends ActionBase<Entities.User> 
+{
+    private _userRepository: Repositories.UserRepository;
 
-    constructor() {
+    constructor() 
+    {
         super();
         this._userRepository = kernel.get<Repositories.UserRepository>(Types.UserRepository);
     }
 
-    protected getConstraints() {
+    protected getConstraints() 
+    {
         return {
             'username': 'required',
             'password': 'required',
             'type': 'required'
-        }
+        };
     }
 
-    protected getSanitizationPattern() {
-        return {}
+    protected getSanitizationPattern() 
+    {
+        return {};
     }
 
-    protected async execute(context): Promise<Entities.User> {
+    public async execute(context): Promise<Entities.User> 
+    {
         let existingUser = await this._userRepository.findOne({ username: context.params.username });
 
         if (!!existingUser) {

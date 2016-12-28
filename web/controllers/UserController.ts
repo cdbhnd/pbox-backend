@@ -29,8 +29,9 @@ export class UserController {
     @HttpError(401, ExceptionTypes.InvalidCredentialsException)
     @HttpError(400, ExceptionTypes.ValidationException)
     async login( @Body() userSubmitedParams: any) {
-        let userLoginAction = new actions.UserLogin.Action();
+        let userLoginAction = new actions.LoginUser.Action();
         let actionContext = new actions.ActionContext;
+        userSubmitedParams.type = userSubmitedParams.type ? userSubmitedParams.type : 1; 
         actionContext.params = userSubmitedParams;
         let userFromDb = await userLoginAction.run(actionContext);
         let secret: string = String(config.get('secret'));

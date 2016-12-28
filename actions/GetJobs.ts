@@ -6,29 +6,31 @@ import { ActionBase } from './ActionBase';
 import { ActionContext } from './ActionBase';
 import * as Exceptions from '../exceptions';
 
-var moment = require('moment-timezone');
+export class Action extends ActionBase<Entities.Job[]> 
+{
+    private _jobRepository: Repositories.JobRepository;
+    private _userRepository: Repositories.UserRepository;
 
-export class Action extends ActionBase<Entities.Job[]> {
-    _jobRepository: Repositories.JobRepository;
-    _userRepository: Repositories.UserRepository
-
-    constructor() {
+    constructor() 
+    {
         super();
         this._jobRepository = kernel.get<Repositories.JobRepository>(Types.JobRepository);
         this._userRepository = kernel.get<Repositories.UserRepository>(Types.UserRepository);
     };
 
-    protected getConstraints() {
+    protected getConstraints() 
+    {
         return {
-            'id': 'required',
+            'id': 'required'
         };
     }
 
-    protected getSanitizationPattern() {
-        return {}
+    protected getSanitizationPattern() 
+    {
+        return {};
     }
 
-    protected async execute(context): Promise<Entities.Job[]> {
+    public async execute(context: ActionContext): Promise<Entities.Job[]> {
         var userJobs: Entities.Job[];
 
         let userFromDb = await this._userRepository.findOne({ id: context.params.id });
@@ -38,7 +40,7 @@ export class Action extends ActionBase<Entities.Job[]> {
         }
 
         //courier user  can use generic query
-        if (userFromDb.type == 3) {
+        if (userFromDb.type == Entities.UserType.Courier) {
             userJobs = await this._jobRepository.find(context.query);
         } else {
             userJobs = await this._jobRepository.find({ userId: context.params.id });
