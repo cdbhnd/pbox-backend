@@ -77,6 +77,7 @@ export class ActionContext
 {
     entityId: number;
     params: any;
+    query: any;
 }
 
 export class ErrorContext<T>

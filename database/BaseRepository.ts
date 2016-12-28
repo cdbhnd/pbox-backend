@@ -44,8 +44,8 @@ export class BaseRepository<T> {
         return await this.find({});
     }
 
-    public async create(user: T): Promise<T> {
-        let result = await this.collection().insertOne(user);
+    public async create(entity: T): Promise<T> {
+        let result = await this.collection().insertOne(entity);
         if (!!result && !!result.ops && !!result.ops.length) {
             if (!!result.ops[0]._id) {
                 result.ops[0].id = this.serializeObjectId(result.ops[0]._id);

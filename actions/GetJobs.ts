@@ -30,13 +30,22 @@ export class Action extends ActionBase<Entities.Job[]>
         return {};
     }
 
-    public async execute(context): Promise<Entities.Job[]> 
-    {
-        let userFromDb = await this._userRepository.find({ _id: context.params.id });
+    public async execute(context: ActionContext): Promise<Entities.Job[]> {
+        var userJobs: Entities.Job[];
+
+        let userFromDb = await this._userRepository.findOne({ id: context.params.id });
+
         if (!userFromDb) {
             throw new Exceptions.EntityNotFoundException('User', '');
         }
-        let userJobs = await this._jobRepository.find({ userId: context.params.id });
+
+        //courier user  can use generic query
+        if (userFromDb.type == Entities.UserType.Courier) {
+            userJobs = await this._jobRepository.find(context.query);
+        } else {
+            userJobs = await this._jobRepository.find({ userId: context.params.id });
+        }
+
         return userJobs;
     }
 }

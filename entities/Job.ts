@@ -10,8 +10,8 @@ export interface Job {
     createdAt: string,
     receiverName?: string,
     receiverPhone?: string,
-    courierId: string,
-    box: string
+    courierId?: string,
+    box?: string
 }
 
 export type packageSize  = 'S' | 'M' | 'L' | 'XL';
