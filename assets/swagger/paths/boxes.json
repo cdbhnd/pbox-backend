@@ -1,0 +1,35 @@
+{
+    "get": {
+        "consumes": [
+            "application/json"
+        ],
+        "description": "Returns all boxes in the system",
+        "parameters": [
+        {
+                "description": "Bearer access token (e.g. Bearer [token])",
+                "in": "header",
+                "name": "Authorization",
+                "required": true,
+                "type": "string"
+        }],
+        "produces": [
+            "application/json"
+        ],"responses": {
+            "200": {
+                "description": "OK",
+                "schema": {
+                    "$ref": "../definitions/box.json"
+                }
+            },
+            "401": {
+                "description": "Unauthorized"
+            },
+            "500": {
+                "description": "Internal server error"
+            }
+        },
+        "tags": [
+            "v1.0"
+        ]
+    }
+}
