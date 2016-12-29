@@ -38,7 +38,7 @@ export class Action extends ActionBase<Entities.Box[]>
             throw new Exceptions.EntityNotFoundException('User', '');
         }
 
-        let boxes = await this._boxRepository.findAll();
+        let boxes = await this._boxRepository.find(context.query);
         return boxes;
     }
 }

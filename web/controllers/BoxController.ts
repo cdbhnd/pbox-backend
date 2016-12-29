@@ -11,10 +11,11 @@ export class BoxController {
     @UseBefore(authMiddleware)
     @HttpCode(200)
     @HttpError(400, ExceptionTypes.ValidationException)
-    async getBoxes(@Param('userId') userId: string) {
+    async getBoxes(@Req() request: Request, @Param('userId') userId: string) {
         let getBoxesAction = new actions.GetBoxes.Action();
         let actionContext = new actions.ActionContext;
         actionContext.params =  { id: userId };
+        actionContext.query = request['parsedQuery'];
         let boxes = await getBoxesAction.run(actionContext);
         return boxes;
     }
