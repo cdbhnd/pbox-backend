@@ -11,6 +11,20 @@
                 "name": "Authorization",
                 "required": true,
                 "type": "string"
+        },
+        {
+                "description": "Filter jobs by status",
+                "in": "query",
+                "name": "status",
+                "required": false,
+                "type": "string"
+        },
+        {
+                "description": "Filter jobs by courier Id",
+                "in": "query",
+                "name": "courierId",
+                "required": false,
+                "type": "string"
         }],
         "produces": [
             "application/json"

@@ -31,14 +31,15 @@ export class JobService implements IJobService
     {
         Check.notNull(job, 'job');
 
-        if (job.status != Entities.JobStatuses.ACCEPTED || job.status != Entities.JobStatuses.IN_PROGRESS) 
+        if (job.status == Entities.JobStatuses.ACCEPTED || job.status == Entities.JobStatuses.IN_PROGRESS) 
+        {
+            job.status = Entities.JobStatuses.CANCELED;
+
+            return await this._jobRepository.update(job);
+        } else 
         {
             throw new Exceptions.ServiceLayerException('CANCEL_JOB_FAILED_INVALID_STATUS');            
         }
-
-        job.status = Entities.JobStatuses.CANCELED;
-
-        return await this._jobRepository.update(job);
     }
 
     public async completeJob(job: Entities.Job): Promise<Entities.Job>

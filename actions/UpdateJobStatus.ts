@@ -40,7 +40,7 @@ export class Action extends ActionBase<Entities.Job>
         {
             throw new Exceptions.EntityNotFoundException('Job', context.params.jobId);
         }
-        if (!job.courierId || job.status != Entities.JobStatuses.ACCEPTED || job.status != Entities.JobStatuses.IN_PROGRESS) 
+        if (job.status != Entities.JobStatuses.ACCEPTED && job.status != Entities.JobStatuses.IN_PROGRESS) 
         {
             throw new Exceptions.ServiceLayerException('CANCEL_FAILED_INVALID_JOB_STATUS');
         }
