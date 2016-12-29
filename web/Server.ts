@@ -12,7 +12,7 @@ export class Server {
         this.app.use(function(req, res, next) {
             res.header("Access-Control-Allow-Origin", "*");
             res.header("Access-Control-Allow-Headers", "content-type, Authorization");
-            res.header("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE");
+            res.header("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, PATCH, DELETE");
             next();
         });
         this.app.use(queryParserMiddleware);

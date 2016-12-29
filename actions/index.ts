@@ -9,4 +9,5 @@ import * as UpdateJobStatus from './UpdateJobStatus';
 import * as UpdateJobLocations from './UpdateJobLocations';
 import * as UpdateJobCourier from './UpdateJobCourier';
 import * as AssignJobBox from './AssignJobBox';
-export {CreateJob, ActionBase, CreateUser, LoginUser, ActionContext, GetJobs, UpdateJob, UpdateJobStatus, UpdateJobLocations, UpdateJobCourier, AssignJobBox};
+import * as GetBoxes from './GetBoxes';
+export {CreateJob, ActionBase, CreateUser, LoginUser, ActionContext, GetJobs, UpdateJob, UpdateJobStatus, UpdateJobLocations, UpdateJobCourier, AssignJobBox, GetBoxes};
