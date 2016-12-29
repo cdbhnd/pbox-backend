@@ -31,7 +31,7 @@ export class JobService implements IJobService
     {
         Check.notNull(job, 'job');
 
-        if (job.status != Entities.JobStatuses.ACCEPTED || job.status != Entities.JobStatuses.IN_PROGRESS) 
+        if (job.status != Entities.JobStatuses.ACCEPTED && job.status != Entities.JobStatuses.IN_PROGRESS) 
         {
             throw new Exceptions.ServiceLayerException('CANCEL_JOB_FAILED_INVALID_STATUS');            
         }
