@@ -18,6 +18,9 @@
     },
     "/v1.0/jobs/{jobId}": {
       "$ref": "paths/jobs_id.json"
+    },
+    "/v1.0/boxes": {
+      "$ref": "paths/boxes.json"
     }
   },
   "produces": [
