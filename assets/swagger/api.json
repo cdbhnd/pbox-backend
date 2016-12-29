@@ -1,6 +1,6 @@
 {
   "basePath": "/",
-  "host": "pbox-server.herokuapp.com",
+  "host": "localhost:8080",
   "info": {
     "description": "Full PBox API specification",
     "title": "PBox API",
