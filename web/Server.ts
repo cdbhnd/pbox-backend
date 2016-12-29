@@ -1,6 +1,7 @@
 import * as express from 'express';
 import './controllers/';
-import {Parser} from '../utility/Parser';
+import * as config from 'config';
+import {queryParserMiddleware} from './middleware/queryParserMiddleware';
 import {createExpressServer, useExpressServer} from "routing-controllers";
 
 export class Server {
@@ -11,24 +12,11 @@ export class Server {
         this.app.use(function(req, res, next) {
             res.header("Access-Control-Allow-Origin", "*");
             res.header("Access-Control-Allow-Headers", "content-type, Authorization");
-            res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
+            res.header("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, PATCH, DELETE");
             next();
         });
-        this.app.use(function(req, res, next) {
-            var radiusSerach;
-            if(!!req.query.radiusSearch) {
-                radiusSerach = JSON.stringify(req.query.radiusSearch);
-                delete req.query.radiusSearch;
-            }
-            var parser = new Parser();
-            req['parsedQuery'] = parser.mongodb(req.query);
-
-            if(!!radiusSerach) {
-                req['parsedQuery'].radiusSearch = radiusSerach;
-            }
-            return next();
-        });
-        this.app.use(express.static('assets'));
+        this.app.use(queryParserMiddleware);
+        this.app.use(express.static(String(config.get('static_folder'))));
         useExpressServer(this.app);
     }
 

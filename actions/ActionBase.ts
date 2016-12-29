@@ -17,7 +17,7 @@ export abstract class ActionBase<TOut> {
         await validate(context.params, this.getConstraints());
 
         context.params = await sanitize(context.params, this.getSanitizationPattern());
-
+        
         try 
         {
             context = await this.onActionExecuting(context);
