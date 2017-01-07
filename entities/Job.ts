@@ -3,6 +3,8 @@ import {Geolocation as gl} from './Geolocation';
 export interface Job {
     id: number,
     userId: string,
+    name?: string,
+    description?: string,
     pickup: gl,
     destination: gl,
     size: packageSize,

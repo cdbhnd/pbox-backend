@@ -5,21 +5,31 @@ import * as Repositories from '../repositories/';
 import {Check} from '../utility/Check';
 import * as Exceptions from '../exceptions/';
 import { injectable } from 'inversify';
+import * as Providers from '../providers/';
 
 @injectable()
 export class JobService implements IJobService 
 {
     private  _jobRepository: Repositories.JobRepository;
+    private _quoteProvider: Providers.IQuotesProvider;
     private _moment: any;
 
     constructor() {
         this._jobRepository = kernel.get<Repositories.JobRepository>(Types.JobRepository);
+        this._quoteProvider = kernel.get<Providers.IQuotesProvider>(Types.QuotesProvider);
         this._moment = require('moment-timezone');
     }
 
     public async createJob(job: Entities.Job): Promise<Entities.Job> 
     {
         Check.notNull(job, 'job');
+
+        let quote: Providers.Quote = await this._quoteProvider.getRandomQuote();
+
+        if (!!quote) {
+            job.name = quote.author;
+            job.description = quote.quote;
+        }
 
         job.status = Entities.JobStatuses.PENDING;
         job.createdAt =  this._moment().format();

@@ -5,6 +5,11 @@ import { ExceptionTypes } from '../../exceptions';
 import { authMiddleware } from '../middleware/authMiddleware';
 import {Request, Response} from "express";
 
+import * as Repo from '../../repositories/';
+import * as Entities from '../../entities/';
+import * as Providers from '../../providers/';
+import { Types, kernel } from "../../dependency-injection/";
+
 @JsonController()
 export class JobsController {
 
@@ -51,4 +56,22 @@ export class JobsController {
         let userJobs = await getJobsByUser.run(actionContext);
         return userJobs;
     }
+
+    /*@Get('/test')
+    async test() 
+    {
+        let jobRepo: Repo.JobRepository = kernel.get<Repo.JobRepository>(Types.JobRepository);
+        let jobs: Entities.Job[] = await jobRepo.findAll();
+        let quoteProvider: Providers.IQuotesProvider = kernel.get<Providers.IQuotesProvider>(Types.QuotesProvider);
+
+        for (let i = 0; i < jobs.length; i++) {
+            let quote: Providers.Quote = await quoteProvider.getRandomQuote();
+            if (!!quote) {
+                jobs[i].name = quote.author;
+                jobs[i].description = quote.quote;
+           }
+            jobRepo.update(jobs[i]);
+        }
+        return { success: true };
+    }*/
 }
