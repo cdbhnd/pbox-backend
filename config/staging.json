@@ -16,5 +16,10 @@
     "quote_service": {
         "host": "https://andruxnet-random-famous-quotes.p.mashape.com/",
         "auth_key": "qseR9vhP4fmshxE4pg9IeJSO5YAop1UAncEjsnipxGB5UrzbGZ"
+    },
+
+    "geocode_service": {
+        "provider": "google",
+        "httpAdapter": "https"
     }
 }
