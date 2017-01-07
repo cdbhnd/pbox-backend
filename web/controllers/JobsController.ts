@@ -63,14 +63,16 @@ export class JobsController {
         let jobRepo: Repo.JobRepository = kernel.get<Repo.JobRepository>(Types.JobRepository);
         let jobs: Entities.Job[] = await jobRepo.findAll();
         let quoteProvider: Providers.IQuotesProvider = kernel.get<Providers.IQuotesProvider>(Types.QuotesProvider);
+        let geocodeProvider: Providers.IGeocodeProvider = kernel.get<Providers.IGeocodeProvider>(Types.GeocodeProvider);
 
         for (let i = 0; i < jobs.length; i++) {
-            let quote: Providers.Quote = await quoteProvider.getRandomQuote();
-            if (!!quote) {
-                jobs[i].name = quote.author;
-                jobs[i].description = quote.quote;
+
+           let gl: Entities.Geolocation = await geocodeProvider.reverse(jobs[i].pickup.latitude, jobs[i].pickup.longitude); 
+           
+           if (!!gl) {
+               jobs[i].pickup.address = gl.address;
            }
-            jobRepo.update(jobs[i]);
+           jobRepo.update(jobs[i]);
         }
         return { success: true };
     }*/

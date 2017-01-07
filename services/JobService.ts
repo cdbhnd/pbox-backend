@@ -12,11 +12,13 @@ export class JobService implements IJobService
 {
     private  _jobRepository: Repositories.JobRepository;
     private _quoteProvider: Providers.IQuotesProvider;
+    private _geocodeProvider: Providers.IGeocodeProvider;
     private _moment: any;
 
     constructor() {
         this._jobRepository = kernel.get<Repositories.JobRepository>(Types.JobRepository);
         this._quoteProvider = kernel.get<Providers.IQuotesProvider>(Types.QuotesProvider);
+        this._geocodeProvider = kernel.get<Providers.IGeocodeProvider>(Types.GeocodeProvider);
         this._moment = require('moment-timezone');
     }
 
@@ -25,10 +27,15 @@ export class JobService implements IJobService
         Check.notNull(job, 'job');
 
         let quote: Providers.Quote = await this._quoteProvider.getRandomQuote();
-
         if (!!quote) {
             job.name = quote.author;
             job.description = quote.quote;
+        }
+
+        let gl: Entities.Geolocation = await this._geocodeProvider.reverse(job.pickup.latitude, job.pickup.longitude);
+        if (!!gl) 
+        {
+            job.pickup.address = gl.address;
         }
 
         job.status = Entities.JobStatuses.PENDING;
