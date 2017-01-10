@@ -12,12 +12,14 @@ export class JobService implements IJobService {
     private _jobRepository: Repositories.JobRepository;
     private _quoteProvider: Providers.IQuotesProvider;
     private _geocodeProvider: Providers.IGeocodeProvider;
+    private _boxRepo: Repositories.BoxRepository;
     private _moment: any;
 
     constructor() {
         this._jobRepository = kernel.get<Repositories.JobRepository>(Types.JobRepository);
         this._quoteProvider = kernel.get<Providers.IQuotesProvider>(Types.QuotesProvider);
         this._geocodeProvider = kernel.get<Providers.IGeocodeProvider>(Types.GeocodeProvider);
+        this._boxRepo = kernel.get<Repositories.BoxRepository>(Types.BoxRepository);
         this._moment = require('moment-timezone');
     }
 
@@ -152,12 +154,27 @@ export class JobService implements IJobService {
         Check.notNull(job, 'job');
         Check.notNull(box, 'box');
 
-        if (job.status != Entities.JobStatuses.ACCEPTED) {
+        if (job.status != Entities.JobStatuses.ACCEPTED)
+        {
             throw new Exceptions.ServiceLayerException('BOX_ATTACH_FAILED_INVALID_STATUS');
         }
 
-        if (!!job.box) {
+        if (box.status == Entities.BoxStatuses.ACTIVE) 
+        {
             throw new Exceptions.ServiceLayerException('BOX_ATTACH_FAILED_ALREADY_ATTACHED');
+        }
+
+        if (!!job.box) 
+        {
+            throw new Exceptions.ServiceLayerException('BOX_ATTACH_FAILED_ALREADY_ATTACHED');            
+        }
+
+        box.status = Entities.BoxStatuses.ACTIVE;
+        let updatedBox = await this._boxRepo.update(box);
+
+        if(!!updatedBox && updatedBox.status != Entities.BoxStatuses.ACTIVE) 
+        {
+            throw new Exceptions.ServiceLayerException('BOX_STATUS_NOT_UPDATED');
         }
 
         job.box = box.code;

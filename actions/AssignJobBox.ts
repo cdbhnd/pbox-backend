@@ -13,6 +13,7 @@ export class Action extends ActionBase<Entities.Job>
     private _jobService: Services.IJobService;
     private _jobRepo: Repositories.JobRepository;
     private _userRepo: Repositories.UserRepository;
+    private _boxRepo: Repositories.BoxRepository;
 
     constructor() 
     {
@@ -20,6 +21,7 @@ export class Action extends ActionBase<Entities.Job>
         this._jobService = kernel.get<Services.IJobService>(Types.JobService);
         this._jobRepo = kernel.get<Repositories.JobRepository>(Types.JobRepository);
         this._userRepo = kernel.get<Repositories.UserRepository>(Types.UserRepository);
+        this._boxRepo = kernel.get<Repositories.BoxRepository>(Types.BoxRepository);
     };
 
     protected getConstraints() 
@@ -71,10 +73,14 @@ export class Action extends ActionBase<Entities.Job>
         // check if box is updated => jobService.attachBox
         if (!!context.params.box) 
         {
-            // get box from boxRepo
-            // call jobService.attachBox
+            let box = await this._boxRepo.findOne({code: context.params.box });
+            if(!!box) {
+                let updatedJob = await this._jobService.attachBox(context.params.job, box);
+                return updatedJob;
+            } else {
+                throw new Exceptions.EntityNotFoundException('Box', 'Box does not exist');
+            }
         }
-
         return updatedJob;
     }
 }
