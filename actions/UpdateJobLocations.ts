@@ -69,9 +69,9 @@ export class Action extends ActionBase<Entities.Job>
         if (!!context.params.pickup) 
         {
             let pickupLocation: Entities.Geolocation = {
-                latitude: context.params.pickup.latitude ? context.params.pickup.latitude : updatedJob.pickup.latitude, 
-                longitude: context.params.pickup.longitude ? context.params.pickup.longitude : updatedJob.pickup.longitude, 
-                address: context.params.pickup.address ? context.params.pickup.address : updatedJob.pickup.address
+                latitude: context.params.pickup.latitude, 
+                longitude: context.params.pickup.longitude, 
+                address: context.params.pickup.address
             };
             updatedJob = await this._jobService.updatePickup(updatedJob, pickupLocation);
         }
@@ -80,9 +80,9 @@ export class Action extends ActionBase<Entities.Job>
         if (!!context.params.destination) 
         {
             let destinationLocation: Entities.Geolocation = {
-                latitude: context.params.destination.latitude ? context.params.destination.latitude : updatedJob.destination.latitude, 
-                longitude: context.params.destination.longitude ? context.params.destination.longitude : updatedJob.destination.longitude, 
-                address: context.params.destination.address ? context.params.destination.address : updatedJob.destination.address
+                latitude: context.params.destination.latitude, 
+                longitude: context.params.destination.longitude, 
+                address: context.params.destination.address
             };
             updatedJob = await this._jobService.updateDestination(updatedJob, destinationLocation);
         }

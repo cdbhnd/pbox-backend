@@ -77,9 +77,10 @@ export class Action extends ActionBase<Entities.Job>
             if(!!box) {
                 let updatedJob = await this._jobService.attachBox(context.params.job, box);
                 return updatedJob;
-            }else {
+            } else {
                 throw new Exceptions.EntityNotFoundException('Box', 'Box does not exist');
             }
         }
+        return updatedJob;
     }
 }
