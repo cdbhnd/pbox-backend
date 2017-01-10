@@ -209,6 +209,11 @@ export class JobService implements IJobService
         box.status = Entities.BoxStatuses.ACTIVE;
         let updatedBox = await this._boxRepo.update(box);
 
+        if(!!updatedBox && updatedBox.status != Entities.BoxStatuses.ACTIVE) 
+        {
+            throw new Exceptions.ServiceLayerException('BOX_STATUS_NOT_UPDATED');
+        }
+
         job.box = box.code;
         job.status = Entities.JobStatuses.IN_PROGRESS;
 
