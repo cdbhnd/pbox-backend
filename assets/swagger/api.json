@@ -1,6 +1,6 @@
 {
   "basePath": "/",
-  "host": "pbox-server.herokuapp.com",
+  "host": "ec2-35-156-247-206.eu-central-1.compute.amazonaws.com:8080",
   "info": {
     "description": "Full PBox API specification",
     "title": "PBox API",

@@ -46,3 +46,5 @@ typings/**
 # Compiled js files
 dist
 dist/**
+deploy
+deploy/**
