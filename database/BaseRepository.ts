@@ -62,8 +62,6 @@ export class BaseRepository<T> {
 
         let objId = this.deserializeObjectId(objt.id);
 
-        delete objt.id;
-
         let result = await this.collection().updateOne({ '_id': objId }, { '$set': objt })
 
         let updatedDoc = await this.collection().findOne({ '_id': objId });
