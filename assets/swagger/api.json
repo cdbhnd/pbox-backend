@@ -1,6 +1,6 @@
 {
   "basePath": "/",
-  "host": "ec2-35-156-247-206.eu-central-1.compute.amazonaws.com:8080",
+  "host": "pbox-dev-1199301680.eu-central-1.elb.amazonaws.com",
   "info": {
     "description": "Full PBox API specification",
     "title": "PBox API",
