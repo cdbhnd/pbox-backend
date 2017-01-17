@@ -17,6 +17,18 @@
         "value": {
             "description": "Latest sensor value",
             "type": "string"
+        },
+        "assetId": {
+            "description": "Sensor asset id (ATT)",
+            "type": "string"
+        },
+        "assetName": {
+            "description": "Sensor asset name (ATT)",
+            "type": "string"
+        },
+        "topic": {
+            "description": "Sensor topic feed (ATT)",
+            "type": "string"
         }
     }
 }
