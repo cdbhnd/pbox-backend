@@ -1,6 +1,6 @@
 {
   "basePath": "/",
-  "host": "pbox-dev-1199301680.eu-central-1.elb.amazonaws.com",
+  "host": "localhost:8080",
   "info": {
     "description": "Full PBox API specification",
     "title": "PBox API",
@@ -21,6 +21,15 @@
     },
     "/v1.0/boxes": {
       "$ref": "paths/boxes.json"
+    },
+    "/v1.0/boxes/{code}": {
+      "$ref": "paths/boxes_code.json"
+    },
+    "/v1.0/boxes/{code}/sensors": {
+      "$ref": "paths/boxes_sensors.json"
+    },
+    "/v1.0/boxes/{code}/sensors/{sensorCode}": {
+      "$ref": "paths/boxes_sensor_code.json"
     }
   },
   "produces": [

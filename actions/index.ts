@@ -11,5 +11,10 @@ import * as UpdateJobCourier from './UpdateJobCourier';
 import * as AssignJobBox from './AssignJobBox';
 import * as GetBoxes from './GetBoxes';
 import * as GetJobById from './GetJobById';
+import * as GetBoxByCode from './GetBoxByCode';
+import * as CreateBox from './CreateBox';
+import * as CreateBoxSensor from './CreateBoxSensor';
+import * as RemoveBoxSensor from './RemoveBoxSensor';
+import * as RemoveBox from './RemoveBox';
 export {CreateJob, ActionBase, CreateUser, LoginUser, ActionContext, GetJobs, UpdateJob, 
-    UpdateJobStatus, UpdateJobLocations, UpdateJobCourier, AssignJobBox, GetBoxes, GetJobById};
+    UpdateJobStatus, UpdateJobLocations, UpdateJobCourier, AssignJobBox, GetBoxes, GetJobById, GetBoxByCode, CreateBox, CreateBoxSensor, RemoveBoxSensor, RemoveBox};

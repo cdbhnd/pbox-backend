@@ -76,6 +76,17 @@ export class BaseRepository<T> {
        return updatedDoc;
     }
 
+    public async delete(entity: T): Promise<Boolean> {
+
+        let objt = entity as any;
+
+        let objId = this.deserializeObjectId(objt.id);
+
+        await this.collection().deleteOne({ '_id': objId });
+
+        return true;
+    }
+
     protected collection(): mongodb.Collection {
         return this.db.collection(this.entityName);
     }
