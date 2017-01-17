@@ -47,8 +47,8 @@ export class JobService implements IJobService {
         Check.notNull(job, 'job');
 
         if (job.status == Entities.JobStatuses.ACCEPTED || job.status == Entities.JobStatuses.IN_PROGRESS) {
+            this.tryRemoveBoxFromJob(job);
             job.status = Entities.JobStatuses.CANCELED;
-
             return await this._jobRepository.update(job);
         } else {
             throw new Exceptions.ServiceLayerException('CANCEL_JOB_FAILED_INVALID_STATUS');
@@ -62,18 +62,17 @@ export class JobService implements IJobService {
             throw new Exceptions.ServiceLayerException('COMPLETE_JOB_FAILED_INVALID_STATUS');
         }
 
+        this.tryRemoveBoxFromJob(job);
         job.status = Entities.JobStatuses.COMPLETED;
 
         return await this._jobRepository.update(job);
     }
 
-    public async updatePickup(job: Entities.Job, pickup: Entities.Geolocation): Promise<Entities.Job> 
-    {
+    public async updatePickup(job: Entities.Job, pickup: Entities.Geolocation): Promise<Entities.Job> {
         Check.notNull(job, 'job');
         Check.notNull(pickup, 'pickup');
 
-        if (job.status != Entities.JobStatuses.ACCEPTED) 
-        {
+        if (job.status != Entities.JobStatuses.ACCEPTED) {
             throw new Exceptions.ServiceLayerException('PICKUP_UPDATE_FAILED_INVALID_STATUS');
         }
 
@@ -82,16 +81,14 @@ export class JobService implements IJobService {
         return await this._jobRepository.update(job);
     }
 
-    public async updateDestination(job: Entities.Job, destination: Entities.Geolocation): Promise<Entities.Job> 
-    {
+    public async updateDestination(job: Entities.Job, destination: Entities.Geolocation): Promise<Entities.Job> {
         Check.notNull(job, 'job');
         Check.notNull(destination, 'destination');
 
-        if (job.status != Entities.JobStatuses.ACCEPTED) 
-        {
+        if (job.status != Entities.JobStatuses.ACCEPTED) {
             throw new Exceptions.ServiceLayerException('DESTINATION_UPDATE_FAILED_INVALID_STATUS');
         }
-        
+
         job.destination = await this.resolveGeolocation(destination);
 
         return await this._jobRepository.update(job);
@@ -154,26 +151,22 @@ export class JobService implements IJobService {
         Check.notNull(job, 'job');
         Check.notNull(box, 'box');
 
-        if (job.status != Entities.JobStatuses.ACCEPTED)
-        {
+        if (job.status != Entities.JobStatuses.ACCEPTED) {
             throw new Exceptions.ServiceLayerException('BOX_ATTACH_FAILED_INVALID_STATUS');
         }
 
-        if (box.status == Entities.BoxStatuses.ACTIVE) 
-        {
+        if (box.status == Entities.BoxStatuses.ACTIVE) {
             throw new Exceptions.ServiceLayerException('BOX_ATTACH_FAILED_ALREADY_ATTACHED');
         }
 
-        if (!!job.box) 
-        {
-            throw new Exceptions.ServiceLayerException('BOX_ATTACH_FAILED_ALREADY_ATTACHED');            
+        if (!!job.box) {
+            throw new Exceptions.ServiceLayerException('BOX_ATTACH_FAILED_ALREADY_ATTACHED');
         }
 
         box.status = Entities.BoxStatuses.ACTIVE;
         let updatedBox = await this._boxRepo.update(box);
 
-        if(!!updatedBox && updatedBox.status != Entities.BoxStatuses.ACTIVE) 
-        {
+        if (!!updatedBox && updatedBox.status != Entities.BoxStatuses.ACTIVE) {
             throw new Exceptions.ServiceLayerException('BOX_STATUS_NOT_UPDATED');
         }
 
@@ -183,34 +176,39 @@ export class JobService implements IJobService {
         return await this._jobRepository.update(job);
     }
 
-    private async resolveGeolocation(geolocation: Entities.Geolocation): Promise<Entities.Geolocation> 
-    {
-        if (!!geolocation.address && !!geolocation.latitude && !!geolocation.longitude) 
-        {
+    private async resolveGeolocation(geolocation: Entities.Geolocation): Promise<Entities.Geolocation> {
+        if (!!geolocation.address && !!geolocation.latitude && !!geolocation.longitude) {
             return geolocation;
         }
 
-        if (!!geolocation.address) 
-        {
+        if (!!geolocation.address) {
             let coords: Entities.Geolocation = await this._geocodeProvider.geocode(geolocation.address);
-            if (coords) 
-            {
+            if (coords) {
                 geolocation.latitude = coords.latitude;
                 geolocation.longitude = coords.longitude;
                 return geolocation;
             }
         }
 
-        if (!!geolocation.latitude && !!geolocation.longitude) 
-        {
+        if (!!geolocation.latitude && !!geolocation.longitude) {
             let address: Entities.Geolocation = await this._geocodeProvider.reverse(geolocation.latitude, geolocation.longitude);
-            if (address) 
-            {
+            if (address) {
                 geolocation.address = address.address;
                 return geolocation;
             }
         }
-        
+
         throw new Exceptions.ServiceLayerException('GELOCATION_IS_NOT_VALID');
+    }
+
+    private async tryRemoveBoxFromJob(job: Entities.Job) {
+        if (!!job.box) {
+            let box: Entities.Box = await this._boxRepo.findOne({ code: job.box });
+            if (!!box) {
+                box.status = Entities.BoxStatuses.IDLE;
+                this._boxRepo.update(box);
+            }
+            job.box = null;
+        }
     }
 }
