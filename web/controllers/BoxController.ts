@@ -83,5 +83,6 @@ export class BoxController {
         let actionContext = new actions.ActionContext();
         actionContext.params =  { boxCode: code, userId: userId };
         await getBoxesAction.run(actionContext);
+        return null;
     }
 }

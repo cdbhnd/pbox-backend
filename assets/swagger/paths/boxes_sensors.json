@@ -13,6 +13,13 @@
                 "type": "string"
             },
             {
+                "description": "Box code",
+                "in": "path",
+                "name": "code",
+                "required": true,
+                "type": "string"
+            },
+            {
                 "name": "sensorData",
                 "in": "body",
                 "description": "New sensor data",
