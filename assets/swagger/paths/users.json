@@ -1,0 +1,62 @@
+{
+    "post": {
+        "consumes": [
+            "application/json"
+        ],
+        "description": "Create new User",
+        "parameters": [
+            {
+                "name": "user_data",
+                "in": "body",
+                "description": "New user data",
+                "required": true,
+                "schema": {
+                    "type": "object",
+                    "description": "New user data",
+                    "properties": {
+                        "first_name": {
+                            "required": false,
+                            "type": "string"
+                        },
+                        "last_name": {
+                            "required": false,
+                            "type": "string"
+                        },
+                        "username": {
+                            "required": true,
+                            "type": "string"
+                        },
+                        "password": {
+                            "required": true,
+                            "type": "string"
+                        },
+                        "type": {
+                            "required": true,
+                            "type": "number"
+                        }
+                    }
+                }
+            }
+        ],
+        "produces": [
+            "application/json"
+        ],
+        "responses": {
+            "201": {
+                "description": "CREATED",
+                "schema": {
+                    "$ref": "../definitions/token.json"
+                }
+            },
+            "400": {
+                "description": "Bad Request"
+            },
+            "500": {
+                "description": "Internal server error"
+            }
+        },
+        "tags": [
+            "v1.0"
+        ]
+    }
+}

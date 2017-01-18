@@ -1,0 +1,89 @@
+{
+    "get": {
+        "consumes": [
+            "application/json"
+        ],
+        "description": "Returns single box by its code",
+        "parameters": [
+            {
+                "description": "Bearer access token (e.g. Bearer [token])",
+                "in": "header",
+                "name": "Authorization",
+                "required": true,
+                "type": "string"
+            },
+            {
+                "description": "Box code",
+                "in": "path",
+                "name": "code",
+                "required": true,
+                "type": "string"
+            }
+        ],
+        "produces": [
+            "application/json"
+        ],
+        "responses": {
+            "200": {
+                "description": "OK",
+                "schema": {
+                    "$ref": "../definitions/box.json"
+                }
+            },
+            "401": {
+                "description": "Unauthorized"
+            },
+            "404": {
+                "description": "Not Found"
+            },
+            "500": {
+                "description": "Internal server error"
+            }
+        },
+        "tags": [
+            "v1.0"
+        ]
+    },
+    "delete": {
+        "consumes": [
+            "application/json"
+        ],
+        "description": "Deletes single box by its code",
+        "parameters": [
+            {
+                "description": "Bearer access token (e.g. Bearer [token])",
+                "in": "header",
+                "name": "Authorization",
+                "required": true,
+                "type": "string"
+            },
+            {
+                "description": "Box code",
+                "in": "path",
+                "name": "code",
+                "required": true,
+                "type": "string"
+            }
+        ],
+        "produces": [
+            "application/json"
+        ],
+        "responses": {
+            "204": {
+                "description": "No Content"
+            },
+            "401": {
+                "description": "Unauthorized"
+            },
+            "404": {
+                "description": "Not Found"
+            },
+            "500": {
+                "description": "Internal server error"
+            }
+        },
+        "tags": [
+            "v1.0"
+        ]
+    }
+}
