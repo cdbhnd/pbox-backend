@@ -2,6 +2,6 @@ import * as Entities from '../entities';
 
 export interface IIotPlatform
 {
-    sendDataToSensor(sensor: Entities.Sensor): Promise<any>
-    getSensorData(sensor: Entities.Sensor): Promise<any>
+    sendDataToSensor(sensor: Entities.Sensor)
+    getSensorData(sensor: Entities.Sensor)
 }

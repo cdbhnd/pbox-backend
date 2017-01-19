@@ -24,6 +24,7 @@
     },
 
     "iot_platform": {
+        "att_host": "https://api.allthingstalk.io/",
         "att_clientId": "ognjent_EjGwg4VW",
         "att_clientKey": "GsqcBmey"
     }
