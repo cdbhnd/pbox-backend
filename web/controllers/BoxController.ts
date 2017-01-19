@@ -22,7 +22,6 @@ export class BoxController {
 
     @Get('/v1.0/boxes/:code')
     @HttpCode(200)
-    @UseBefore(authMiddleware)
     @HttpError(400, ExceptionTypes.ValidationException)
     @HttpError(404, ExceptionTypes.EntityNotFoundException)
     async getBox(@Param('code') code: string) {

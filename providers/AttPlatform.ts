@@ -18,14 +18,14 @@ export class AttPlatform implements IIotPlatform {
 
     public async getSensorData(sensor: Entities.Sensor) {
         try {
-            let url = this.baseUrl + sensor.assetId + '/state';
+            let url = this.baseUrl + '/asset/' + + sensor.assetId + '/state';
             await request.get(url, this.options);
         } catch (e) { }
     }
 
     public async sendDataToSensor(sensor: Entities.Sensor) {
         try {
-            let url = this.baseUrl + sensor.assetId + '/command';
+            let url = this.baseUrl + '/asset/' + sensor.assetId + '/command';
             this.options.body = JSON.stringify({
                 value: sensor.value
             });
