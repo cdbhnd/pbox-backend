@@ -84,4 +84,19 @@ export class BoxController {
         await getBoxesAction.run(actionContext);
         return null;
     }
+
+    @Put('/v1.0/boxes/:code')
+    @HttpCode(200)
+    @UseBefore(authMiddleware)
+    @HttpError(400, ExceptionTypes.ValidationException)
+    @HttpError(404, ExceptionTypes.EntityNotFoundException)
+    async updateBox(@Param('userId') userId: string, @Param('code') code: string, @Body() boxData: any) {
+        let getBoxesAction = new actions.UpdateBox.Action();
+        let actionContext = new actions.ActionContext();
+        actionContext.params = boxData;
+        actionContext.params.userId = userId;
+        actionContext.params.boxCode = code;
+        let box = await getBoxesAction.run(actionContext);
+        return box;
+    }
 }

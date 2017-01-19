@@ -85,5 +85,97 @@
         "tags": [
             "v1.0"
         ]
+    },
+    "put": {
+        "consumes": [
+            "application/json"
+        ],
+        "description": "Update single box",
+        "parameters": [
+            {
+                "description": "Bearer access token (e.g. Bearer [token])",
+                "in": "header",
+                "name": "Authorization",
+                "required": true,
+                "type": "string"
+            },
+            {
+                "description": "Box code",
+                "in": "path",
+                "name": "code",
+                "required": true,
+                "type": "string"
+            },
+            {
+                "name": "boxData",
+                "in": "body",
+                "description": "Update box data",
+                "required": true,
+                "schema": {
+                    "type": "object",
+                    "description": "Update box data",
+                    "properties": {
+                        "size": {
+                            "required": false,
+                            "type": "string"
+                        },
+                        "host": {
+                            "required": false,
+                            "type": "string"
+                        },
+                        "topic": {
+                            "required": false,
+                            "type": "string"
+                        },
+                        "groundId": {
+                            "required": false,
+                            "type": "string"
+                        },
+                        "clientId": {
+                            "required": false,
+                            "type": "string"
+                        },
+                        "clientKey": {
+                            "required": false,
+                            "type": "string"
+                        },
+                        "deviceId": {
+                            "required": false,
+                            "type": "string"
+                        },
+                        "deviceName": {
+                            "required": false,
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        ],
+        "produces": [
+            "application/json"
+        ],
+        "responses": {
+            "200": {
+                "description": "OK",
+                "schema": {
+                    "$ref": "../definitions/box.json"
+                }
+            },
+            "400": {
+                "description": "Bad Request"
+            },
+            "401": {
+                "description": "Unauthorized"
+            },
+            "404": {
+                "description": "Entity Not Found"
+            },
+            "500": {
+                "description": "Internal server error"
+            }
+        },
+        "tags": [
+            "v1.0"
+        ]
     }
 }

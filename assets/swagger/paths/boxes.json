@@ -38,7 +38,7 @@
         "consumes": [
             "application/json"
         ],
-        "description": "Returns all boxes in the system",
+        "description": "Creates new box in the system",
         "parameters": [
             {
                 "description": "Bearer access token (e.g. Bearer [token])",
