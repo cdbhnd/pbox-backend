@@ -4,7 +4,8 @@ let Types = {
     JobService: Symbol("JobService"),
     BoxRepository: Symbol("BoxRepository"),
     QuotesProvider: Symbol("QuotesProvider"),
-    GeocodeProvider: Symbol("GeocodeProvider")
+    GeocodeProvider: Symbol("GeocodeProvider"),
+    IotPlatform: Symbol("IotPlatform")
 };
 
 export default Types;

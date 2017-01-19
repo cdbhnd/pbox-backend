@@ -13,6 +13,7 @@ export class JobService implements IJobService {
     private _quoteProvider: Providers.IQuotesProvider;
     private _geocodeProvider: Providers.IGeocodeProvider;
     private _boxRepo: Repositories.BoxRepository;
+    private _iotPlatform: Providers.IIotPlatform;
     private _moment: any;
 
     constructor() {
@@ -20,6 +21,7 @@ export class JobService implements IJobService {
         this._quoteProvider = kernel.get<Providers.IQuotesProvider>(Types.QuotesProvider);
         this._geocodeProvider = kernel.get<Providers.IGeocodeProvider>(Types.GeocodeProvider);
         this._boxRepo = kernel.get<Repositories.BoxRepository>(Types.BoxRepository);
+        this._iotPlatform = kernel.get<Providers.IIotPlatform>(Types.IotPlatform);
         this._moment = require('moment-timezone');
     }
 
@@ -172,7 +174,19 @@ export class JobService implements IJobService {
 
         job.box = box.code;
         job.status = Entities.JobStatuses.IN_PROGRESS;
+        
+       //find starter sensor 
+        let starterSensor: Entities.Sensor = box.sensors.find(function (element){
+            if(element.type == Entities.SensorTypes.activator){
+                return true;
+            }
+        });
 
+        if(!!starterSensor) {
+            starterSensor.value = true;
+            await this._iotPlatform.sendDataToSensor(starterSensor);
+        }
+    
         return await this._jobRepository.update(job);
     }
 
@@ -206,6 +220,17 @@ export class JobService implements IJobService {
             let box: Entities.Box = await this._boxRepo.findOne({ code: job.box });
             if (!!box) {
                 box.status = Entities.BoxStatuses.IDLE;
+                //find starter sensor 
+                let starterSensor: Entities.Sensor = box.sensors.find(function (element) {
+                    if (element.type == Entities.SensorTypes.activator) {
+                        return true;
+                    }
+                });
+
+                if (!!starterSensor) {
+                    starterSensor.value = false;
+                    await this._iotPlatform.sendDataToSensor(starterSensor);
+                }
                 this._boxRepo.update(box);
             }
             job.box = null;

@@ -18,6 +18,5 @@ kernel.bind<string>('entityName').toConstantValue('boxes').whenInjectedInto(DB.B
 kernel.bind<Services.IJobService>(Types.JobService).to(Services.JobService);
 kernel.bind<Providers.IQuotesProvider>(Types.QuotesProvider).to(Providers.QuotesProvider);
 kernel.bind<Providers.IGeocodeProvider>(Types.GeocodeProvider).to(Providers.GecodeProvider);
-
+kernel.bind<Providers.IIotPlatform>(Types.IotPlatform).to(Providers.IotPlatform);
 export default kernel;
-
