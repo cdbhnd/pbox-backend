@@ -5,8 +5,6 @@ import { ExceptionTypes } from '../../exceptions';
 import { authMiddleware } from '../middleware/authMiddleware';
 import {Request, Response} from "express";
 
-import * as Repo from '../../repositories/';
-import * as Entities from '../../entities/';
 import * as Providers from '../../providers/';
 import { Types, kernel } from "../../dependency-injection/";
 
@@ -67,24 +65,4 @@ export class JobsController {
         actionContext.params =  { userId: userId, jobId: jobId };
         return await getJobId.run(actionContext);
     }
-
-    /*@Get('/test')
-    async test() 
-    {
-        let jobRepo: Repo.JobRepository = kernel.get<Repo.JobRepository>(Types.JobRepository);
-        let jobs: Entities.Job[] = await jobRepo.findAll();
-        let quoteProvider: Providers.IQuotesProvider = kernel.get<Providers.IQuotesProvider>(Types.QuotesProvider);
-        let geocodeProvider: Providers.IGeocodeProvider = kernel.get<Providers.IGeocodeProvider>(Types.GeocodeProvider);
-
-        for (let i = 0; i < jobs.length; i++) {
-
-           let gl: Entities.Geolocation = await geocodeProvider.reverse(jobs[i].pickup.latitude, jobs[i].pickup.longitude); 
-           
-           if (!!gl) {
-               jobs[i].pickup.address = gl.address;
-           }
-           jobRepo.update(jobs[i]);
-        }
-        return { success: true };
-    }*/
 }
