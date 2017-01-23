@@ -5,16 +5,19 @@ import * as Entities from '../entities/';
 import { ActionBase } from './ActionBase';
 import { ActionContext } from './ActionBase';
 import * as Exceptions from '../exceptions';
+import { IBoxService } from '../services/';
 
 export class Action extends ActionBase<Entities.Box>
 {
     private _boxRepository: Repositories.BoxRepository;
     private _userRepository: Repositories.UserRepository;
+    private _boxService: IBoxService; 
 
     constructor() {
         super();
         this._boxRepository = kernel.get<Repositories.BoxRepository>(Types.BoxRepository);
         this._userRepository = kernel.get<Repositories.UserRepository>(Types.UserRepository);
+        this._boxService = kernel.get<IBoxService>(Types.BoxService);
     };
 
     protected getConstraints() {
@@ -29,8 +32,8 @@ export class Action extends ActionBase<Entities.Box>
         return {};
     }
 
-    public async execute(context: ActionContext): Promise<Entities.Box> {
-
+    protected async onActionExecuting(context: ActionContext): Promise<ActionContext> {
+        
         let userFromDb = await this._userRepository.findOne({ id: context.params.userId });
 
         if (!userFromDb || userFromDb.type != Entities.UserType.Courier) {
@@ -43,21 +46,15 @@ export class Action extends ActionBase<Entities.Box>
             throw new Exceptions.EntityNotFoundException('Box', context.params.boxCode);
         }
 
-        box.sensors = box.sensors ? box.sensors : [];
+        context.params.box = box;
+        delete context.params.userId;
+        delete context.params.boxCode;
 
-        let index: number;
+        return context;
+    }
 
-        for (var i = 0; i < box.sensors.length; i++) {
-            if (box.sensors[i].code == context.params.sensorCode) {
-                index = i;
-                break;
-            }
-        }
+    public async execute(context: ActionContext): Promise<Entities.Box> {
 
-        box.sensors.splice(index, 1);
-
-        box = await this._boxRepository.update(box);
-
-        return box;
+        return await this._boxService.removeSensor(context.params.box, context.params.sensorCode);
     }
 }

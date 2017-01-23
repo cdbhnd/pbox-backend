@@ -21,7 +21,9 @@
     "request": "^2.79.0",
     "request-promise": "^4.1.1",
     "routing-controllers": "^0.6.6",
-    "serve-static": "^1.11.1"
+    "serve-static": "^1.11.1",
+    "stomp-client": "^0.8.1",
+    "mqtt": "^0.3.13"
   },
   "devDependencies": {
     "gulp": "^3.9.1",

@@ -17,6 +17,7 @@ import * as CreateBoxSensor from './CreateBoxSensor';
 import * as RemoveBoxSensor from './RemoveBoxSensor';
 import * as RemoveBox from './RemoveBox';
 import * as UpdateBox from './UpdateBox';
+import * as ListenActiveBoxes from './ListenActiveBoxes';
 export {CreateJob, ActionBase, CreateUser, LoginUser, ActionContext, GetJobs, UpdateJob, 
     UpdateJobStatus, UpdateJobLocations, UpdateJobCourier, AssignJobBox, GetBoxes, GetJobById, GetBoxByCode, 
-    CreateBox, CreateBoxSensor, RemoveBoxSensor, RemoveBox, UpdateBox};
+    CreateBox, CreateBoxSensor, RemoveBoxSensor, RemoveBox, UpdateBox, ListenActiveBoxes};

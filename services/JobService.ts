@@ -12,7 +12,6 @@ export class JobService implements IJobService {
     private _jobRepository: Repositories.JobRepository;
     private _quoteProvider: Providers.IQuotesProvider;
     private _geocodeProvider: Providers.IGeocodeProvider;
-    private _boxRepo: Repositories.BoxRepository;
     private _iotPlatform: Providers.IIotPlatform;
     private _moment: any;
 
@@ -20,7 +19,6 @@ export class JobService implements IJobService {
         this._jobRepository = kernel.get<Repositories.JobRepository>(Types.JobRepository);
         this._quoteProvider = kernel.get<Providers.IQuotesProvider>(Types.QuotesProvider);
         this._geocodeProvider = kernel.get<Providers.IGeocodeProvider>(Types.GeocodeProvider);
-        this._boxRepo = kernel.get<Repositories.BoxRepository>(Types.BoxRepository);
         this._iotPlatform = kernel.get<Providers.IIotPlatform>(Types.IotPlatform);
         this._moment = require('moment-timezone');
     }
@@ -32,7 +30,7 @@ export class JobService implements IJobService {
         if (!!quote) {
             job.name = quote.author;
             job.description = quote.quote;
-        }
+            }
 
         let gl: Entities.Geolocation = await this._geocodeProvider.reverse(job.pickup.latitude, job.pickup.longitude);
         if (!!gl) {
@@ -49,7 +47,7 @@ export class JobService implements IJobService {
         Check.notNull(job, 'job');
 
         if (job.status == Entities.JobStatuses.ACCEPTED || job.status == Entities.JobStatuses.IN_PROGRESS) {
-            this.tryRemoveBoxFromJob(job);
+            job.box = null;
             job.status = Entities.JobStatuses.CANCELED;
             return await this._jobRepository.update(job);
         } else {
@@ -64,7 +62,7 @@ export class JobService implements IJobService {
             throw new Exceptions.ServiceLayerException('COMPLETE_JOB_FAILED_INVALID_STATUS');
         }
 
-        this.tryRemoveBoxFromJob(job);
+        job.box = null;
         job.status = Entities.JobStatuses.COMPLETED;
 
         return await this._jobRepository.update(job);
@@ -165,28 +163,9 @@ export class JobService implements IJobService {
             throw new Exceptions.ServiceLayerException('BOX_ATTACH_FAILED_ALREADY_ATTACHED');
         }
 
-        box.status = Entities.BoxStatuses.ACTIVE;
-        let updatedBox = await this._boxRepo.update(box);
-
-        if (!!updatedBox && updatedBox.status != Entities.BoxStatuses.ACTIVE) {
-            throw new Exceptions.ServiceLayerException('BOX_STATUS_NOT_UPDATED');
-        }
-
         job.box = box.code;
         job.status = Entities.JobStatuses.IN_PROGRESS;
         
-       //find starter sensor 
-        let starterSensor: Entities.Sensor = box.sensors.find(function (element){
-            if(element.type == Entities.SensorTypes.activator){
-                return true;
-            }
-        });
-
-        if(!!starterSensor) {
-            starterSensor.value = true;
-            await this._iotPlatform.sendDataToSensor(starterSensor);
-        }
-    
         return await this._jobRepository.update(job);
     }
 
@@ -213,27 +192,5 @@ export class JobService implements IJobService {
         }
 
         throw new Exceptions.ServiceLayerException('GELOCATION_IS_NOT_VALID');
-    }
-
-    private async tryRemoveBoxFromJob(job: Entities.Job) {
-        if (!!job.box) {
-            let box: Entities.Box = await this._boxRepo.findOne({ code: job.box });
-            if (!!box) {
-                box.status = Entities.BoxStatuses.IDLE;
-                //find starter sensor 
-                let starterSensor: Entities.Sensor = box.sensors.find(function (element) {
-                    if (element.type == Entities.SensorTypes.activator) {
-                        return true;
-                    }
-                });
-
-                if (!!starterSensor) {
-                    starterSensor.value = false;
-                    await this._iotPlatform.sendDataToSensor(starterSensor);
-                }
-                this._boxRepo.update(box);
-            }
-            job.box = null;
-        }
     }
 }

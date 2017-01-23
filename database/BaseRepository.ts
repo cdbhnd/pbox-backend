@@ -6,7 +6,7 @@ import { injectable } from 'inversify';
 export class BaseRepository<T> {
 
     private entityName: string;
-    private db: mongodb.Db;
+    protected db: mongodb.Db;
 
     constructor(entityName: string) {
         DB.init();

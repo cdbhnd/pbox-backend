@@ -4,6 +4,7 @@ import * as config from 'config';
 import {queryParserMiddleware} from './middleware/queryParserMiddleware';
 import {corsMiddleware} from './middleware/corsMiddleware';
 import {createExpressServer, useExpressServer} from "routing-controllers";
+import { BootTasks } from './boottasks/BootTasks';
 
 export class Server {
     private app: express.Application;
@@ -17,7 +18,10 @@ export class Server {
     }
 
     public listen(port: number) {
-        this.app.listen(port);
-        console.log(`Application listening at port => ${port}`);
+        let expressApp: express.Application = this.app; 
+        BootTasks.run().then(function() {
+            expressApp.listen(port);
+            console.log(`Application listening at port => ${port}`);
+        });
     }
 }

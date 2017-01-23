@@ -2,6 +2,7 @@ import { Types, kernel } from "../dependency-injection/";
 import { ValidationException } from "../exceptions/";
 import * as Repositories from '../repositories/';
 import * as Entities from '../entities/';
+import { IBoxService } from '../services/';
 import { ActionBase } from './ActionBase';
 import { ActionContext } from './ActionBase';
 import * as Exceptions from '../exceptions';
@@ -10,11 +11,13 @@ export class Action extends ActionBase<Entities.Box>
 {
     private _boxRepository: Repositories.BoxRepository;
     private _userRepository: Repositories.UserRepository;
+    private _boxService: IBoxService; 
 
     constructor() {
         super();
         this._boxRepository = kernel.get<Repositories.BoxRepository>(Types.BoxRepository);
         this._userRepository = kernel.get<Repositories.UserRepository>(Types.UserRepository);
+        this._boxService = kernel.get<IBoxService>(Types.BoxService);
     };
 
     protected getConstraints() {
@@ -30,8 +33,8 @@ export class Action extends ActionBase<Entities.Box>
         return {};
     }
 
-    public async execute(context: ActionContext): Promise<Entities.Box> {
-
+    protected async onActionExecuting(context: ActionContext): Promise<ActionContext> {
+        
         let userFromDb = await this._userRepository.findOne({ id: context.params.userId });
 
         if (!userFromDb || userFromDb.type != Entities.UserType.Courier) {
@@ -44,15 +47,16 @@ export class Action extends ActionBase<Entities.Box>
             throw new Exceptions.EntityNotFoundException('Box', context.params.boxCode);
         }
 
-        box.sensors = box.sensors ? box.sensors : [];
+        context.params.box = box;
+        delete context.params.userId;
+        delete context.params.boxCode;
 
-        for (var i = 0; i < box.sensors.length; i++) {
-            if (box.sensors[i].code == context.params.code) {
-                throw new Exceptions.ValidationException('Sensor with ' + context.params.code + ' code already exists');
-            }
-        }
+        return context;
+    }
 
-        box.sensors.push({
+    public async execute(context: ActionContext): Promise<Entities.Box> {
+
+        let sensor: Entities.Sensor = {
             name: context.params.name,
             code: context.params.code,
             status: Entities.BoxStatuses.IDLE,
@@ -60,10 +64,8 @@ export class Action extends ActionBase<Entities.Box>
             assetId: context.params.assetId,
             assetName: context.params.assetName,
             topic: context.params.topic
-        });
+        };
 
-        box = await this._boxRepository.update(box);
-
-        return box;
+        return await this._boxService.addSensor(context.params.box, sensor);
     }
 }
