@@ -24,7 +24,10 @@
     },
 
     "iot_platform": {
-        "att_host": "https://api.allthingstalk.io/",
+        "att_api_protocol": "https",
+        "att_message_protocol": "mqtt",
+        "att_mqtt_port": "1883",
+        "att_host": "api.allthingstalk.io",
         "att_clientId": "ognjent_EjGwg4VW",
         "att_clientKey": "GsqcBmey"
     }

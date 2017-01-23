@@ -175,7 +175,7 @@ export class JobService implements IJobService {
         job.box = box.code;
         job.status = Entities.JobStatuses.IN_PROGRESS;
         
-       //find starter sensor 
+        //find starter sensor 
         let starterSensor: Entities.Sensor = box.sensors.find(function (element){
             if(element.type == Entities.SensorTypes.activator){
                 return true;
