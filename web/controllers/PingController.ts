@@ -12,15 +12,4 @@ export class PingController {
     printHello() {
         return "Pong!!!";
     }
-
-    @Get('/stomp')
-    @HttpCode(200)
-    async listenBoxes() {
-
-        let action = new actions.ListenActiveBoxes.Action();
-
-        let boxes = await action.run(); 
-
-        return "Boxes listeners subscribed";
-    }
 }

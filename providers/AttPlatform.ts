@@ -60,7 +60,7 @@ export class AttPlatform implements IIotPlatform {
                     if (box.sensors[i].assetId == data.Id) {
                         sensorCode = box.sensors[i].code;
                         console.log(data.Value);
-                        let splitedValue: string[] = data.Value.split(',');
+                        let splitedValue: string[] = data.Value.split ? data.Value.split(',') : [];
                         switch (box.sensors[i].type) {
                             case Entities.SensorTypes.gps:
                                 result = {
@@ -88,7 +88,7 @@ export class AttPlatform implements IIotPlatform {
                         break;
                     }
                 }
-                callback(sensorCode, result);
+                callback(box.code, sensorCode, result);
             });
 
             this.listeners[box.id] = mqttClient;

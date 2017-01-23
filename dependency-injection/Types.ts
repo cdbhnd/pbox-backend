@@ -6,7 +6,8 @@ let Types = {
     QuotesProvider: Symbol("QuotesProvider"),
     GeocodeProvider: Symbol("GeocodeProvider"),
     IotPlatform: Symbol("IotPlatform"),
-    BoxService: Symbol("BoxService")
+    BoxService: Symbol("BoxService"),
+    BootTask: Symbol("BootTask")
 };
 
 export default Types;

@@ -34,13 +34,18 @@ export class Action extends ActionBase<Entities.Box[]>
         let activeBoxes: Entities.Box[] = await this._boxRepository.find({ status: Entities.BoxStatuses.ACTIVE });
 
         if (!activeBoxes) {
-            activeBoxes = [];
+            return [];
         }
+
+        let result: Entities.Box[] = [];
 
         for (var i = 0;i < activeBoxes.length; i++) {
-            this._boxService.listenBoxSensors(activeBoxes[i]);
+            let box: Entities.Box = await this._boxService.listenBoxSensors(activeBoxes[i]);
+            if (!!box) {
+                result.push(box);
+            }
         }
 
-        return activeBoxes;
+        return result;
     }
 }

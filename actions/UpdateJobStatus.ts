@@ -10,6 +10,8 @@ export class Action extends ActionBase<Entities.Job>
     private _jobService: Services.IJobService;
     private _jobRepo: Repositories.JobRepository;
     private _userRepo: Repositories.UserRepository;
+    private _boxService: Services.IBoxService;
+    private _boxRepo: Repositories.BoxRepository;
 
     constructor() 
     {
@@ -17,6 +19,8 @@ export class Action extends ActionBase<Entities.Job>
         this._jobService = kernel.get<Services.IJobService>(Types.JobService);
         this._jobRepo = kernel.get<Repositories.JobRepository>(Types.JobRepository);
         this._userRepo = kernel.get<Repositories.UserRepository>(Types.UserRepository);
+        this._boxService = kernel.get<Services.IBoxService>(Types.BoxService);
+        this._boxRepo = kernel.get<Repositories.BoxRepository>(Types.BoxRepository);
     };
 
     protected getConstraints() 
@@ -70,12 +74,20 @@ export class Action extends ActionBase<Entities.Job>
         // check if status is CANCELED => jobService.cancelJob
         if (!!context.params.status && context.params.status == Entities.JobStatuses.CANCELED) 
         {
-            updatedJob = await this._jobService.cancelJob(updatedJob);
+            let box: Entities.Box = await this._boxRepo.findOne({ code: updatedJob.box });
+            if (!!box) {
+                await this._boxService.deactivateBox(box);
+            }
+            updatedJob = await this._jobService.cancelJob(updatedJob);   
         }
 
         // check if status is COMPLETED => jobService.completeJob
         if (!!context.params.status && context.params.status == Entities.JobStatuses.COMPLETED) 
         {
+            let box: Entities.Box = await this._boxRepo.findOne({ code: updatedJob.box });
+            if (!!box) {
+                await this._boxService.deactivateBox(box);
+            }
             updatedJob = await this._jobService.completeJob(updatedJob);
         }
 

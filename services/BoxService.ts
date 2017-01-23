@@ -80,7 +80,11 @@ export class BoxService implements IBoxService {
         // set box status to active
         box.status = BoxStatuses.ACTIVE;
 
-        return await this.boxRepo.update(box);
+        box = await this.boxRepo.update(box);
+
+        box = await this.listenBoxSensors(box);
+
+        return box;
     }
 
     public async deactivateBox(box: Box): Promise<Box> {
@@ -98,28 +102,62 @@ export class BoxService implements IBoxService {
             await this.iotPlatform.sendDataToSensor(starterSensor);
         }
 
-        // set box status to active
-        box.status = BoxStatuses.ACTIVE;
+        // set box status to idle
+        box.status = BoxStatuses.IDLE;
 
-        return await this.boxRepo.update(box);
+        box = await this.boxRepo.update(box);
+
+        box = await this.stopListenBoxSensors(box);
+
+        return box;
     }
 
-    public listenBoxSensors(box: Box) {
+    public async listenBoxSensors(box: Box): Promise<Box> {
+
+        Check.notNull(box, 'box');
 
         if (!!box.host && !!box.topic && !!box.clientId && !!box.clientKey && !!box.deviceId) {
 
-            this.iotPlatform.listenBoxSensors(box, function (sensorCode: string, value: any) {
+            for (var i = 0; i < box.sensors.length; i++) {
+                box.sensors[i].status = BoxStatuses.ACTIVE;
+            }
+
+            this.iotPlatform.listenBoxSensors(box, async function (boxCode: string, sensorCode: string, value: any) {
                 let boxRepo: BoxRepository = kernel.get<BoxRepository>(Types.BoxRepository);
-                for (var i = 0; i < box.sensors.length; i++) {
-                    if (box.sensors[i].code == sensorCode) {
-                        box.sensors[i].value = value;
-                        console.log('Box with ' + box.code + ' just update ' + box.sensors[i].type + ' sensor');
-                        console.log(value);
-                        break;
+                let freshBox: Box = await boxRepo.findOne({ code: boxCode });
+                if (!!freshBox) {
+                    for (var i = 0; i < freshBox.sensors.length; i++) {
+                        if (freshBox.sensors[i].code == sensorCode) {
+                            freshBox.sensors[i].value = value;
+                            boxRepo.logSensorState(freshBox, freshBox.sensors[i]);
+                            console.log('Box with ' + freshBox.code + ' just update ' + freshBox.sensors[i].type + ' sensor');
+                            console.log(value);
+                            break;
+                        }
                     }
+                    boxRepo.update(box);
                 }
-                boxRepo.update(box);
             });
+
+            box = await this.boxRepo.update(box);
+
+            return box;
         }
+        return null;
+    }
+
+    public async stopListenBoxSensors(box: Box): Promise<Box> {
+
+        Check.notNull(box, 'box');
+
+        for (var i = 0; i < box.sensors.length; i++) {
+            box.sensors[i].status = BoxStatuses.IDLE;
+        }
+
+        this.iotPlatform.stopListenBoxSensors(box);
+
+        box = await this.boxRepo.update(box);
+
+        return box;
     }
 }
