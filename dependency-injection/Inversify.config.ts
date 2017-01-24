@@ -23,6 +23,6 @@ kernel.bind<Providers.IIotPlatform>(Types.IotPlatform).to(Providers.AttPlatform)
 kernel.bind<Services.IBoxService>(Types.BoxService).to(Services.BoxService);
 
 /** Boot Tasks Registration */
-kernel.bind<bootTasks.IBootTask>(Types.BootTask).to(bootTasks.ListenActiveBoxes);
+//kernel.bind<bootTasks.IBootTask>(Types.BootTask).to(bootTasks.ListenActiveBoxes);
 
 export default kernel;

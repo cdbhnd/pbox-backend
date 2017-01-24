@@ -4,8 +4,13 @@ import { IBootTask } from './IBootTask';
 export class BootTasks {
 
     public static async run() {
-        let bootTasks: IBootTask[] = kernel.getAll<IBootTask>(Types.BootTask);
 
+        let bootTasks: IBootTask[] = [];
+        
+        try {
+            bootTasks = kernel.getAll<IBootTask>(Types.BootTask);
+        } catch(e) {}
+        
         for (var i = 0; i < bootTasks.length; i++) {
             try {
                 console.log('Boot task ' + bootTasks[i].getName() + ' started......');
