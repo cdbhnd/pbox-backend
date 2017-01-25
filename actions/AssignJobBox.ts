@@ -76,7 +76,7 @@ export class Action extends ActionBase<Entities.Job>
         
         /** Second activate box and start listen to the sensors */
         await this._boxService.activateBox(box);
-        
+
         return updatedJob;
     }
 }

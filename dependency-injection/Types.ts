@@ -7,7 +7,8 @@ let Types = {
     GeocodeProvider: Symbol("GeocodeProvider"),
     IotPlatform: Symbol("IotPlatform"),
     BoxService: Symbol("BoxService"),
-    BootTask: Symbol("BootTask")
+    BootTask: Symbol("BootTask"),
+    BackgroundTask: Symbol("BackgroundTask")
 };
 
 export default Types;

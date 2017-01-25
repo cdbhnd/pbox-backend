@@ -77,6 +77,7 @@ export class Action extends ActionBase<Entities.Job>
             let box: Entities.Box = await this._boxRepo.findOne({ code: updatedJob.box });
             if (!!box) {
                 await this._boxService.deactivateBox(box);
+
             }
             updatedJob = await this._jobService.cancelJob(updatedJob);   
         }

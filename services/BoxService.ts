@@ -82,8 +82,6 @@ export class BoxService implements IBoxService {
 
         box = await this.boxRepo.update(box);
 
-        box = await this.listenBoxSensors(box);
-
         return box;
     }
 
@@ -106,8 +104,6 @@ export class BoxService implements IBoxService {
         box.status = BoxStatuses.IDLE;
 
         box = await this.boxRepo.update(box);
-
-        box = await this.stopListenBoxSensors(box);
 
         return box;
     }

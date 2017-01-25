@@ -6,6 +6,7 @@ import * as Providers from '../providers/index';
 import * as DB from '../database/index';
 import * as actions from '../actions';
 import * as bootTasks from '../web/boottasks/';
+import * as backgroundTasks from '../background/tasks/';
 
 var kernel = new Kernel();
 
@@ -17,12 +18,16 @@ kernel.bind<Repositories.BoxRepository>(Types.BoxRepository).to(DB.Boxes);
 kernel.bind<string>('entityName').toConstantValue('boxes').whenInjectedInto(DB.Boxes);
 
 kernel.bind<Services.IJobService>(Types.JobService).to(Services.JobService);
+kernel.bind<Services.IBoxService>(Types.BoxService).to(Services.BoxService);
+
 kernel.bind<Providers.IQuotesProvider>(Types.QuotesProvider).to(Providers.QuotesProvider);
 kernel.bind<Providers.IGeocodeProvider>(Types.GeocodeProvider).to(Providers.GecodeProvider);
 kernel.bind<Providers.IIotPlatform>(Types.IotPlatform).to(Providers.AttPlatform).inSingletonScope();
-kernel.bind<Services.IBoxService>(Types.BoxService).to(Services.BoxService);
 
 /** Boot Tasks Registration */
 //kernel.bind<bootTasks.IBootTask>(Types.BootTask).to(bootTasks.ListenActiveBoxes);
+
+/** Background Tasks Registration */
+kernel.bind<backgroundTasks.ITask>(Types.BackgroundTask).to(backgroundTasks.ListenActiveBoxesTask).whenTargetNamed('ListenActiveBoxesTask');
 
 export default kernel;

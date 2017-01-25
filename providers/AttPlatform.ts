@@ -19,6 +19,7 @@ export class AttPlatform implements IIotPlatform {
             'Content-Type': 'application/json; charset=utf-8'
         }
     };
+    private enableSubscription:boolean = Boolean(config.get('iot_platform.enable_subscription'));
     private listeners: any = {};
 
     public async getSensorData(sensor: Entities.Sensor) {
@@ -43,16 +44,24 @@ export class AttPlatform implements IIotPlatform {
     }
 
     public async listenBoxSensors(box: Entities.Box, callback: Function) {
+        if (!this.enableSubscription) {
+            return;
+        }
+        
         if (!!this.listeners[box.id]) {
             return;
         }
 
         try {
             let topic: string = 'client/' + box.clientId + '/in/device/' + box.deviceId + '/asset/+/state';
+            console.log(this.baseUrl);
+            console.log(this.mqttPort);
+            console.log(topic);
             let mqttGateway: MQTT = new MQTT(this.baseUrl, this.mqttPort);
             let mqttClient: MQTTClient = mqttGateway.createClient(box.deviceId, box.clientId, box.clientKey, topic);
 
             mqttClient.message(function (topic: string, message: string) {
+                console.log(message);
                 let data: any = JSON.parse(message);
                 let result: any;
                 let sensorCode: string;

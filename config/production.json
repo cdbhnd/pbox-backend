@@ -29,6 +29,13 @@
         "att_mqtt_port": "1883",
         "att_host": "api.allthingstalk.io",
         "att_clientId": "ognjent_EjGwg4VW",
-        "att_clientKey": "GsqcBmey"
+        "att_clientKey": "GsqcBmey",
+        "enable_subscription": true
+    },
+
+    "background_tasks": {
+        "host": "localhost",
+        "port": 8765,
+        "path": "/execute"
     }
 }

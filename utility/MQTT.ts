@@ -14,7 +14,7 @@ export class MQTT {
 
     public createClient(deviceId: string, clientId: string, clientKey: string, topic: string): MQTTClient {
 
-        let mqttId: string = deviceId.length > 23 ? deviceId.substring(0, 23) : deviceId;
+        let mqttId: string = deviceId.length > 22 ? deviceId.substring(0, 22) : deviceId;
 
         let brokerId: string = clientId + ':' + clientId;
 
