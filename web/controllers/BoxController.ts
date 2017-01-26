@@ -99,4 +99,19 @@ export class BoxController {
         let box = await getBoxesAction.run(actionContext);
         return box;
     }
+
+    @Post('/v1.0/boxes/:code/reactivate')
+    @HttpCode(200)
+    @UseBefore(authMiddleware)
+    @HttpError(400, ExceptionTypes.ValidationException)
+    @HttpError(404, ExceptionTypes.EntityNotFoundException)
+    async reactivate(@Param('userId') userId: string, @Param('code') code: string) {
+        let reactivateBoxAction = new actions.ReactivateBox.Action();
+        let actionContext = new actions.ActionContext();
+        actionContext.params = {};
+        actionContext.params.userId = userId;
+        actionContext.params.boxCode = code;
+        let box = await reactivateBoxAction.run(actionContext);
+        return box;
+    }
 }
