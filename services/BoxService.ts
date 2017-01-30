@@ -102,6 +102,9 @@ export class BoxService implements IBoxService {
 
         // set box status to idle
         box.status = BoxStatuses.IDLE;
+        for (let i = 0; i < box.sensors.length; i++) {
+            box.sensors[i].status = BoxStatuses.IDLE;
+        }
 
         box = await this.boxRepo.update(box);
 
@@ -121,7 +124,7 @@ export class BoxService implements IBoxService {
             this.iotPlatform.listenBoxSensors(box, async function (boxCode: string, sensorCode: string, value: any) {
                 let boxRepo: BoxRepository = kernel.get<BoxRepository>(Types.BoxRepository);
                 let freshBox: Box = await boxRepo.findOne({ code: boxCode });
-                if (!!freshBox) {
+                if (!!freshBox && freshBox.status != BoxStatuses.IDLE) {
                     for (var i = 0; i < freshBox.sensors.length; i++) {
                         if (freshBox.sensors[i].code == sensorCode) {
                             let s: Sensor = freshBox.sensors[i];
