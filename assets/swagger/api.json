@@ -1,6 +1,6 @@
 {
   "basePath": "/",
-  "host": "pbox-dev-1199301680.eu-central-1.elb.amazonaws.com",
+  "host": "pbox-server.herokuapp.com",
   "info": {
     "description": "Full PBox API specification",
     "title": "PBox API",
@@ -24,6 +24,12 @@
     },
     "/v1.0/boxes/{code}": {
       "$ref": "paths/boxes_code.json"
+    },
+    "/v1.0/boxes/{code}/reactivate": {
+      "$ref": "paths/boxes_code_reactivate.json"
+    },
+    "/v1.0/boxes/{code}/status": {
+      "$ref": "paths/boxes_code_status.json"
     },
     "/v1.0/boxes/{code}/sensors": {
       "$ref": "paths/boxes_sensors.json"

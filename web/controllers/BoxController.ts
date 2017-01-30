@@ -114,4 +114,16 @@ export class BoxController {
         let box = await reactivateBoxAction.run(actionContext);
         return box;
     }
+
+    @Get('/v1.0/boxes/:code/status')
+    @HttpCode(200)
+    @HttpError(400, ExceptionTypes.ValidationException)
+    @HttpError(404, ExceptionTypes.EntityNotFoundException)
+    async getStatus(@Param('code') code: string) {
+        let getBoxesAction = new actions.GetBoxByCode.Action();
+        let actionContext = new actions.ActionContext();
+        actionContext.params =  { boxCode: code };
+        let box = await getBoxesAction.run(actionContext);
+        return { status: box.status };
+    }
 }

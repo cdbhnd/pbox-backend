@@ -1,0 +1,47 @@
+{
+    "get": {
+        "consumes": [
+            "application/json"
+        ],
+        "description": "Returns box current status by box code",
+        "parameters": [
+            {
+                "description": "Box code",
+                "in": "path",
+                "name": "code",
+                "required": true,
+                "type": "string"
+            }
+        ],
+        "produces": [
+            "application/json"
+        ],
+        "responses": {
+            "200": {
+                "description": "OK",
+                "schema": {
+                    "type": "object",
+                    "description": "Box status data",
+                    "properties": {
+                        "status": {
+                            "description": "Current box status",
+                            "type": "string"
+                        }
+                    }
+                }
+            },
+            "401": {
+                "description": "Unauthorized"
+            },
+            "404": {
+                "description": "Not Found"
+            },
+            "500": {
+                "description": "Internal server error"
+            }
+        },
+        "tags": [
+            "v1.0"
+        ]
+    }
+}

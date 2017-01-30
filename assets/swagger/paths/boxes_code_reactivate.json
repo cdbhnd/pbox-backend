@@ -1,0 +1,47 @@
+{
+    "post": {
+        "consumes": [
+            "application/json"
+        ],
+        "description": "Reactivates Box with status SLEEP",
+        "parameters": [
+            {
+                "description": "Bearer access token (e.g. Bearer [token])",
+                "in": "header",
+                "name": "Authorization",
+                "required": true,
+                "type": "string"
+            },
+            {
+                "description": "Box code",
+                "in": "path",
+                "name": "code",
+                "required": true,
+                "type": "string"
+            }
+        ],
+        "produces": [
+            "application/json"
+        ],
+        "responses": {
+            "200": {
+                "description": "OK",
+                "schema": {
+                    "$ref": "../definitions/box.json"
+                }
+            },
+            "401": {
+                "description": "Unauthorized"
+            },
+            "400": {
+                "description": "Bad Request"
+            },
+            "500": {
+                "description": "Internal server error"
+            }
+        },
+        "tags": [
+            "v1.0"
+        ]
+    }
+}
