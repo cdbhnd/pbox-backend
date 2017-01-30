@@ -124,10 +124,14 @@ export class BoxService implements IBoxService {
                 if (!!freshBox) {
                     for (var i = 0; i < freshBox.sensors.length; i++) {
                         if (freshBox.sensors[i].code == sensorCode) {
-                            freshBox.sensors[i].value = value;
-                            boxRepo.logSensorState(freshBox, freshBox.sensors[i]);
-                            console.log('Box with ' + freshBox.code + ' just update ' + freshBox.sensors[i].type + ' sensor');
-                            console.log(value);
+                            let s: Sensor = freshBox.sensors[i];
+                            
+                            s.value = value;
+                            if (s.type == SensorTypes.activator) {
+                                box.status = s.value ? BoxStatuses.ACTIVE : BoxStatuses.SLEEP;
+                            }
+                            boxRepo.logSensorState(box, s);
+                            
                             break;
                         }
                     }

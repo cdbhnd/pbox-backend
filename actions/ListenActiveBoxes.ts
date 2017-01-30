@@ -34,7 +34,7 @@ export class Action extends ActionBase<Entities.Box[]>
 
     public async execute(context: ActionContext): Promise<Entities.Box[]> {
 
-        let activeBoxes: Entities.Box[] = await this._boxRepository.find({ status: Entities.BoxStatuses.ACTIVE });
+        let activeBoxes: Entities.Box[] = await this._boxRepository.find({ status: { '$in': [ Entities.BoxStatuses.ACTIVE, Entities.BoxStatuses.SLEEP ] } });
 
         if (!activeBoxes) {
             return [];
