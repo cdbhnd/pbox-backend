@@ -131,14 +131,14 @@ export class BoxService implements IBoxService {
                             
                             s.value = value;
                             if (s.type == SensorTypes.activator) {
-                                box.status = s.value ? BoxStatuses.ACTIVE : BoxStatuses.SLEEP;
+                                freshBox.status = s.value ? BoxStatuses.ACTIVE : BoxStatuses.SLEEP;
                             }
-                            boxRepo.logSensorState(box, s);
+                            boxRepo.logSensorState(freshBox, s);
                             
                             break;
                         }
                     }
-                    boxRepo.update(box);
+                    boxRepo.update(freshBox);
                 }
             });
 
