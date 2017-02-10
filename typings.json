@@ -14,6 +14,7 @@
   "dependencies": {
     "bcryptjs": "registry:dt/bcryptjs#2.3.0+20160428043022",
     "bluebird": "registry:npm/bluebird#3.4.1+20160909132857",
+    "body-parser": "registry:npm/body-parser#1.15.2+20161116154925",
     "debug": "registry:npm/debug#2.0.0+20160723033700",
     "hapi": "registry:dt/hapi#13.0.0+20170117215614",
     "jwt-simple": "registry:dt/jwt-simple#0.5.0+20160727002439",

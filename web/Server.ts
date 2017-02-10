@@ -1,10 +1,13 @@
 import * as express from 'express';
 import './controllers/';
 import * as config from 'config';
-import {queryParserMiddleware} from './middleware/queryParserMiddleware';
-import {corsMiddleware} from './middleware/corsMiddleware';
-import {createExpressServer, useExpressServer} from "routing-controllers";
+import { queryParserMiddleware } from './middleware/queryParserMiddleware';
+import { corsMiddleware } from './middleware/corsMiddleware';
+import { logMiddleware } from './middleware/logMiddleware';
+import { createExpressServer, useExpressServer } from "routing-controllers";
+import {text, ParsedAsText} from 'body-parser';
 import { BootTasks } from './boottasks/BootTasks';
+var bodyParser = require('body-parser')
 
 export class Server {
     private app: express.Application;
@@ -14,12 +17,14 @@ export class Server {
         this.app.use(corsMiddleware);
         this.app.use(queryParserMiddleware);
         this.app.use(express.static(String(config.get('static_folder'))));
+        this.app.use(bodyParser.json());
+        this.app.use(logMiddleware);
         useExpressServer(this.app);
     }
 
     public listen(port: number) {
-        let expressApp: express.Application = this.app; 
-        BootTasks.run().then(function() {
+        let expressApp: express.Application = this.app;
+        BootTasks.run().then(function () {
             expressApp.listen(port);
             console.log(`Application listening at port => ${port}`);
         });
