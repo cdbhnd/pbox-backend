@@ -5,6 +5,8 @@ export interface IBoxService {
     removeSensor(box: Entities.Box, sensorCode: string): Promise<Entities.Box>
     activateBox(box: Entities.Box): Promise<Entities.Box>
     deactivateBox(box: Entities.Box): Promise<Entities.Box>
+    sleepBox(box: Entities.Box): Promise<Entities.Box>
+    idleBox(box: Entities.Box): Promise<Entities.Box>
     listenBoxSensors(box: Entities.Box): Promise<Entities.Box>
     stopListenBoxSensors(box: Entities.Box): Promise<Entities.Box>
 }
