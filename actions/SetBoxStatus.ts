@@ -44,7 +44,8 @@ export class Action extends ActionBase<Entities.Box>
 
         let userFromDb = await this._userRepository.findOne({ id: context.params.userId });
         //TODO ADD ADMIN USER
-        if (!userFromDb || userFromDb.type != Entities.UserType.Courier) {
+
+        if (!userFromDb || (userFromDb.type != Entities.UserType.Courier && userFromDb.type != Entities.UserType.Admin)) {
             throw new Exceptions.EntityNotFoundException('User', context.params.userId);
         }
 
