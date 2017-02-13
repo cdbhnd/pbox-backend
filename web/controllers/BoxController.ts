@@ -115,6 +115,22 @@ export class BoxController {
         return box;
     }
 
+    @Post('/v1.0/boxes/:code/status')
+    @HttpCode(200)
+    @UseBefore(authMiddleware)
+    @HttpError(400, ExceptionTypes.ValidationException)
+    @HttpError(404, ExceptionTypes.EntityNotFoundException)
+    async setBoxstatus(@Param('userId') userId: string, @Param('code') code: string, @Body() statusData: any) {
+        let setBoxstatus = new actions.SetBoxStatus.Action();
+        let actionContext = new actions.ActionContext();
+        actionContext.params = {};
+        actionContext.params = statusData;
+        actionContext.params.userId = userId;
+        actionContext.params.boxCode = code;
+        let box = await setBoxstatus.run(actionContext);
+        return box;
+    }
+
     @Get('/v1.0/boxes/:code/status')
     @HttpCode(200)
     @HttpError(400, ExceptionTypes.ValidationException)

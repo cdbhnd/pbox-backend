@@ -18,7 +18,7 @@ export class Server {
         this.app.use(queryParserMiddleware);
         this.app.use(express.static(String(config.get('static_folder'))));
         this.app.use(bodyParser.json());
-        this.app.use(logMiddleware);
+       // this.app.use(logMiddleware);
         useExpressServer(this.app);
     }
 
