@@ -63,15 +63,15 @@ export class Action extends ActionBase<Entities.Box>
 
         let box = context.params.box;
 
-        if(context.params.statusData.status = BoxStatuses.ACTIVE) {
+        if(context.params.statusData.status == BoxStatuses.ACTIVE) {
             box = await this._boxService.activateBox(box);
         };
 
-        if(context.params.statusData.status = BoxStatuses.SLEEP) {
+        if(context.params.statusData.status == BoxStatuses.SLEEP) {
             box = await this._boxService.sleepBox(box);
         };
 
-        if(context.params.statusData.status = BoxStatuses.IDLE) {
+        if(context.params.statusData.status == BoxStatuses.IDLE) {
             box = await this._boxService.deactivateBox(box);
         };
 
