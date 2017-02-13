@@ -6,7 +6,6 @@ import * as Services from '../services';
 import { ActionBase } from './ActionBase';
 import { ActionContext } from './ActionBase';
 import * as Exceptions from '../exceptions';
-import {BoxStatuses} from '../entities';
 
 export class Action extends ActionBase<Entities.Box> 
 {
@@ -26,8 +25,7 @@ export class Action extends ActionBase<Entities.Box>
     {
         return {
             'userId': 'required',
-            'boxCode': 'required',
-            'statusData': 'required'
+            'boxCode': 'required'
         };
     }
 
@@ -36,11 +34,7 @@ export class Action extends ActionBase<Entities.Box>
         return {};
     }
 
-    protected async onActionExecuting(context: ActionContext): Promise<ActionContext> 
-    {
-        if(context.params.statusData.status != BoxStatuses.ACTIVE && context.params.statusData.status != BoxStatuses.IDLE && context.params.statusData.status != BoxStatuses.SLEEP) {
-            throw new ValidationException('Application validation', 'Wrong status sent');
-        }
+    public async execute(context: ActionContext): Promise<Entities.Box> {
 
         let userFromDb = await this._userRepository.findOne({ id: context.params.userId });
 
@@ -54,27 +48,8 @@ export class Action extends ActionBase<Entities.Box>
             throw new Exceptions.EntityNotFoundException('Box', context.params.boxCode);
         }
 
-        context.params.box = box;
-
-        return context;
-    }
-
-    public async execute(context: ActionContext): Promise<Entities.Box> {
-
-        let box = context.params.box;
-
-        if(context.params.statusData.status = BoxStatuses.ACTIVE) {
-            box = await this._boxService.activateBox(box);
-        };
-
-        if(context.params.statusData.status = BoxStatuses.SLEEP) {
-            box = await this._boxService.sleepBox(box);
-        };
-
-        if(context.params.statusData.status = BoxStatuses.IDLE) {
-            box = await this._boxService.deactivateBox(box);
-        };
-
+        box = await this._boxService.activateBox(box);
+      
         return box;
     }
 }

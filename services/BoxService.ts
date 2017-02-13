@@ -128,42 +128,11 @@ export class BoxService implements IBoxService {
 
         // set box status to sleep
         box.status = BoxStatuses.SLEEP;
-        for (let i = 0; i < box.sensors.length; i++) {
-            box.sensors[i].status = BoxStatuses.SLEEP;
-        }
-
+    
         box = await this.boxRepo.update(box);
 
         return box;
     }
-    //CHECK SENSOR STATUS IF CORECT TODO
-    public async idleBox(box: Box): Promise<Box> {
-
-        //find starter sensor 
-        let starterSensor: Sensor = box.sensors.find(function (element) {
-            if (element.type == SensorTypes.activator) {
-                return true;
-            }
-        });
-
-        // set starter sensor value to true and send it to iot platform
-        if (!!starterSensor) {
-            starterSensor.value = false;
-            await this.iotPlatform.sendDataToSensor(starterSensor);
-        }
-
-        // set box status to idle
-        box.status = BoxStatuses.IDLE;
-        for (let i = 0; i < box.sensors.length; i++) {
-            box.sensors[i].status = BoxStatuses.IDLE;
-        }
-
-        box = await this.boxRepo.update(box);
-
-        return box;
-    }
-
-
 
     public async listenBoxSensors(box: Box): Promise<Box> {
 
