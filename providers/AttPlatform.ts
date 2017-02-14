@@ -2,7 +2,7 @@ import * as Entities from '../entities/';
 import { IIotPlatform } from './IIotPlatform';
 import * as config from 'config';
 import { injectable } from 'inversify';
-import {Check} from '../utility/Check';
+import { Check } from '../utility/Check';
 import * as request from 'request-promise';
 import { MQTT } from '../utility/MQTT';
 import { MQTTClient } from '../utility/MQTTClient';
@@ -19,7 +19,7 @@ export class AttPlatform implements IIotPlatform {
             'Content-Type': 'application/json; charset=utf-8'
         }
     };
-    private enableSubscription:boolean = Boolean(config.get('iot_platform.enable_subscription'));
+    private enableSubscription: boolean = Boolean(config.get('iot_platform.enable_subscription'));
     private listeners: any = {};
 
     public async getSensorData(sensor: Entities.Sensor) {
@@ -43,11 +43,20 @@ export class AttPlatform implements IIotPlatform {
         }
     }
 
+    public async getDeviceAssets(box: Entities.Box): Promise<any> {
+        try {
+            let url = this.apiProtocol + '://' + this.baseUrl + '/device/' + box.deviceId;
+           return  await request.get(url, this.options);
+        } catch (e) {
+            console.error(e);
+        }
+    }
+
     public async listenBoxSensors(box: Entities.Box, callback: Function) {
         if (!this.enableSubscription) {
             return;
         }
-        
+
         if (!!this.listeners[box.id]) {
             return;
         }

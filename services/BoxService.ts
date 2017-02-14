@@ -18,6 +18,11 @@ export class BoxService implements IBoxService {
         this.iotPlatform = kernel.get<IIotPlatform>(Types.IotPlatform);
     }
 
+    public async setBoxSensors(box: Box): Promise<Box> {
+        let assets = await this.iotPlatform.getDeviceAssets(box);
+        return box; 
+    }
+
     public async addSensor(box: Box, sensor: Sensor): Promise<Box> {
 
         Check.notNull(box, 'Box');

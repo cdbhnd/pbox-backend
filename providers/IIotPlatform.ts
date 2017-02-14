@@ -6,4 +6,5 @@ export interface IIotPlatform
     getSensorData(sensor: Entities.Sensor)
     listenBoxSensors(box: Entities.Box, callback: Function)
     stopListenBoxSensors(box: Entities.Box)
+    getDeviceAssets(box: Entities.Box): Promise<any>
 }

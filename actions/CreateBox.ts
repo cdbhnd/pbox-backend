@@ -6,20 +6,18 @@ import { ActionBase } from './ActionBase';
 import { ActionContext } from './ActionBase';
 import * as Exceptions from '../exceptions';
 
-export class Action extends ActionBase<Entities.Box> 
+export class Action extends ActionBase<Entities.Box>
 {
     private _boxRepository: Repositories.BoxRepository;
     private _userRepository: Repositories.UserRepository;
 
-    constructor() 
-    {
+    constructor() {
         super();
         this._boxRepository = kernel.get<Repositories.BoxRepository>(Types.BoxRepository);
         this._userRepository = kernel.get<Repositories.UserRepository>(Types.UserRepository);
     };
 
-    protected getConstraints() 
-    {
+    protected getConstraints() {
         return {
             'userId': 'required',
             'code': 'required',  //TODO write rules for size
@@ -27,13 +25,11 @@ export class Action extends ActionBase<Entities.Box>
         };
     }
 
-    protected getSanitizationPattern() 
-    {
+    protected getSanitizationPattern() {
         return {};
     }
 
-    public async execute(context: ActionContext): Promise<Entities.Box> {
-
+    protected async onActionExecuting(context: ActionContext): Promise<ActionContext> {
         let userFromDb = await this._userRepository.findOne({ id: context.params.userId });
 
         if (!userFromDb || (userFromDb.type != Entities.UserType.Courier && userFromDb.type != Entities.UserType.Admin)) {
@@ -46,20 +42,23 @@ export class Action extends ActionBase<Entities.Box>
             throw new Exceptions.ValidationException('Box with ' + context.params.code + ' code already exists');
         }
 
-        box = {
+        return context;
+    }
+
+    public async execute(context: ActionContext): Promise<Entities.Box> {
+
+        let box: Entities.Box = {
             id: null,
             code: context.params.code,
-            size: context.params.size,
+            size: !!context.params.size ? context.params.size : null,
             status: Entities.BoxStatuses.IDLE,
             sensors: null,
-            host: context.params.host,
-            topic: context.params.topic,
-            groundId: context.params.groundId,
-            clientId: context.params.clientId,
-            clientKey: context.params.clientKey,
             deviceId: context.params.deviceId,
-            deviceName: context.params.deviceName
         };
+
+        if (!!context.params.deviceId) {
+            
+        }
 
         box = await this._boxRepository.create(box);
 
