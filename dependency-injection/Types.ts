@@ -8,7 +8,10 @@ let Types = {
     IotPlatform: Symbol("IotPlatform"),
     BoxService: Symbol("BoxService"),
     BootTask: Symbol("BootTask"),
-    BackgroundTask: Symbol("BackgroundTask")
+    BackgroundTask: Symbol("BackgroundTask"),
+    BotRepository: Symbol("BotRepository"),
+    BotProvider: Symbol("BotProvider"),
+    BotService: Symbol("BotService")
 };
 
 export default Types;

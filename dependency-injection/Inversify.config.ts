@@ -17,17 +17,26 @@ kernel.bind<string>('entityName').toConstantValue('users').whenInjectedInto(DB.U
 kernel.bind<Repositories.BoxRepository>(Types.BoxRepository).to(DB.Boxes);
 kernel.bind<string>('entityName').toConstantValue('boxes').whenInjectedInto(DB.Boxes);
 
+kernel.bind<Repositories.BotRepository>(Types.BotRepository).to(DB.Bots);
+kernel.bind<string>('entityName').toConstantValue('bots').whenInjectedInto(DB.Bots);
+
 kernel.bind<Services.IJobService>(Types.JobService).to(Services.JobService);
 kernel.bind<Services.IBoxService>(Types.BoxService).to(Services.BoxService);
+kernel.bind<Services.IBotService>(Types.BotService).to(Services.BotService);
 
 kernel.bind<Providers.IQuotesProvider>(Types.QuotesProvider).to(Providers.QuotesProvider);
 kernel.bind<Providers.IGeocodeProvider>(Types.GeocodeProvider).to(Providers.GecodeProvider);
 kernel.bind<Providers.IIotPlatform>(Types.IotPlatform).to(Providers.AttPlatform).inSingletonScope();
+
+/** Bot Providers */
+kernel.bind<Providers.IBotProvider>(Types.BotProvider).to(Providers.TelegramBotProvider).whenTargetNamed('telegram');
+kernel.bind<string>('providerName').toConstantValue('telegram').whenInjectedInto(Providers.TelegramBotProvider);
 
 /** Boot Tasks Registration */
 //kernel.bind<bootTasks.IBootTask>(Types.BootTask).to(bootTasks.ListenActiveBoxes);
 
 /** Background Tasks Registration */
 kernel.bind<backgroundTasks.ITask>(Types.BackgroundTask).to(backgroundTasks.ListenActiveBoxesTask).whenTargetNamed('ListenActiveBoxesTask');
+kernel.bind<backgroundTasks.ITask>(Types.BackgroundTask).to(backgroundTasks.ActivateBotsTask).whenTargetNamed('ActivateBotsTask');
 
 export default kernel;

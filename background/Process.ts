@@ -8,6 +8,7 @@ export class Process {
     private host: string = String(config.get('background_tasks.host'));
     private port: string = String(config.get('background_tasks.port'));
     private path: string = String(config.get('background_tasks.path'));
+    private bootTasks: Array<string> = config.get('background_tasks.boot') as Array<string>;
 
     public async run() {
         const server = new Hapi.Server();
@@ -22,13 +23,16 @@ export class Process {
         });
         server.start(() => {
             console.log('Server running at:', server.info.uri);
-        }); 
-        try {
-            let task: tasks.ITask = kernel.getNamed<tasks.ITask>(Types.BackgroundTask, 'ListenActiveBoxesTask');
-            task.execute();
-            console.log('ListenActiveBoxesTask task executed');
-        } catch (e) {
-            console.log(e);
+        });
+
+        for (let i = 0; i < this.bootTasks.length; i++) {
+            try {
+                let task: tasks.ITask = kernel.getNamed<tasks.ITask>(Types.BackgroundTask, this.bootTasks[i]);
+                task.execute();
+                console.log(this.bootTasks[i] + ' task executed');
+            } catch (e) {
+                console.log(e);
+            }
         }
     }
 

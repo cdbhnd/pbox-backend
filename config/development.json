@@ -36,6 +36,11 @@
     "background_tasks": {
         "host": "localhost",
         "port": 8765,
-        "path": "/execute"
+        "path": "/execute",
+        "boot": ["ActivateBotsTask"]
+    },
+
+    "telegram": {
+        "access_token": "273659408:AAFTEcp72eszzIcCJSvkfWWsRV1GXvQN-js"
     }
 }

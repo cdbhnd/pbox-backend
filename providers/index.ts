@@ -5,4 +5,6 @@ export * from './GeocodeProvider';
 export * from './IQuotesProvider';
 export * from './IIotPlatform';
 export * from './AttPlatform';
+export * from './IBotProvider';
+export * from './TelegramBotProvider';
 export * from './models/';

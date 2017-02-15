@@ -19,6 +19,7 @@
     "mqtt": "^0.3.13",
     "multer": "^1.2.0",
     "node-geocoder": "^3.15.2",
+    "node-telegram-bot-api": "^0.26.0",
     "reflect-metadata": "^0.1.8",
     "request": "^2.79.0",
     "request-promise": "^4.1.1",
