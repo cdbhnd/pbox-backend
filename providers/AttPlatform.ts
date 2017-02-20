@@ -43,10 +43,10 @@ export class AttPlatform implements IIotPlatform {
         }
     }
 
-    public async getDeviceAssets(box: Entities.Box): Promise<any> {
+    public async getDeviceSensors(box: Entities.Box): Promise<any> {
         try {
             let url = this.apiProtocol + '://' + this.baseUrl + '/device/' + box.deviceId;
-           return  await request.get(url, this.options);
+            return  await request.get(url, this.options);
         } catch (e) {
             console.error(e);
         }

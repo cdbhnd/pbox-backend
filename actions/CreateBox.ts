@@ -1,6 +1,7 @@
 import { Types, kernel } from "../dependency-injection/";
 import { ValidationException } from "../exceptions/";
 import * as Repositories from '../repositories/';
+import * as Services from '../services';
 import * as Entities from '../entities/';
 import { ActionBase } from './ActionBase';
 import { ActionContext } from './ActionBase';
@@ -10,18 +11,19 @@ export class Action extends ActionBase<Entities.Box>
 {
     private _boxRepository: Repositories.BoxRepository;
     private _userRepository: Repositories.UserRepository;
+    private _boxService: Services.BoxService;
 
     constructor() {
         super();
         this._boxRepository = kernel.get<Repositories.BoxRepository>(Types.BoxRepository);
         this._userRepository = kernel.get<Repositories.UserRepository>(Types.UserRepository);
+        this._boxService = kernel.get<Services.BoxService>(Types.BoxService);
     };
 
     protected getConstraints() {
         return {
             'userId': 'required',
             'code': 'required',  //TODO write rules for size
-            'size': 'required'
         };
     }
 
@@ -57,7 +59,7 @@ export class Action extends ActionBase<Entities.Box>
         };
 
         if (!!context.params.deviceId) {
-            
+           box = await this._boxService.setBoxSensors(box);
         }
 
         box = await this._boxRepository.create(box);
