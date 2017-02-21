@@ -21,38 +21,9 @@ export class BoxService implements IBoxService {
     }
 
     public async setBoxSensors(box: Box): Promise<Box> {
-        let sensorData = await this.iotPlatform.getDeviceSensors(box);
-        sensorData = JSON.parse(sensorData);
+        let sensorData = JSON.parse(await this.iotPlatform.getDeviceSensors(box));
         this.mapSensorDataToBox(box, sensorData);
-        return box; 
-    }
-    private mapSensorDataToBox(box: Box, sensorData: any): void {
-        box.sensors = [];
-        for(var i=0; i<sensorData.assets.length; i++) {
-            let sensor: Entitties.Sensor = {
-                name: sensorData.assets[i].title,
-                code: sensorData.assets[i].name,
-                status: 'IDLE',
-                value: null,
-                assetId: sensorData.assets[i].id,
-                topic: '/exchange/root/client.' + String(config.get('iot_platform.att_clientId')) + '.in.asset.' + sensorData.assets[i].id + '.state',
-                type: this.setSensorType(sensorData.assets[i].title)
-            }
-            box.sensors.push(sensor);
-        }
-    }
-
-    private setSensorType(sensorName: String): string {
-        if(sensorName == 'gps') {
-            return Entitties.SensorTypes.gps;
-        }
-        if(sensorName == 'temperature') {
-            return Entitties.SensorTypes.temperature;
-        }
-        if(sensorName== 'switch') {
-            return Entitties.SensorTypes.activator;
-        }
-        return null;
+        return box;
     }
 
     public async addSensor(box: Box, sensor: Sensor): Promise<Box> {
@@ -165,7 +136,7 @@ export class BoxService implements IBoxService {
 
         // set box status to sleep
         box.status = BoxStatuses.SLEEP;
-    
+
         box = await this.boxRepo.update(box);
 
         return box;
@@ -188,13 +159,13 @@ export class BoxService implements IBoxService {
                     for (var i = 0; i < freshBox.sensors.length; i++) {
                         if (freshBox.sensors[i].code == sensorCode) {
                             let s: Sensor = freshBox.sensors[i];
-                            
+
                             s.value = value;
                             if (s.type == SensorTypes.activator) {
                                 freshBox.status = s.value ? BoxStatuses.ACTIVE : BoxStatuses.SLEEP;
                             }
                             boxRepo.logSensorState(freshBox, s);
-                            
+
                             break;
                         }
                     }
@@ -222,5 +193,21 @@ export class BoxService implements IBoxService {
         box = await this.boxRepo.update(box);
 
         return box;
+    }
+
+    private mapSensorDataToBox(box: Box, sensorData: any): void {
+        box.sensors = [];
+        for (var i = 0; i < sensorData.assets.length; i++) {
+            let sensor: Entitties.Sensor = {
+                name: sensorData.assets[i].title,
+                code: sensorData.assets[i].name,
+                status: 'IDLE',
+                value: null,
+                assetId: sensorData.assets[i].id,
+                topic: '/exchange/root/client.' + String(config.get('iot_platform.att_clientId')) + '.in.asset.' + sensorData.assets[i].id + '.state',
+                type: sensorData.assets[i].title
+            }
+            box.sensors.push(sensor);
+        }
     }
 }
