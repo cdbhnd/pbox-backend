@@ -27,7 +27,7 @@ export class Action extends ActionBase<Entities.Box>
         return {
             'userId': 'required',
             'boxCode': 'required',
-            'statusData': 'required'
+            'status': 'required'
         };
     }
 
@@ -38,7 +38,7 @@ export class Action extends ActionBase<Entities.Box>
 
     protected async onActionExecuting(context: ActionContext): Promise<ActionContext> 
     {
-        if(context.params.statusData.status != BoxStatuses.ACTIVE && context.params.statusData.status != BoxStatuses.IDLE && context.params.statusData.status != BoxStatuses.SLEEP) {
+        if(context.params.status != BoxStatuses.ACTIVE && context.params.status != BoxStatuses.IDLE && context.params.status != BoxStatuses.SLEEP) {
             throw new ValidationException('Application validation', 'Wrong status sent');
         }
 
@@ -63,15 +63,15 @@ export class Action extends ActionBase<Entities.Box>
 
         let box = context.params.box;
 
-        if(context.params.statusData.status == BoxStatuses.ACTIVE) {
+        if(context.params.status == BoxStatuses.ACTIVE) {
             box = await this._boxService.activateBox(box);
         };
 
-        if(context.params.statusData.status == BoxStatuses.SLEEP) {
+        if(context.params.status == BoxStatuses.SLEEP) {
             box = await this._boxService.sleepBox(box);
         };
 
-        if(context.params.statusData.status == BoxStatuses.IDLE) {
+        if(context.params.status == BoxStatuses.IDLE) {
             box = await this._boxService.deactivateBox(box);
         };
 
