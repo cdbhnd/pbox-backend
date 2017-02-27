@@ -130,6 +130,21 @@ export class BoxController {
         let box = await setBoxstatus.run(actionContext);
         return box;
     }
+    
+    @Post('/v1.0/boxes/:code/sync')
+    @HttpCode(200)
+    @UseBefore(authMiddleware)
+    @HttpError(400, ExceptionTypes.ValidationException)
+    @HttpError(404, ExceptionTypes.EntityNotFoundException)
+    async syncBox(@Param('userId') userId: string, @Param('code') code: string) {
+        let syncBoxAction = new actions.SyncBox.Action();
+        let actionContext = new actions.ActionContext();
+        actionContext.params = {};
+        actionContext.params.userId = userId;
+        actionContext.params.boxCode = code;
+        let box = await syncBoxAction.run(actionContext);
+        return box;
+    }
 
     @Get('/v1.0/boxes/:code/status')
     @HttpCode(200)
