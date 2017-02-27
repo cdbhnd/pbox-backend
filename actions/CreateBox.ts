@@ -6,6 +6,7 @@ import * as Entities from '../entities/';
 import { ActionBase } from './ActionBase';
 import { ActionContext } from './ActionBase';
 import * as Exceptions from '../exceptions';
+import * as config from 'config';
 
 export class Action extends ActionBase<Entities.Box>
 {
@@ -56,6 +57,9 @@ export class Action extends ActionBase<Entities.Box>
             status: Entities.BoxStatuses.IDLE,
             sensors: null,
             deviceId: context.params.deviceId,
+            topic: String(config.get('iot_platform.topic')),
+            clientId: String(config.get('iot_platform.att_clientId')),
+            clientKey: String(config.get('iot_platform.att_clientKey'))
         };
 
         if (!!context.params.deviceId) {
