@@ -146,7 +146,7 @@ export class BoxService implements IBoxService {
 
         Check.notNull(box, 'box');
 
-        if (!!box.host && !!box.topic && !!box.clientId && !!box.clientKey && !!box.deviceId) {
+        if (!!box.topic && !!box.clientId && !!box.clientKey && !!box.deviceId) {
 
             for (var i = 0; i < box.sensors.length; i++) {
                 box.sensors[i].status = BoxStatuses.ACTIVE;
