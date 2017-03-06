@@ -37,7 +37,7 @@
         "host": "localhost",
         "port": 8765,
         "path": "/execute",
-        "boot": ["ActivateBotsTask"]
+        "boot": ["ListenActiveBoxesTask", "ActivateBotsTask"]
     },
 
     "telegram": {
