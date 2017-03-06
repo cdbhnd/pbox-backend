@@ -4,12 +4,16 @@ import { Types, kernel } from "../dependency-injection/";
 import { injectable, inject } from 'inversify';
 import { BoxRepository, BotRepository } from '../repositories/';
 import { IBoxService } from '../services/';
+var TelegramBot = require('node-telegram-bot-api');
 
 @injectable()
 export class TelegramBotProvider extends BotBaseProvider {
 
+    private tBots: Array<any>;
+
     constructor(@inject('providerName') providerName: string) {
         super(providerName);
+        this.tBots = [];
     }
 
     public async subscribe(serviceData: any, box: Box): Promise<boolean> {
@@ -64,10 +68,15 @@ export class TelegramBotProvider extends BotBaseProvider {
             tBot.sendMessage(msg.chat.id, responseMessage.text);
         }).bind(this));
 
+        this.tBots.push(tBot);
+
         return true;
     }
 
     public async unsubscribe(serviceData: any, box: Box): Promise<boolean> {
+        
+        
+        
         return true;
     }
 }

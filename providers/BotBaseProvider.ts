@@ -23,7 +23,8 @@ export abstract class BotBaseProvider implements IBotProvider {
 
         for (let i = 0; i < bot.services.length; i++) {
             if (bot.services[i].provider == this.providerName) {
-                bot.services[i].chatId = chatId;
+                bot.services[i].chatIds = bot.services[i].chatIds ? bot.services[i].chatIds : [];
+                bot.services[i].chatIds.push(chatId);
                 botRepo.update(bot);
                 break;
             }
