@@ -3,12 +3,14 @@ import { Types, kernel } from "../dependency-injection/";
 import { ListenActiveBoxes } from '../actions/';
 import * as tasks from './tasks/';
 import * as config from 'config';
+import * as schedule from 'node-schedule';
 
 export class Process {
     private host: string = String(config.get('background_tasks.host'));
     private port: string = String(config.get('background_tasks.port'));
     private path: string = String(config.get('background_tasks.path'));
     private bootTasks: Array<string> = config.get('background_tasks.boot') as Array<string>;
+    private cronTasks: Array<any> = config.get('background_tasks.cron') as Array<any>;
 
     public async run() {
         const server = new Hapi.Server();
@@ -34,6 +36,19 @@ export class Process {
                 console.log(e);
             }
         }
+
+        /*for (let i = 0; i < this.cronTasks.length; i++) {
+            let job: schedule.Job;
+            try {
+                let task: tasks.ITask = kernel.getNamed<tasks.ITask>(Types.BackgroundTask, this.cronTasks[i].name);
+                job = schedule.scheduleJob(this.cronTasks[i].rule, task.execute);
+            } catch (e) {
+                console.log(e);
+                if (!!job) {
+                    schedule.cancelJob(job);
+                }
+            }
+        }*/
     }
 
     protected async startTask(request, reply) {
