@@ -130,17 +130,21 @@ export abstract class BotBaseProvider implements IBotProvider {
     protected async getTemperature(boxCode: string): Promise<TextMessage> {
         let boxRepo: BoxRepository = this.getBoxRepository();
         let freshBox: Box = await boxRepo.findOne({ code: boxCode });
-
-        if (freshBox.status != BoxStatuses.ACTIVE) {
-            return { text: 'I need to be fully awake and ACTIVE in order to capture the temperature!' };
-        }
-
-        for (let i = 0; i < freshBox.sensors.length; i++) {
+        let temperature;
+         for (let i = 0; i < freshBox.sensors.length; i++) {
             if (freshBox.sensors[i].type == SensorTypes.temperature) {
-                return { text: 'My current temperature is ' + freshBox.sensors[i].value.temperature };
+                temperature =  freshBox.sensors[i].value.temperature;
             }
         }
-        return null;
+
+        if (freshBox.status != BoxStatuses.ACTIVE) {
+            if(!!temperature) {
+                return { text: 'This is my last known temperature: ' + temperature}
+            }
+            return { text: 'I dont wanna talk about it, can I go outside and play? '};      
+        } else {
+            return { text: 'This is my current temperature: ' + temperature};
+        }
     }
 
     protected async getHumidity(boxCode: string): Promise<TextMessage> {

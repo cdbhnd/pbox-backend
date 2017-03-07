@@ -59,7 +59,7 @@ export class TelegramBotProvider extends BotBaseProvider {
             tBot.sendMessage(msg.chat.id, responseMessage.text);
         }).bind(this));
 
-        tBot.onText(/temperature/, (async function onText(msg) {
+        tBot.onText(/temperature|temp|warm|cold|hot|temperature|Temp|Warm|Cold|Hot/, (async function onText(msg) {
             let responseMessage: TextMessage = await this.getTemperature(box.code);
             tBot.sendMessage(msg.chat.id, responseMessage.text);
         }).bind(this));
