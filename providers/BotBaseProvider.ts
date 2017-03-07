@@ -152,17 +152,21 @@ export abstract class BotBaseProvider implements IBotProvider {
     protected async getHumidity(boxCode: string): Promise<TextMessage> {
         let boxRepo: BoxRepository = this.getBoxRepository();
         let freshBox: Box = await boxRepo.findOne({ code: boxCode });
-
-        if (freshBox.status != BoxStatuses.ACTIVE) {
-            return { text: 'I need to be fully awake and ACTIVE in order to capture the humidity!' };
-        }
-
+        let humidity;
         for (let i = 0; i < freshBox.sensors.length; i++) {
             if (freshBox.sensors[i].type == SensorTypes.temperature) {
-                return { text: 'My current humidity is ' + freshBox.sensors[i].value.humidity };
+                humidity = freshBox.sensors[i].value.humidity;
             }
         }
-        return null;
+        
+        if (freshBox.status != BoxStatuses.ACTIVE) {
+            if(!!humidity) {
+                return { text: 'This is my last known humidity: ' + humidity};
+            }
+            return { text: 'Can I go outside and play?' };
+        } else {
+            return { text: 'This is my current humidity: ' + humidity};
+        }
     }
 
     private getBotRepository(): BotRepository {
