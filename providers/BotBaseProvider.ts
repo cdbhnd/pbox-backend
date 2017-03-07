@@ -77,28 +77,35 @@ export abstract class BotBaseProvider implements IBotProvider {
         let boxRepo: BoxRepository = this.getBoxRepository();
         let freshBox: Box = await boxRepo.findOne({ code: boxCode });
 
-        if (freshBox.status != BoxStatuses.ACTIVE) {
-            return {
-                text: 'I need to be fully awake and ACTIVE in order to capture the location!',
-                latitude: null,
-                longitude: null
-            };
-        }
+        let latitude;
+        let longitude;
 
         for (let i = 0; i < freshBox.sensors.length; i++) {
             if (freshBox.sensors[i].type == SensorTypes.gps) {
+                latitude = freshBox.sensors[i].value.latitude
+                longitude = freshBox.sensors[i].value.longitude
+            }
+        }
+
+        if (freshBox.status != BoxStatuses.ACTIVE) {
+            if (!!latitude && !! longitude) {
                 return {
-                    text: 'Here is my current location',
-                    latitude: freshBox.sensors[i].value.latitude,
-                    longitude: freshBox.sensors[i].value.longitude
-                };
+                    text: 'This is my last known location!',
+                    latitude: latitude,
+                    longitude: longitude
+                }
+            }
+            return {
+                text: 'Man i dont have  a clue, you tell me :)',
+                latitude: null,
+                longitude: null
             }
         }
 
         return {
-            text: 'I was not able to determine the location!',
-            latitude: null,
-            longitude: null
+            text: 'This is my current location',
+            latitude: latitude,
+            longitude: longitude
         };
     }
 
