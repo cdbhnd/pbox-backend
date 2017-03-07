@@ -20,7 +20,10 @@ import * as UpdateBox from './UpdateBox';
 import * as ListenActiveBoxes from './ListenActiveBoxes';
 import * as SetBoxStatus from './SetBoxStatus';
 import * as ReactivateBox from './ReactivateBox';
+import * as ActivateBots from './ActivateBots';
+import * as DeactivateBots from './DeactivateBots';
 import * as SyncBox from './SyncBox';
 export {CreateJob, ActionBase, CreateUser, LoginUser, ActionContext, GetJobs, UpdateJob, 
     UpdateJobStatus, UpdateJobLocations, UpdateJobCourier, AssignJobBox, GetBoxes, GetJobById, GetBoxByCode, 
-    CreateBox, CreateBoxSensor, RemoveBoxSensor, RemoveBox, UpdateBox, ListenActiveBoxes, ReactivateBox, SetBoxStatus, SyncBox};
+    CreateBox, CreateBoxSensor, RemoveBoxSensor, RemoveBox, UpdateBox, ListenActiveBoxes, ReactivateBox, 
+    SetBoxStatus, SyncBox, ActivateBots, DeactivateBots};

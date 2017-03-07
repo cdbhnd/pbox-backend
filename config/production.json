@@ -36,6 +36,16 @@
     "background_tasks": {
         "host": "localhost",
         "port": 8765,
-        "path": "/execute"
+        "path": "/execute",
+        "boot": ["ListenActiveBoxesTask", "ActivateBotsTask"],
+        "telegram": {
+            "polling": false,
+            "webhook": "http://ec2-35-156-247-206.eu-central-1.compute.amazonaws.com:8765/hooks/telegram"
+        },
+        "cron": []
+    },
+
+    "telegram": {
+        "access_token": "273659408:AAFTEcp72eszzIcCJSvkfWWsRV1GXvQN-js"
     }
 }
