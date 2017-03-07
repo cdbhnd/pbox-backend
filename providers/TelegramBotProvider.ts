@@ -54,7 +54,7 @@ export class TelegramBotProvider extends BotBaseProvider {
             }
         }).bind(this));
 
-        tBot.onText(/battery/, (async function onText(msg) {
+        tBot.onText(/battery|charge|full|empty|energy|Battery|Charge|Full|Empty|Energy/, (async function onText(msg) {
             let responseMessage: TextMessage = await this.getBatteryStatus(box.code);
             tBot.sendMessage(msg.chat.id, responseMessage.text);
         }).bind(this));

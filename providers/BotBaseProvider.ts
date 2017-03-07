@@ -28,7 +28,7 @@ export abstract class BotBaseProvider implements IBotProvider {
             if (bot.services[i].provider == this.providerName) {
                 bot.services[i].chatIds = bot.services[i].chatIds ? bot.services[i].chatIds : [];
                 if (bot.services[i].chatIds.indexOf(chatId) == -1) {
-                    bot.services[i].chatIds.push(chatId);                
+                    bot.services[i].chatIds.push(chatId);
                     botRepo.update(bot);
                     message = 'Hello I am your personal Box :)';
                 } else {
@@ -88,7 +88,7 @@ export abstract class BotBaseProvider implements IBotProvider {
         }
 
         if (freshBox.status != BoxStatuses.ACTIVE) {
-            if (!!latitude && !! longitude) {
+            if (!!latitude && !!longitude) {
                 return {
                     text: 'This is my last known location!',
                     latitude: latitude,
@@ -112,15 +112,17 @@ export abstract class BotBaseProvider implements IBotProvider {
     protected async getBatteryStatus(boxCode: string): Promise<TextMessage> {
         let boxRepo: BoxRepository = await this.getBoxRepository();
         let freshBox: Box = await boxRepo.findOne({ code: boxCode });
-
-        for (let i = 0; i < freshBox.sensors.length; i++) {
-            if (freshBox.sensors[i].type == SensorTypes.battery) {
-                let battery: string = freshBox.sensors[i].value.split(',')[0];
-                let charging: string = freshBox.sensors[i].value.split(',')[1] == 1 ? 'charging' : 'not charging';
-                return { text: 'My current battery status is ' + battery + ' and it is ' + charging };
+        if (freshBox.status == BoxStatuses.ACTIVE) {
+            for (let i = 0; i < freshBox.sensors.length; i++) {
+                if (freshBox.sensors[i].type == SensorTypes.battery) {
+                    let battery: string = freshBox.sensors[i].value.split(',')[0];
+                    let charging: string = freshBox.sensors[i].value.split(',')[1] == 1 ? 'charging' : 'not charging';
+                    return { text: 'My current battery status is ' + battery + ' and it is ' + charging };
+                }
             }
+        } else {
+            return { text: 'Why are you bothering me, I am sleeping'};
         }
-        return null;
     }
 
     protected async getName(boxCode: string): Promise<TextMessage> {
@@ -131,19 +133,19 @@ export abstract class BotBaseProvider implements IBotProvider {
         let boxRepo: BoxRepository = this.getBoxRepository();
         let freshBox: Box = await boxRepo.findOne({ code: boxCode });
         let temperature;
-         for (let i = 0; i < freshBox.sensors.length; i++) {
+        for (let i = 0; i < freshBox.sensors.length; i++) {
             if (freshBox.sensors[i].type == SensorTypes.temperature) {
-                temperature =  freshBox.sensors[i].value.temperature;
+                temperature = freshBox.sensors[i].value.temperature;
             }
         }
 
         if (freshBox.status != BoxStatuses.ACTIVE) {
-            if(!!temperature) {
-                return { text: 'This is my last known temperature: ' + temperature}
+            if (!!temperature) {
+                return { text: 'This is my last known temperature: ' + temperature }
             }
-            return { text: 'I dont wanna talk about it, can I go outside and play? '};      
+            return { text: 'I dont wanna talk about it, can I go outside and play? ' };
         } else {
-            return { text: 'This is my current temperature: ' + temperature};
+            return { text: 'This is my current temperature: ' + temperature };
         }
     }
 
