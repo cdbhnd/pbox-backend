@@ -64,7 +64,7 @@ export class TelegramBotProvider extends BotBaseProvider {
             tBot.sendMessage(msg.chat.id, responseMessage.text);
         }).bind(this));
 
-        tBot.onText(/humidity/, (async function onText(msg) {
+        tBot.onText(/humidity|wet|moisture/, (async function onText(msg) {
             let responseMessage: TextMessage = await this.getHumidity(box.code);
             tBot.sendMessage(msg.chat.id, responseMessage.text);
         }).bind(this));
