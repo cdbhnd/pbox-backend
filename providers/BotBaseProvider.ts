@@ -28,7 +28,7 @@ export abstract class BotBaseProvider implements IBotProvider {
             if (bot.services[i].provider == this.providerName) {
                 bot.services[i].chatIds = bot.services[i].chatIds ? bot.services[i].chatIds : [];
                 if (bot.services[i].chatIds.indexOf(chatId) == -1) {
-                    bot.services[i].chatIds.push(chatId);                
+                    bot.services[i].chatIds.push(chatId);
                     botRepo.update(bot);
                     message = 'Hello I am your personal Box :)';
                 } else {
@@ -70,50 +70,59 @@ export abstract class BotBaseProvider implements IBotProvider {
         let boxRepo = this.getBoxRepository();
         let freshBox: Box = await boxRepo.findOne({ code: boxCode });
 
-        return { text: 'I am very much ' + freshBox.status + ' at the moment' };
+        return { text: 'This is my current status: ' + freshBox.status};
     }
 
     protected async getLocation(boxCode: string): Promise<LocationMessage> {
         let boxRepo: BoxRepository = this.getBoxRepository();
         let freshBox: Box = await boxRepo.findOne({ code: boxCode });
 
-        if (freshBox.status != BoxStatuses.ACTIVE) {
-            return {
-                text: 'I need to be fully awake and ACTIVE in order to capture the location!',
-                latitude: null,
-                longitude: null
-            };
-        }
+        let latitude;
+        let longitude;
 
         for (let i = 0; i < freshBox.sensors.length; i++) {
             if (freshBox.sensors[i].type == SensorTypes.gps) {
+                latitude = freshBox.sensors[i].value.latitude
+                longitude = freshBox.sensors[i].value.longitude
+            }
+        }
+
+        if (freshBox.status != BoxStatuses.ACTIVE) {
+            if (!!latitude && !!longitude) {
                 return {
-                    text: 'Here is my current location',
-                    latitude: freshBox.sensors[i].value.latitude,
-                    longitude: freshBox.sensors[i].value.longitude
-                };
+                    text: 'This is my last known location!',
+                    latitude: latitude,
+                    longitude: longitude
+                }
+            }
+            return {
+                text: 'Man i dont have  a clue, you tell me :)',
+                latitude: null,
+                longitude: null
             }
         }
 
         return {
-            text: 'I was not able to determine the location!',
-            latitude: null,
-            longitude: null
+            text: 'This is my current location',
+            latitude: latitude,
+            longitude: longitude
         };
     }
 
     protected async getBatteryStatus(boxCode: string): Promise<TextMessage> {
         let boxRepo: BoxRepository = await this.getBoxRepository();
         let freshBox: Box = await boxRepo.findOne({ code: boxCode });
-
-        for (let i = 0; i < freshBox.sensors.length; i++) {
-            if (freshBox.sensors[i].type == SensorTypes.battery) {
-                let battery: string = freshBox.sensors[i].value.split(',')[0];
-                let charging: string = freshBox.sensors[i].value.split(',')[1] == 1 ? 'charging' : 'not charging';
-                return { text: 'My current battery status is ' + battery + ' and it is ' + charging };
+        if (freshBox.status == BoxStatuses.ACTIVE) {
+            for (let i = 0; i < freshBox.sensors.length; i++) {
+                if (freshBox.sensors[i].type == SensorTypes.battery) {
+                    let battery: string = freshBox.sensors[i].value.split(',')[0];
+                    let charging: string = freshBox.sensors[i].value.split(',')[1] == 1 ? 'charging' : 'not charging';
+                    return { text: 'My current battery status is ' + battery + ' and it is ' + charging };
+                }
             }
+        } else {
+            return { text: 'Why are you bothering me, I am sleeping'};
         }
-        return null;
     }
 
     protected async getName(boxCode: string): Promise<TextMessage> {
@@ -123,17 +132,21 @@ export abstract class BotBaseProvider implements IBotProvider {
     protected async getTemperature(boxCode: string): Promise<TextMessage> {
         let boxRepo: BoxRepository = this.getBoxRepository();
         let freshBox: Box = await boxRepo.findOne({ code: boxCode });
-
-        if (freshBox.status != BoxStatuses.ACTIVE) {
-            return { text: 'I need to be fully awake and ACTIVE in order to capture the temperature!' };
-        }
-
+        let temperature;
         for (let i = 0; i < freshBox.sensors.length; i++) {
             if (freshBox.sensors[i].type == SensorTypes.temperature) {
-                return { text: 'My current temperature is ' + freshBox.sensors[i].value.temperature };
+                temperature = freshBox.sensors[i].value.temperature;
             }
         }
-        return null;
+
+        if (freshBox.status != BoxStatuses.ACTIVE) {
+            if (!!temperature) {
+                return { text: 'This is my last known temperature: ' + temperature }
+            }
+            return { text: 'I dont wanna talk about it, can I go outside and play? ' };
+        } else {
+            return { text: 'This is my current temperature: ' + temperature };
+        }
     }
 
     protected async getHumidity(boxCode: string): Promise<TextMessage> {
