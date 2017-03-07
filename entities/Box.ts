@@ -4,9 +4,9 @@ export interface Box
 {
     id?: string,
     code: string,
-    size: string,
+    size?: string,
     status: string,
-    sensors: Sensor[],
+    sensors?: Sensor[],
     host?: string,
     topic?: string,
     groundId?: string,

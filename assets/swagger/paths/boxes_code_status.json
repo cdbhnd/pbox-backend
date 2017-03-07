@@ -1,4 +1,69 @@
 {
+    "post": {
+        "consumes": [
+            "application/json"
+        ],
+        "description": "Set status on box",
+        "parameters": [
+            {
+                "description": "Bearer access token (e.g. Bearer [token])",
+                "in": "header",
+                "name": "Authorization",
+                "required": true,
+                "type": "string"
+            },
+            {
+                "description": "Box code",
+                "in": "path",
+                "name": "code",
+                "required": true,
+                "type": "string"
+            },
+            {
+                "name": "statusData",
+                "in": "body",
+                "description": "Box status can be set to 'ACTIVE', 'IDLE' or 'SLEEP'",
+                "required": true,
+                "schema": {
+                    "type": "object",
+                    "description": "",
+                    "properties": {
+                        "status": {
+                            "required": true,
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        ],
+        "produces": [
+            "application/json"
+        ],
+        "responses": {
+            "200": {
+                "description": "OK",
+                "schema": {
+                    "$ref": "../definitions/box.json"
+                }
+            },
+            "401": {
+                "description": "Unauthorized"
+            },
+            "400": {
+                "description": "Bad Request"
+            },
+            "404": {
+                "description": "Entity not found"
+            },
+            "500": {
+                "description": "Internal server error"
+            }
+        },
+        "tags": [
+            "v1.0"
+        ]
+    },
+
     "get": {
         "consumes": [
             "application/json"
