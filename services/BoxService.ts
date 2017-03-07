@@ -164,6 +164,11 @@ export class BoxService implements IBoxService {
                             if (s.type == SensorTypes.activator) {
                                 freshBox.status = s.value ? BoxStatuses.ACTIVE : BoxStatuses.SLEEP;
                             }
+                            if (s.type == SensorTypes.vibrator) {
+                                // get bot from database
+                                // for each bot.services instanciate IBotProvider
+                                // call informUsers on each IBotProvider
+                            }
                             boxRepo.logSensorState(freshBox, s);
 
                             break;

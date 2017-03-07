@@ -19,6 +19,8 @@ export abstract class BotBaseProvider implements IBotProvider {
 
     public abstract update(token: string, data: any): Promise<boolean>;
 
+    public abstract informUsers(chatServiceData: any, box: Box, event: string): Promise<boolean>;
+
     protected async handshake(chatId: number, boxCode: string): Promise<TextMessage> {
         let botRepo = this.getBotRepository();
         let bot: Bot = await botRepo.findOne({ boxCode: boxCode });
