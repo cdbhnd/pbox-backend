@@ -70,7 +70,7 @@ export abstract class BotBaseProvider implements IBotProvider {
         let boxRepo = this.getBoxRepository();
         let freshBox: Box = await boxRepo.findOne({ code: boxCode });
 
-        return { text: 'I am very much ' + freshBox.status + ' at the moment' };
+        return { text: 'This is my current status: ' + freshBox.status};
     }
 
     protected async getLocation(boxCode: string): Promise<LocationMessage> {

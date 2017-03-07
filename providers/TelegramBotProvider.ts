@@ -41,7 +41,7 @@ export class TelegramBotProvider extends BotBaseProvider {
             tBot.sendMessage(msg.chat.id, responseMessage.text);
         }).bind(this));
 
-        tBot.onText(/status/, (async function onText(msg) {
+        tBot.onText(/status|state|Status|State/, (async function onText(msg) {
             let responseMessage: TextMessage = await this.getStatus(box.code);
             tBot.sendMessage(msg.chat.id, responseMessage.text);
         }).bind(this));
