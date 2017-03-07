@@ -28,6 +28,7 @@ export class BotService implements IBotService
 
         for (let i = 0; i < bot.services.length; i++) {
             let provider: IBotProvider = kernel.getNamed<IBotProvider>(Types.BotProvider, bot.services[i].provider);
+            await provider.unsubscribe(bot.services[i], box);
             await provider.subscribe(bot.services[i], box);
         }
 
@@ -36,6 +37,19 @@ export class BotService implements IBotService
 
     async deactivate(bot: Bot): Promise<Bot> 
     {
+        Check.notNull(bot, 'bot');
+
+        let box: Box = await this.boxRepo.findOne({ code: bot.boxCode });
+
+        if (!box) {
+            throw new Exceptions.EntityNotFoundException('Box', bot.boxCode);
+        }
+
+        for (let i = 0; i < bot.services.length; i++) {
+            let provider: IBotProvider = kernel.getNamed<IBotProvider>(Types.BotProvider, bot.services[i].provider);
+            await provider.unsubscribe(bot.services[i], box);
+        }
+
         return bot;
     }
 }

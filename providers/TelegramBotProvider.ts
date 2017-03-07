@@ -4,23 +4,24 @@ import { Types, kernel } from "../dependency-injection/";
 import { injectable, inject } from 'inversify';
 import { BoxRepository, BotRepository } from '../repositories/';
 import { IBoxService } from '../services/';
-//var TelegramBot = require('node-telegram-bot-api');
+import * as config from 'config';
+var TelegramBot = require('node-telegram-bot-api');
 
 @injectable()
 export class TelegramBotProvider extends BotBaseProvider {
 
-    //private tBots: Array<any>;
+    private tBots: Array<TgrBot>;
 
     constructor(@inject('providerName') providerName: string) {
         super(providerName);
-        //this.tBots = [];
+        this.tBots = [];
     }
 
     public async subscribe(serviceData: any, box: Box): Promise<boolean> {
-        let TelegramBot = require('node-telegram-bot-api');
-        let tBot = new TelegramBot(serviceData.accessToken, { polling: true });
+        
+        let tBot = this.createTelegramBot(serviceData.accessToken);
 
-        tBot.onText(/Hello/, (async function onText(msg) {
+        tBot.onText(/Hello|hello|hi|Hi/, (async function onText(msg) {
             let responseMessage: TextMessage = await this.handshake(msg.chat.id, box.code);
             tBot.sendMessage(msg.chat.id, responseMessage.text);
         }).bind(this));
@@ -68,12 +69,69 @@ export class TelegramBotProvider extends BotBaseProvider {
             tBot.sendMessage(msg.chat.id, responseMessage.text);
         }).bind(this));
 
-        //this.tBots.push(tBot);
-
         return true;
     }
 
     public async unsubscribe(serviceData: any, box: Box): Promise<boolean> {
+        let foundIndex: number = -1;
+        for (var i = 0; i < this.tBots.length; i++) {
+            if (this.tBots[i].token == serviceData.accessToken) {
+                if (this.tBots[i].polling) {
+                    await this.tBots[i].bot.stopPolling();
+                    foundIndex = i;
+                    break;
+                } else if (this.tBots[i].webhook) {
+                    this.tBots[i].bot.deleteWebHook();
+                    foundIndex = i;
+                    break;
+                }
+                
+            }
+        }
+        if (foundIndex != -1) {
+            this.tBots.splice(foundIndex, 1);
+        }
         return true;
     }
+
+    public async update(token: string, data: any): Promise<boolean> {
+        for (var i = 0; i < this.tBots.length; i++) {
+            if (this.tBots[i].token == token && !this.tBots[i].polling) {
+                this.tBots[i].bot.processUpdate(data);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private createTelegramBot(token): any {
+        let telegramConfig: any = config.get('background_tasks.telegram');
+        let bot: any;
+        if (telegramConfig.polling) {
+            bot =  new TelegramBot(token, { polling: true });
+            this.tBots.push({ 
+                token: token,
+                bot: bot,
+                polling: true,
+                webhook: false
+            });
+        } else {
+            bot = new TelegramBot(token);
+            bot.setWebHook(telegramConfig.webhook + '?token=' + token);
+            this.tBots.push({ 
+                token: token,
+                bot: bot,
+                polling: false,
+                webhook: true
+            });
+        }
+        return bot;
+    }
+}
+
+class TgrBot {
+    public token: string;
+    public bot: any;
+    public polling: boolean;
+    public webhook: boolean;
 }

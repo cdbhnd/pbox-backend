@@ -17,20 +17,27 @@ export abstract class BotBaseProvider implements IBotProvider {
 
     public abstract unsubscribe(serviceData: any, box: Box): Promise<boolean>;
 
+    public abstract update(token: string, data: any): Promise<boolean>;
+
     protected async handshake(chatId: number, boxCode: string): Promise<TextMessage> {
         let botRepo = this.getBotRepository();
         let bot: Bot = await botRepo.findOne({ boxCode: boxCode });
+        let message: string = '';
 
         for (let i = 0; i < bot.services.length; i++) {
             if (bot.services[i].provider == this.providerName) {
-                //bot.services[i].chatIds = bot.services[i].chatIds ? bot.services[i].chatIds : [];
-                //bot.services[i].chatIds.push(chatId);
-                bot.services[i].chatId = chatId;
-                botRepo.update(bot);
+                bot.services[i].chatIds = bot.services[i].chatIds ? bot.services[i].chatIds : [];
+                if (bot.services[i].chatIds.indexOf(chatId) == -1) {
+                    bot.services[i].chatIds.push(chatId);                
+                    botRepo.update(bot);
+                    message = 'Hello I am your personal Box :)';
+                } else {
+                    message = 'Wooow look who is back :)';
+                }
                 break;
             }
         }
-        return { text: 'Hello I am your personal Box :)' };
+        return { text: message };
     }
 
     protected async wakeUp(boxCode: string): Promise<TextMessage> {

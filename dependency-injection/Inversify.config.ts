@@ -29,14 +29,12 @@ kernel.bind<Providers.IGeocodeProvider>(Types.GeocodeProvider).to(Providers.Geco
 kernel.bind<Providers.IIotPlatform>(Types.IotPlatform).to(Providers.AttPlatform).inSingletonScope();
 
 /** Bot Providers */
-kernel.bind<Providers.IBotProvider>(Types.BotProvider).to(Providers.TelegramBotProvider).whenTargetNamed('telegram');
+kernel.bind<Providers.IBotProvider>(Types.BotProvider).to(Providers.TelegramBotProvider).inSingletonScope().whenTargetNamed('telegram');
 kernel.bind<string>('providerName').toConstantValue('telegram').whenInjectedInto(Providers.TelegramBotProvider);
-
-/** Boot Tasks Registration */
-//kernel.bind<bootTasks.IBootTask>(Types.BootTask).to(bootTasks.ListenActiveBoxes);
 
 /** Background Tasks Registration */
 kernel.bind<backgroundTasks.ITask>(Types.BackgroundTask).to(backgroundTasks.ListenActiveBoxesTask).whenTargetNamed('ListenActiveBoxesTask');
 kernel.bind<backgroundTasks.ITask>(Types.BackgroundTask).to(backgroundTasks.ActivateBotsTask).whenTargetNamed('ActivateBotsTask');
+kernel.bind<backgroundTasks.ITask>(Types.BackgroundTask).to(backgroundTasks.DeactivateBotsTask).whenTargetNamed('DeactivateBotsTask');
 
 export default kernel;
