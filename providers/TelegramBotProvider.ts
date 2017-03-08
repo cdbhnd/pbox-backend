@@ -12,13 +12,13 @@ export class TelegramBotProvider extends BotBaseProvider {
 
     private tBots: Array<TgrBot>;
 
-    constructor(@inject('providerName') providerName: string) {
+    constructor( @inject('providerName') providerName: string) {
         super(providerName);
         this.tBots = [];
     }
 
     public async subscribe(serviceData: any, box: Box): Promise<boolean> {
-        
+
         let tBot = this.createTelegramBot(serviceData.accessToken);
 
         tBot.onText(/Hello|hello|hi|Hi/, (async function onText(msg) {
@@ -85,13 +85,24 @@ export class TelegramBotProvider extends BotBaseProvider {
                     foundIndex = i;
                     break;
                 }
-                
+
             }
         }
         if (foundIndex != -1) {
             this.tBots.splice(foundIndex, 1);
         }
         return true;
+    }
+
+    public informUsers(bot: Bot, message: string): void {
+        for (let i = 0; i < bot.services.length; i++) {
+            if (bot.services[i].provider == 'telegram') {
+                let tBot = this.getTelegramClient(bot.services[i].accessToken);
+                for (let x = 0; x < bot.services[i].chatIds.length; x++) {
+                    tBot.sendMessage(bot.services[i].chatIds[x], message);
+                }
+            }
+        }
     }
 
     public async update(token: string, data: any): Promise<boolean> {
@@ -108,8 +119,8 @@ export class TelegramBotProvider extends BotBaseProvider {
         let telegramConfig: any = config.get('background_tasks.telegram');
         let bot: any;
         if (telegramConfig.polling) {
-            bot =  new TelegramBot(token, { polling: true });
-            this.tBots.push({ 
+            bot = new TelegramBot(token, { polling: true });
+            this.tBots.push({
                 token: token,
                 bot: bot,
                 polling: true,
@@ -118,7 +129,7 @@ export class TelegramBotProvider extends BotBaseProvider {
         } else {
             bot = new TelegramBot(token);
             bot.setWebHook(telegramConfig.webhook + '?token=' + token);
-            this.tBots.push({ 
+            this.tBots.push({
                 token: token,
                 bot: bot,
                 polling: false,
@@ -126,6 +137,14 @@ export class TelegramBotProvider extends BotBaseProvider {
             });
         }
         return bot;
+    }
+
+    private getTelegramClient(token: string) {
+        for (let i = 0; i < this.tBots.length; i++) {
+            if (this.tBots[i].token == token) {
+                return this.tBots[i].bot;
+            }
+        }
     }
 }
 

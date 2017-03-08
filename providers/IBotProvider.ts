@@ -5,6 +5,5 @@ export interface IBotProvider
     subscribe(serviceData: any, box: Box): Promise<boolean>;
     unsubscribe(serviceData: any, box: Box): Promise<boolean>;
     update(token: string, data: any): Promise<boolean>
-
-    informUsers(chatServiceData: any, box: Box, event: string): Promise<boolean>
+    informUsers(bot: Bot, message: string): void
 }

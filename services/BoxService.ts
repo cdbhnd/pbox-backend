@@ -1,23 +1,27 @@
+import * as Entities from '../entities/';
 import { IBoxService } from './IBoxService';
 import { Box, Sensor, BoxStatuses, SensorTypes } from '../entities/';
 import { Types, kernel } from "../dependency-injection/";
 import { injectable } from 'inversify';
 import { BoxRepository } from '../repositories/';
+import * as Repositories from '../repositories/';
 import { IIotPlatform } from '../providers/';
 import * as Entitties from '../entities';
 import * as Exceptions from '../exceptions/';
 import { Check } from '../utility/Check';
 import * as config from 'config';
+import { IBotProvider } from '../providers/';
 
 @injectable()
 export class BoxService implements IBoxService {
 
     private boxRepo: BoxRepository;
     private iotPlatform: IIotPlatform;
-
+    private _botRepository: Repositories.BotRepository;
     constructor() {
         this.boxRepo = kernel.get<BoxRepository>(Types.BoxRepository);
         this.iotPlatform = kernel.get<IIotPlatform>(Types.IotPlatform);
+        this._botRepository = kernel.get<Repositories.BotRepository>(Types.BotRepository);
     }
 
     public async setBoxSensors(box: Box): Promise<Box> {
@@ -152,6 +156,8 @@ export class BoxService implements IBoxService {
                 box.sensors[i].status = BoxStatuses.ACTIVE;
             }
 
+            let bot: Entities.Bot = await this._botRepository.findOne({ boxCode: box.code });
+
             this.iotPlatform.listenBoxSensors(box, async function (boxCode: string, sensorCode: string, value: any) {
                 let boxRepo: BoxRepository = kernel.get<BoxRepository>(Types.BoxRepository);
                 let freshBox: Box = await boxRepo.findOne({ code: boxCode });
@@ -164,10 +170,13 @@ export class BoxService implements IBoxService {
                             if (s.type == SensorTypes.activator) {
                                 freshBox.status = s.value ? BoxStatuses.ACTIVE : BoxStatuses.SLEEP;
                             }
-                            if (s.type == SensorTypes.vibrator) {
-                                // get bot from database
-                                // for each bot.services instanciate IBotProvider
-                                // call informUsers on each IBotProvider
+                            if (s.type == SensorTypes.vibration) {
+                                if (s.value === '1') {
+                                    for (let i = 0; i < bot.services.length; i++) {
+                                        let provider: IBotProvider = kernel.getNamed<IBotProvider>(Types.BotProvider, bot.services[i].provider);
+                                        provider.informUsers(bot, 'Strong vibration has occured !!!');
+                                    }
+                                }
                             }
                             boxRepo.logSensorState(freshBox, s);
 
