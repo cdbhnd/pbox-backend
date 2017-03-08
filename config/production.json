@@ -8,9 +8,9 @@
         "dbUser": "pbox_user",
         "dbPassword": "pboxssap"
     },
-    
+
     "secret": "codebehind",
-    
+
     "static_folder": "assets",
 
     "quote_service": {
@@ -30,7 +30,8 @@
         "att_host": "api.allthingstalk.io",
         "att_clientId": "ognjent_EjGwg4VW",
         "att_clientKey": "GsqcBmey",
-        "enable_subscription": true
+        "enable_subscription": true,
+        "topic": "/exchange/root/client.ognjent_EjGwg4VW.in.asset.#"
     },
 
     "background_tasks": {
