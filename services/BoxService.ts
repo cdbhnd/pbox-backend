@@ -83,6 +83,11 @@ export class BoxService implements IBoxService {
             }
         });
 
+
+        for (var i = 0; i < box.sensors.length; i++) {
+            box.sensors[i].status = BoxStatuses.ACTIVE;
+        }
+
         // set starter sensor value to true and send it to iot platform
         if (!!starterSensor) {
             starterSensor.value = true;
@@ -152,13 +157,10 @@ export class BoxService implements IBoxService {
 
         if (!!box.topic && !!box.clientId && !!box.clientKey && !!box.deviceId) {
 
-            for (var i = 0; i < box.sensors.length; i++) {
-                box.sensors[i].status = BoxStatuses.ACTIVE;
-            }
 
             let bot: Entities.Bot = await this._botRepository.findOne({ boxCode: box.code });
 
-            this.iotPlatform.listenBoxSensors(box, async function (boxCode: string, sensorCode: string, value: any) {
+            this.iotPlatform.listenBoxSensors(box, async function (boxCode: string, sensorCode: string, sensorType: string, value: any) {
                 let boxRepo: BoxRepository = kernel.get<BoxRepository>(Types.BoxRepository);
                 let freshBox: Box = await boxRepo.findOne({ code: boxCode });
                 if (!!freshBox && freshBox.status != BoxStatuses.IDLE) {
@@ -183,11 +185,9 @@ export class BoxService implements IBoxService {
                             break;
                         }
                     }
-                    boxRepo.update(freshBox);
+                    boxRepo.updateBoxSensor(freshBox, sensorType, value);
                 }
             });
-
-            box = await this.boxRepo.update(box);
 
             return box;
         }

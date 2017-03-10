@@ -74,9 +74,11 @@ export class AttPlatform implements IIotPlatform {
                 let data: any = JSON.parse(message);
                 let result: any;
                 let sensorCode: string;
+                let sensorType: string;
                 for (var i = 0; i < box.sensors.length; i++) {
                     if (box.sensors[i].assetId == data.Id) {
                         sensorCode = box.sensors[i].code;
+                        sensorType = box.sensors[i].name;
                         console.log(data.Value);
                         let splitedValue: string[] = data.Value.split ? data.Value.split(',') : [];
                         switch (box.sensors[i].type) {
@@ -106,7 +108,7 @@ export class AttPlatform implements IIotPlatform {
                         break;
                     }
                 }
-                callback(box.code, sensorCode, result);
+                callback(box.code, sensorCode, sensorType,  result);
             });
 
             this.listeners[box.id] = mqttClient;
