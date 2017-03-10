@@ -83,7 +83,6 @@ export class BoxService implements IBoxService {
             }
         });
 
-
         for (var i = 0; i < box.sensors.length; i++) {
             box.sensors[i].status = BoxStatuses.ACTIVE;
         }
@@ -157,7 +156,6 @@ export class BoxService implements IBoxService {
 
         if (!!box.topic && !!box.clientId && !!box.clientKey && !!box.deviceId) {
 
-
             let bot: Entities.Bot = await this._botRepository.findOne({ boxCode: box.code });
 
             this.iotPlatform.listenBoxSensors(box, async function (boxCode: string, sensorCode: string, sensorType: string, value: any) {
@@ -181,7 +179,6 @@ export class BoxService implements IBoxService {
                                 }
                             }
                             boxRepo.logSensorState(freshBox, s);
-
                             break;
                         }
                     }

@@ -22,13 +22,12 @@ export class Boxes extends BaseRepository<Entities.Box> implements Repos.BoxRepo
         }
     }
 
-    public async updateBoxSensor(box: Entities.Box, sensor: Entities.SensorTypes, value: string): Promise<Entities.Box> {
+    public async updateBoxSensor(box: Entities.Box, sensor: Entities.SensorTypes, value: any): Promise<Entities.Box> {
         let objt = box;
 
         let objId = this.deserializeObjectId(objt.id);
 
         let result = await this.collection().updateOne({ '_id': objId, "sensors.name" : sensor }, {"$set" : {"sensors.$.value" : value}});
-        //let result = await this.collection().updateOne({ '_id': objId }, { '$set': objt })
 
         let updatedDoc = await this.collection().findOne({ '_id': objId });
 
@@ -38,7 +37,6 @@ export class Boxes extends BaseRepository<Entities.Box> implements Repos.BoxRepo
                 delete updatedDoc._id;
             }
         }
-
         return updatedDoc;
     }
 }
