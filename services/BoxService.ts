@@ -99,6 +99,14 @@ export class BoxService implements IBoxService {
 
     public async deactivateBox(box: Box): Promise<Box> {
 
+        // set box status to idle
+        box.status = BoxStatuses.IDLE;
+        for (let i = 0; i < box.sensors.length; i++) {
+            box.sensors[i].status = BoxStatuses.IDLE;
+        }
+
+        box = await this.boxRepo.update(box);
+
         //find starter sensor 
         let starterSensor: Sensor = box.sensors.find(function (element) {
             if (element.type == SensorTypes.activator) {
@@ -111,14 +119,6 @@ export class BoxService implements IBoxService {
             starterSensor.value = false;
             await this.iotPlatform.sendDataToSensor(starterSensor);
         }
-
-        // set box status to idle
-        box.status = BoxStatuses.IDLE;
-        for (let i = 0; i < box.sensors.length; i++) {
-            box.sensors[i].status = BoxStatuses.IDLE;
-        }
-
-        box = await this.boxRepo.update(box);
 
         return box;
     }
