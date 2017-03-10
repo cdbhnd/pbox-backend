@@ -21,32 +21,32 @@ export class TelegramBotProvider extends BotBaseProvider {
 
         let tBot = this.createTelegramBot(serviceData.accessToken);
 
-        tBot.onText(/Hello|hello|hi|Hi/, (async function onText(msg) {
+        tBot.onText(/hello|hi/i, (async function onText(msg) {
             let responseMessage: TextMessage = await this.handshake(msg.chat.id, box.code);
             tBot.sendMessage(msg.chat.id, responseMessage.text);
         }).bind(this));
 
-        tBot.onText(/name/, (async function onText(msg) {
+        tBot.onText(/name/i, (async function onText(msg) {
             let responseMessage: TextMessage = await this.getName(box.code);
             tBot.sendMessage(msg.chat.id, responseMessage.text);
         }).bind(this));
 
-        tBot.onText(/wake|Wake|rise and shine|Rise and shine/, (async function onText(msg) {
+        tBot.onText(/wake|rise and shine/i, (async function onText(msg) {
             let responseMessage: TextMessage = await this.wakeUp(box.code);
             tBot.sendMessage(msg.chat.id, responseMessage.text);
         }).bind(this));
 
-        tBot.onText(/sleep|Sleep|sweet dreams|Sweet dreams/, (async function onText(msg) {
+        tBot.onText(/sleep|sweet dreams/i, (async function onText(msg) {
             let responseMessage: TextMessage = await this.goToSleep(box.code);
             tBot.sendMessage(msg.chat.id, responseMessage.text);
         }).bind(this));
 
-        tBot.onText(/status|state|Status|State/, (async function onText(msg) {
+        tBot.onText(/status|state/i, (async function onText(msg) {
             let responseMessage: TextMessage = await this.getStatus(box.code);
             tBot.sendMessage(msg.chat.id, responseMessage.text);
         }).bind(this));
 
-        tBot.onText(/location/, (async function onText(msg) {
+        tBot.onText(/location|where|loc/i, (async function onText(msg) {
             let responseMessage: LocationMessage = await this.getLocation(box.code);
             tBot.sendMessage(msg.chat.id, responseMessage.text);
             if (responseMessage.latitude && responseMessage.longitude) {
@@ -54,17 +54,17 @@ export class TelegramBotProvider extends BotBaseProvider {
             }
         }).bind(this));
 
-        tBot.onText(/battery|charge|full|empty|energy|Battery|Charge|Full|Empty|Energy/, (async function onText(msg) {
+        tBot.onText(/battery|charge|full|empty|energy/i, (async function onText(msg) {
             let responseMessage: TextMessage = await this.getBatteryStatus(box.code);
             tBot.sendMessage(msg.chat.id, responseMessage.text);
         }).bind(this));
 
-        tBot.onText(/temperature|temp|warm|cold|hot|temperature|Temp|Warm|Cold|Hot/, (async function onText(msg) {
+        tBot.onText(/temperature|temp|warm|cold|hot/i, (async function onText(msg) {
             let responseMessage: TextMessage = await this.getTemperature(box.code);
             tBot.sendMessage(msg.chat.id, responseMessage.text);
         }).bind(this));
 
-        tBot.onText(/humidity|wet|moisture/, (async function onText(msg) {
+        tBot.onText(/humidity|wet|rain/i, (async function onText(msg) {
             let responseMessage: TextMessage = await this.getHumidity(box.code);
             tBot.sendMessage(msg.chat.id, responseMessage.text);
         }).bind(this));
