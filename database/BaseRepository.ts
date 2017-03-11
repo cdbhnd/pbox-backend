@@ -76,6 +76,10 @@ export class BaseRepository<T> {
        return updatedDoc;
     }
 
+    public updateProperty() {
+        
+    }
+
     public async delete(entity: T): Promise<Boolean> {
 
         let objt = entity as any;

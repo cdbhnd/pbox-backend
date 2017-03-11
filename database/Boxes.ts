@@ -21,6 +21,24 @@ export class Boxes extends BaseRepository<Entities.Box> implements Repos.BoxRepo
             return false;
         }
     }
+
+    public async updateBoxSensor(box: Entities.Box, sensor: Entities.SensorTypes, value: any): Promise<Entities.Box> {
+        let objt = box;
+
+        let objId = this.deserializeObjectId(objt.id);
+
+        let result = await this.collection().updateOne({ '_id': objId, "sensors.name" : sensor }, {"$set" : {"sensors.$.value" : value}});
+
+        let updatedDoc = await this.collection().findOne({ '_id': objId });
+
+        if (!!updatedDoc) {
+            if (!!updatedDoc._id) {
+                updatedDoc.id = this.serializeObjectId(updatedDoc._id);
+                delete updatedDoc._id;
+            }
+        }
+        return updatedDoc;
+    }
 }
 
 class SensorState {
