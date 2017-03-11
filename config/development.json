@@ -51,5 +51,16 @@
 
     "telegram": {
         "access_token": "273659408:AAFTEcp72eszzIcCJSvkfWWsRV1GXvQN-js"
+    },
+
+    "events": {
+        "boxCreated": "BOX_CREATED",
+        "boxActivated": "BOX_ACTIVATED",
+        "boxDeactivated": "BOX_DEACTIVATED",
+        "boxActivatorChanged": "BOX_ACTIVATOR_CHANGED",
+        "boxGPSChanged": "BOX_GPS_CHANGED",
+        "boxTempChanged": "BOX_CREATED",
+        "boxHumChanged": "BOX_CREATED",
+        "boxVibrateChanged": "BOX_CREATED"
     }
 }
