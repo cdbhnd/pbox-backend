@@ -24,10 +24,11 @@ export class Boxes extends BaseRepository<Entities.Box> implements Repos.BoxRepo
 
     public async updateBoxSensor(box: Entities.Box, sensor: Entities.SensorTypes, value: any): Promise<Entities.Box> {
         let objt = box;
+        let timestamp = new Date().getTime();
 
         let objId = this.deserializeObjectId(objt.id);
 
-        let result = await this.collection().updateOne({ '_id': objId, "sensors.name" : sensor }, {"$set" : {"sensors.$.value" : value}});
+        let result = await this.collection().updateOne({ '_id': objId, "sensors.name" : sensor }, {"$set" : {"sensors.$.value" : value, "sensors.$.timestamp": timestamp}});
 
         let updatedDoc = await this.collection().findOne({ '_id': objId });
 
