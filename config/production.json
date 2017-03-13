@@ -48,5 +48,9 @@
 
     "telegram": {
         "access_token": "273659408:AAFTEcp72eszzIcCJSvkfWWsRV1GXvQN-js"
+    },
+
+    "boxService": {
+        "updateThreshold": 20000 //milliseconds
     }
 }

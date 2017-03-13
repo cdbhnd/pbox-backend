@@ -158,34 +158,45 @@ export class BoxService implements IBoxService {
 
             let bot: Entities.Bot = await this._botRepository.findOne({ boxCode: box.code });
             let boxService = this;
-            this.iotPlatform.listenBoxSensors(box, async function (boxCode: string, sensorCode: string, sensorType: string, value: any) {
+            this.iotPlatform.listenBoxSensors(box, async function (boxCode: string, sensorCode: string, sensorType: string, newSensorValue: any) {
                 let boxRepo: BoxRepository = kernel.get<BoxRepository>(Types.BoxRepository);
                 let freshBox: Box = await boxRepo.findOne({ code: boxCode });
                 if (!!freshBox && freshBox.status != BoxStatuses.IDLE) {
                     for (var i = 0; i < freshBox.sensors.length; i++) {
-                        if (freshBox.sensors[i].code == sensorCode) {
-                            let s: Sensor = freshBox.sensors[i];
+                        if (freshBox.sensors[i].name == sensorType) {
 
-                            s.value = value;
-                            if (s.type == SensorTypes.activator) {
+                            let selectedBoxSensor: Sensor = freshBox.sensors[i];
+                            let oldSensorValue = selectedBoxSensor.value;
+                            selectedBoxSensor.value = newSensorValue;
+
+                            if (selectedBoxSensor.type == SensorTypes.activator) {
                                 // if activator is set to false deactivate box
-                                if(!s.value) {
+                                if (!selectedBoxSensor.value) {
                                     boxService.deactivateBox(freshBox);
                                 }
                             }
-                            if (s.type == SensorTypes.vibration) {
-                                if (s.value === '1') {
+
+                            if (selectedBoxSensor.type == SensorTypes.vibration) {
+                                if (selectedBoxSensor.value === '1') {
                                     for (let i = 0; i < bot.services.length; i++) {
                                         let provider: IBotProvider = kernel.getNamed<IBotProvider>(Types.BotProvider, bot.services[i].provider);
                                         provider.informUsers(bot, 'Strong vibration has occured !!!');
                                     }
                                 }
                             }
-                            boxRepo.logSensorState(freshBox, s);
+
+                            //update if its new value and if its sensor value older then 20 sec
+                            if (JSON.stringify(oldSensorValue) != JSON.stringify(newSensorValue)) {
+                                let timeDiff = (new Date().getTime() - selectedBoxSensor.timestamp);
+                                if (timeDiff > config.get('boxService.updateThreshold')) {
+                                    boxRepo.updateBoxSensor(freshBox, sensorType, newSensorValue);
+                                };
+                            }
+
+                            boxRepo.logSensorState(freshBox, selectedBoxSensor);
                             break;
                         }
                     }
-                    boxRepo.updateBoxSensor(freshBox, sensorType, value);
                 }
             });
 
@@ -211,6 +222,8 @@ export class BoxService implements IBoxService {
 
     private mapSensorDataToBox(box: Box, sensorData: any): void {
         box.sensors = [];
+        let timestamp = new Date().getTime();
+
         for (var i = 0; i < sensorData.assets.length; i++) {
             let sensor: Entitties.Sensor = {
                 name: sensorData.assets[i].title,
@@ -219,7 +232,8 @@ export class BoxService implements IBoxService {
                 value: null,
                 assetId: sensorData.assets[i].id,
                 topic: '/exchange/root/client.' + String(config.get('iot_platform.att_clientId')) + '.in.asset.' + sensorData.assets[i].id + '.state',
-                type: sensorData.assets[i].title
+                type: sensorData.assets[i].title,
+                timestamp: timestamp
             }
             box.sensors.push(sensor);
         }

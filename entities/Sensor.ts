@@ -6,5 +6,6 @@ export interface Sensor {
     assetId?: string,
     assetName?: string,
     topic?: string,
-    type?: string
+    type?: string,
+    timestamp?: number
 }
