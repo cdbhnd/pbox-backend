@@ -157,7 +157,7 @@ export class BoxService implements IBoxService {
         if (!!box.topic && !!box.clientId && !!box.clientKey && !!box.deviceId) {
 
             let bot: Entities.Bot = await this._botRepository.findOne({ boxCode: box.code });
-
+            let boxService = this;
             this.iotPlatform.listenBoxSensors(box, async function (boxCode: string, sensorCode: string, sensorType: string, value: any) {
                 let boxRepo: BoxRepository = kernel.get<BoxRepository>(Types.BoxRepository);
                 let freshBox: Box = await boxRepo.findOne({ code: boxCode });
@@ -168,7 +168,10 @@ export class BoxService implements IBoxService {
 
                             s.value = value;
                             if (s.type == SensorTypes.activator) {
-                                freshBox.status = s.value ? BoxStatuses.ACTIVE : BoxStatuses.SLEEP;
+                                // if activator is set to false deactivate box
+                                if(!s.value) {
+                                    boxService.deactivateBox(freshBox);
+                                }
                             }
                             if (s.type == SensorTypes.vibration) {
                                 if (s.value === '1') {
