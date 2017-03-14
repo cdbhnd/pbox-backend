@@ -11,6 +11,8 @@ import * as Exceptions from '../exceptions/';
 import { Check } from '../utility/Check';
 import * as config from 'config';
 import { IBotProvider } from '../providers/';
+import { BoxExtensions } from '../extensions';
+import { EventAggregator, IEventMediator } from '../events';
 
 @injectable()
 export class BoxService implements IBoxService {
@@ -160,30 +162,49 @@ export class BoxService implements IBoxService {
 
             this.iotPlatform.listenBoxSensors(box, async function (boxCode: string, sensorCode: string, sensorType: string, value: any) {
                 let boxRepo: BoxRepository = kernel.get<BoxRepository>(Types.BoxRepository);
-                let freshBox: Box = await boxRepo.findOne({ code: boxCode });
-                if (!!freshBox && freshBox.status != BoxStatuses.IDLE) {
-                    for (var i = 0; i < freshBox.sensors.length; i++) {
-                        if (freshBox.sensors[i].code == sensorCode) {
-                            let s: Sensor = freshBox.sensors[i];
 
-                            s.value = value;
-                            if (s.type == SensorTypes.activator) {
-                                freshBox.status = s.value ? BoxStatuses.ACTIVE : BoxStatuses.SLEEP;
-                            }
-                            if (s.type == SensorTypes.vibration) {
-                                if (s.value === '1') {
-                                    for (let i = 0; i < bot.services.length; i++) {
-                                        let provider: IBotProvider = kernel.getNamed<IBotProvider>(Types.BotProvider, bot.services[i].provider);
-                                        provider.informUsers(bot, 'Strong vibration has occured !!!');
-                                    }
-                                }
-                            }
-                            boxRepo.logSensorState(freshBox, s);
-                            break;
+                // Find the Box
+                let freshBox: Box = await boxRepo.findOne({ code: boxCode });
+                if (!freshBox || freshBox.status == BoxStatuses.IDLE) {
+                    return;
+                }
+
+                // Find the Sensor
+                let sensor: Sensor = BoxExtensions.getSensor(freshBox, sensorType);
+                if (!sensor) {
+                    return;
+                }
+
+                let eventsMediator: IEventMediator = EventAggregator.getMediator();
+
+                // Broadcast global sensor changed event
+                eventsMediator.broadcast(EventAggregator.boxSensorChanged, { box: boxCode, sensor: sensorType, value: value });
+
+                // Broadcast sensor specific event
+                eventsMediator.broadcast(EventAggregator.getSensorEvent(sensor), { box: boxCode, sensor: sensorType, value: value });
+
+                // Set sensor value
+                sensor.value = value;
+                // Set new sensor value in DB
+                boxRepo.updateBoxSensor(freshBox, sensorType, value);
+
+                // Update Box status if activator value has changed
+                if (sensor.type == SensorTypes.activator) {
+                    freshBox.status = sensor.value ? BoxStatuses.ACTIVE : BoxStatuses.SLEEP;
+                }
+
+                // Inform Chat users if vibration occurs
+                if (sensor.type == SensorTypes.vibration) {
+                    if (sensor.value === '1') {
+                        for (let i = 0; i < bot.services.length; i++) {
+                            let provider: IBotProvider = kernel.getNamed<IBotProvider>(Types.BotProvider, bot.services[i].provider);
+                            provider.informUsers(bot, 'Strong vibration has occured !!!');
                         }
                     }
-                    boxRepo.updateBoxSensor(freshBox, sensorType, value);
                 }
+
+                // Log sensor chnage in DB
+                boxRepo.logSensorState(freshBox, sensor);
             });
 
             return box;

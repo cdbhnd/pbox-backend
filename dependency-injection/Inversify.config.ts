@@ -5,6 +5,7 @@ import * as Services from '../services/index';
 import * as Providers from '../providers/index';
 import * as DB from '../database/index';
 import * as actions from '../actions';
+import * as Events from '../events';
 import * as bootTasks from '../web/boottasks/';
 import * as backgroundTasks from '../background/tasks/';
 
@@ -23,6 +24,7 @@ kernel.bind<string>('entityName').toConstantValue('bots').whenInjectedInto(DB.Bo
 kernel.bind<Services.IJobService>(Types.JobService).to(Services.JobService);
 kernel.bind<Services.IBoxService>(Types.BoxService).to(Services.BoxService);
 kernel.bind<Services.IBotService>(Types.BotService).to(Services.BotService);
+kernel.bind<Events.IEventMediator>(Types.EventMediator).to(Events.EventMediator);
 
 kernel.bind<Providers.IQuotesProvider>(Types.QuotesProvider).to(Providers.QuotesProvider);
 kernel.bind<Providers.IGeocodeProvider>(Types.GeocodeProvider).to(Providers.GecodeProvider);

@@ -11,7 +11,8 @@ let Types = {
     BackgroundTask: Symbol("BackgroundTask"),
     BotRepository: Symbol("BotRepository"),
     BotProvider: Symbol("BotProvider"),
-    BotService: Symbol("BotService")
+    BotService: Symbol("BotService"),
+    EventMediator: Symbol("EventMediator")
 };
 
 export default Types;

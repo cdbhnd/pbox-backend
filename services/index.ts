@@ -4,4 +4,3 @@ export * from './BoxService';
 export * from './IBoxService';
 export * from './BotService';
 export * from './IBotService';
-export * from './IEventService';

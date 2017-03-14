@@ -9,6 +9,7 @@
     "mongodb": "registry:dt/mongodb#2.1.0+20161110150902",
     "node": "registry:dt/node#6.0.0+20161121110008",
     "node-schedule": "registry:dt/node-schedule#1.1.0+20161119044246",
+    "pubsub-js": "registry:dt/pubsub-js#1.5.2+20160510002910",
     "request-promise": "registry:dt/request-promise#4.1.0+20161119044246",
     "serve-static": "registry:dt/serve-static#0.0.0+20160606155157"
   },

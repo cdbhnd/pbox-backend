@@ -57,10 +57,11 @@
         "boxCreated": "BOX_CREATED",
         "boxActivated": "BOX_ACTIVATED",
         "boxDeactivated": "BOX_DEACTIVATED",
+        "boxSensorChanged": "BOX_SENSOR_CHANGED",
         "boxActivatorChanged": "BOX_ACTIVATOR_CHANGED",
         "boxGPSChanged": "BOX_GPS_CHANGED",
-        "boxTempChanged": "BOX_CREATED",
-        "boxHumChanged": "BOX_CREATED",
-        "boxVibrateChanged": "BOX_CREATED"
+        "boxTempChanged": "BOX_TEMPERATURE_CHANGED",
+        "boxHumChanged": "BOX_HUMIDITY_CHANGED",
+        "boxVibrateChanged": "BOX_VIBRATION_CHANGED"
     }
 }
