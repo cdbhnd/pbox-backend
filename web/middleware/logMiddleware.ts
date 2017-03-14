@@ -43,8 +43,13 @@ export async function logMiddleware(req: any, res: any, next: Function) {
         try {
             if (chunk)
                 chunks.push(chunk);
+            //if exception is trown, chunk is string
+            if (typeof chunk == 'string') {
+                log.response.body = chunk;
+            } else {
+                log.response.body = Buffer.concat(chunks).toString('utf8');
+            }
 
-            log.response.body = Buffer.concat(chunks).toString('utf8');
             log.response.headers = res._headers;
             log.response.statusCode = res.statusCode;
 
