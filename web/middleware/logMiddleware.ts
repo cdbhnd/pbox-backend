@@ -1,5 +1,14 @@
 var winston = require('winston');
 require('winston-loggly-bulk');
+import * as config from 'config';
+
+//loggly configuration
+winston.add(winston.transports.Loggly, {
+    token: String(config.get('loggly.token')),
+    subdomain: String(config.get('loggly.subdomain')),
+    tags: ["Winston-NodeJS"],
+    json: true
+});
 
 export async function logMiddleware(req: any, res: any, next: Function) {
     var oldWrite = res.write;
@@ -31,24 +40,19 @@ export async function logMiddleware(req: any, res: any, next: Function) {
     };
 
     res.end = function (chunk) {
-        if (chunk)
-            chunks.push(chunk);
+        try {
+            if (chunk)
+                chunks.push(chunk);
 
-        log.response.body = Buffer.concat(chunks).toString('utf8');
-        log.response.headers = res._headers;
-        log.response.statusCode = res.statusCode;
+            log.response.body = Buffer.concat(chunks).toString('utf8');
+            log.response.headers = res._headers;
+            log.response.statusCode = res.statusCode;
 
-        //record to loggly
-        winston.add(winston.transports.Loggly, {
-            token: "e020724b-a477-40fc-994a-474dcd64107e",
-            subdomain: "pbox",
-            tags: ["Winston-NodeJS"],
-            json: true
-        });
-
-        winston.log('info', log);
-        /////////////////////////////////////////////////////////
-        
+            //record to loggly
+            winston.log('info', log);
+        } catch (e) {
+            console.log('Error occurred in logging middleware ' + e);
+        }
         oldEnd.apply(res, arguments);
     };
 
