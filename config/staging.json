@@ -2,27 +2,21 @@
     "password": {
         "saltRounds": 10
     },
-
     //mongoDb
     "mongoDbSettings": {
         "dbUser": "pbox_user",
         "dbPassword": "pboxssap"
     },
-
     "secret": "codebehind",
-
     "static_folder": "assets",
-
     "quote_service": {
         "host": "https://andruxnet-random-famous-quotes.p.mashape.com/",
         "auth_key": "qseR9vhP4fmshxE4pg9IeJSO5YAop1UAncEjsnipxGB5UrzbGZ"
     },
-
     "geocode_service": {
         "provider": "google",
         "httpAdapter": "https"
     },
-
     "iot_platform": {
         "att_api_protocol": "https",
         "att_message_protocol": "mqtt",
@@ -33,23 +27,27 @@
         "enable_subscription": true,
         "topic": "/exchange/root/client.ognjent_EjGwg4VW.in.asset.#"
     },
-
     "background_tasks": {
         "host": "localhost",
         "port": 8765,
         "path": "/execute",
-        "boot": ["ListenActiveBoxesTask", "ActivateBotsTask"],
+        "boot": [
+            "ListenActiveBoxesTask",
+            "ActivateBotsTask"
+        ],
         "telegram": {
             "polling": false,
             "webhook": "http://ec2-35-156-247-206.eu-central-1.compute.amazonaws.com:8765/hooks/telegram"
         },
         "cron": []
     },
-
     "telegram": {
         "access_token": "273659408:AAFTEcp72eszzIcCJSvkfWWsRV1GXvQN-js"
     },
-
+    "loggly": {
+        "token": "e020724b-a477-40fc-994a-474dcd64107e",
+        "subdomain": "pbox"
+    },
     "boxService": {
         "updateThreshold": 20000 //milliseconds
     }
