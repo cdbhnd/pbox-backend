@@ -1,6 +1,6 @@
 import * as Entities from '../entities/';
 import { IBoxService } from './IBoxService';
-import { Box, Sensor, BoxStatuses, SensorTypes } from '../entities/';
+import { Box, Sensor, BoxStatuses, SensorTypes, SensorStatuses } from '../entities/';
 import { Types, kernel } from "../dependency-injection/";
 import { injectable } from 'inversify';
 import { BoxRepository } from '../repositories/';
@@ -74,19 +74,13 @@ export class BoxService implements IBoxService {
         return box;
     }
 
+
     public async activateBox(box: Box): Promise<Box> {
 
-        //find starter sensor 
-        let starterSensor: Sensor = box.sensors.find(function (element) {
-            if (element.type == SensorTypes.activator) {
-                return true;
-            }
-        });
+        this.setStatusToBoxSensors(box, SensorStatuses.ACTIVE);
 
-        for (var i = 0; i < box.sensors.length; i++) {
-            box.sensors[i].status = BoxStatuses.ACTIVE;
-        }
-
+        let starterSensor = this.checkIfActivatorExist(box);
+        
         // set starter sensor value to true and send it to iot platform
         if (!!starterSensor) {
             starterSensor.value = true;
@@ -102,21 +96,13 @@ export class BoxService implements IBoxService {
     }
 
     public async deactivateBox(box: Box): Promise<Box> {
-
-        // set box status to idle
         box.status = BoxStatuses.IDLE;
-        for (let i = 0; i < box.sensors.length; i++) {
-            box.sensors[i].status = BoxStatuses.IDLE;
-        }
 
+        this.setStatusToBoxSensors(box, SensorStatuses.IDLE);
+        
         box = await this.boxRepo.update(box);
 
-        //find starter sensor 
-        let starterSensor: Sensor = box.sensors.find(function (element) {
-            if (element.type == SensorTypes.activator) {
-                return true;
-            }
-        });
+        let starterSensor = this.checkIfActivatorExist(box);
 
         // set starter sensor value to true and send it to iot platform
         if (!!starterSensor) {
@@ -237,5 +223,20 @@ export class BoxService implements IBoxService {
             }
             box.sensors.push(sensor);
         }
+    }
+
+    private setStatusToBoxSensors(box: Box, status: string): Box {
+        for (var i = 0; i < box.sensors.length; i++) {
+            box.sensors[i].status = status;
+        }
+        return box;
+    }
+
+    private checkIfActivatorExist(box: Box): Sensor {
+        return box.sensors.find(function (element) {
+            if (element.type == SensorTypes.activator) {
+                return true;
+            }
+        });
     }
 }
