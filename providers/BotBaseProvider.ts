@@ -71,30 +71,21 @@ export abstract class BotBaseProvider implements IBotProvider {
     protected async getStatus(boxCode: string): Promise<TextMessage> {
         let boxRepo = this.getBoxRepository();
         let freshBox: Box = await boxRepo.findOne({ code: boxCode });
-
-        return { text: 'This is my current status: ' + freshBox.status};
+        return { text: 'This is my current status: ' + freshBox.status };
     }
 
     protected async getLocation(boxCode: string): Promise<LocationMessage> {
         let boxRepo: BoxRepository = this.getBoxRepository();
         let freshBox: Box = await boxRepo.findOne({ code: boxCode });
 
-        let latitude;
-        let longitude;
-
-        for (let i = 0; i < freshBox.sensors.length; i++) {
-            if (freshBox.sensors[i].type == SensorTypes.gps) {
-                latitude = freshBox.sensors[i].value.latitude
-                longitude = freshBox.sensors[i].value.longitude
-            }
-        }
+        let sensorValue = this.getSensorValue(freshBox, SensorTypes.gps);
 
         if (freshBox.status != BoxStatuses.ACTIVE) {
-            if (!!latitude && !!longitude) {
+            if (!!sensorValue.latitude && !!sensorValue.longitude) {
                 return {
                     text: 'This is my last known location!',
-                    latitude: latitude,
-                    longitude: longitude
+                    latitude: sensorValue.latitude,
+                    longitude: sensorValue.longitude
                 }
             }
             return {
@@ -106,8 +97,8 @@ export abstract class BotBaseProvider implements IBotProvider {
 
         return {
             text: 'This is my current location',
-            latitude: latitude,
-            longitude: longitude
+            latitude: sensorValue.latitude,
+            longitude: sensorValue.longitude
         };
     }
 
@@ -115,15 +106,11 @@ export abstract class BotBaseProvider implements IBotProvider {
         let boxRepo: BoxRepository = await this.getBoxRepository();
         let freshBox: Box = await boxRepo.findOne({ code: boxCode });
         if (freshBox.status == BoxStatuses.ACTIVE) {
-            for (let i = 0; i < freshBox.sensors.length; i++) {
-                if (freshBox.sensors[i].type == SensorTypes.battery) {
-                    let battery: string = freshBox.sensors[i].value.split(',')[0];
-                    let charging: string = freshBox.sensors[i].value.split(',')[1] == 1 ? 'charging' : 'not charging';
-                    return { text: 'My current battery status is ' + battery + ' and it is ' + charging };
-                }
-            }
+            let sensorValue = this.getSensorValue(freshBox, SensorTypes.battery);
+            let chargingStatus = sensorValue.split(',')[1] == 1? 'charging.': 'not charging.';
+            return { text: 'My current battery status is ' + sensorValue.split(',')[0] + ' and it is ' + chargingStatus };
         } else {
-            return { text: 'Why are you bothering me, I am sleeping'};
+            return { text: 'Why are you bothering me, I am sleeping' };
         }
     }
 
@@ -134,40 +121,38 @@ export abstract class BotBaseProvider implements IBotProvider {
     protected async getTemperature(boxCode: string): Promise<TextMessage> {
         let boxRepo: BoxRepository = this.getBoxRepository();
         let freshBox: Box = await boxRepo.findOne({ code: boxCode });
-        let temperature;
-        for (let i = 0; i < freshBox.sensors.length; i++) {
-            if (freshBox.sensors[i].type == SensorTypes.temperature) {
-                temperature = freshBox.sensors[i].value.temperature;
-            }
-        }
+        let sensorValue = this.getSensorValue(freshBox, SensorTypes.temperature);
 
         if (freshBox.status != BoxStatuses.ACTIVE) {
-            if (!!temperature) {
-                return { text: 'This is my last known temperature: ' + temperature }
+            if (!!sensorValue.temperature) {
+                return { text: 'This is my last known temperature: ' + sensorValue.temperature }
             }
             return { text: 'I dont wanna talk about it, can I go outside and play? ' };
         } else {
-            return { text: 'This is my current temperature: ' + temperature };
+            return { text: 'This is my current temperature: ' + sensorValue.temperature };
         }
     }
 
     protected async getHumidity(boxCode: string): Promise<TextMessage> {
         let boxRepo: BoxRepository = this.getBoxRepository();
         let freshBox: Box = await boxRepo.findOne({ code: boxCode });
-        let humidity;
-        for (let i = 0; i < freshBox.sensors.length; i++) {
-            if (freshBox.sensors[i].type == SensorTypes.temperature) {
-                humidity = freshBox.sensors[i].value.humidity;
-            }
-        }
-        
+        let sensorValue = this.getSensorValue(freshBox, SensorTypes.temperature)
+
         if (freshBox.status != BoxStatuses.ACTIVE) {
-            if(!!humidity) {
-                return { text: 'This is my last known humidity: ' + humidity};
+            if (!!sensorValue.humidity) {
+                return { text: 'This is my last known humidity: ' + sensorValue.humidity };
             }
             return { text: 'Can I go outside and play?' };
         } else {
-            return { text: 'This is my current humidity: ' + humidity};
+            return { text: 'This is my current humidity: ' + sensorValue.humidity };
+        }
+    }
+
+    private getSensorValue(box: Box, sensor: SensorTypes): any {
+        for (let i = 0; i < box.sensors.length; i++) {
+            if (box.sensors[i].type == sensor) {
+                return box.sensors[i].value;
+            }
         }
     }
 
