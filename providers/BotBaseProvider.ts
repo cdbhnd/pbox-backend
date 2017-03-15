@@ -7,15 +7,15 @@ import { injectable } from 'inversify';
 
 @injectable()
 export abstract class BotBaseProvider implements IBotProvider {
-    private providerName: string;
+    protected providerName: string;
 
     constructor(providerName: string) {
         this.providerName = providerName;
     }
 
-    public abstract subscribe(serviceData: any, box: Box): Promise<boolean>;
+    public abstract subscribe(bot: Bot): Promise<boolean>;
 
-    public abstract unsubscribe(serviceData: any, box: Box): Promise<boolean>;
+    public abstract unsubscribe(bot: Bot): Promise<boolean>;
 
     public abstract update(token: string, data: any): Promise<boolean>;
 

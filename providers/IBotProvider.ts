@@ -2,8 +2,8 @@ import { Bot, Box } from '../entities/';
 
 export interface IBotProvider 
 {
-    subscribe(serviceData: any, box: Box): Promise<boolean>;
-    unsubscribe(serviceData: any, box: Box): Promise<boolean>;
+    subscribe(bot: Bot): Promise<boolean>;
+    unsubscribe(bot: Bot): Promise<boolean>;
     update(token: string, data: any): Promise<boolean>
     informUsers(bot: Bot, message: string): void
 }

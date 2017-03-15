@@ -9,16 +9,18 @@ var TelegramBot = require('node-telegram-bot-api');
 
 @injectable()
 export class TelegramBotProvider extends BotBaseProvider {
-
+    private boxRepo: BoxRepository;
     private tBots: Array<TgrBot>;
 
     constructor( @inject('providerName') providerName: string) {
         super(providerName);
+        this.boxRepo = kernel.get<BoxRepository>(Types.BoxRepository);
         this.tBots = [];
     }
 
-    public async subscribe(serviceData: any, box: Box): Promise<boolean> {
-
+    public async subscribe(bot: Bot): Promise<boolean> {
+        let box = await this.getBoxFromBot(bot);
+        let serviceData = this.getBotServiceData(bot);
         let tBot = this.createTelegramBot(serviceData.accessToken);
 
         tBot.onText(/hello|hi/i, (async function onText(msg) {
@@ -72,7 +74,8 @@ export class TelegramBotProvider extends BotBaseProvider {
         return true;
     }
 
-    public async unsubscribe(serviceData: any, box: Box): Promise<boolean> {
+    public async unsubscribe(bot: Bot): Promise<boolean> {
+        let serviceData = this.getBotServiceData(bot);
         let foundIndex: number = -1;
         for (var i = 0; i < this.tBots.length; i++) {
             if (this.tBots[i].token == serviceData.accessToken) {
@@ -143,6 +146,18 @@ export class TelegramBotProvider extends BotBaseProvider {
         for (let i = 0; i < this.tBots.length; i++) {
             if (this.tBots[i].token == token) {
                 return this.tBots[i].bot;
+            }
+        }
+    }
+
+    private async  getBoxFromBot(bot: Bot): Promise<Box> {
+        return await this.boxRepo.findOne({ code: bot.boxCode });
+    }
+
+    private getBotServiceData(bot: Bot): any {
+        for (let i = 0; i < bot.services.length; i++) {
+            if (bot.services[i].provider == this.providerName) {
+                return bot.services[i].provider;
             }
         }
     }
