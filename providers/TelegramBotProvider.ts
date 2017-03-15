@@ -157,7 +157,7 @@ export class TelegramBotProvider extends BotBaseProvider {
     private getBotServiceData(bot: Bot): any {
         for (let i = 0; i < bot.services.length; i++) {
             if (bot.services[i].provider == this.providerName) {
-                return bot.services[i].provider;
+                return bot.services[i];
             }
         }
     }
