@@ -6,38 +6,40 @@ import { ActionBase } from './ActionBase';
 import { ActionContext } from './ActionBase';
 import * as Exceptions from '../exceptions';
 
-export class Action extends ActionBase<Entities.Job[]> 
+export class Action extends ActionBase<Entities.Job[]>
 {
     private _jobRepository: Repositories.JobRepository;
     private _userRepository: Repositories.UserRepository;
 
-    constructor() 
-    {
+    constructor() {
         super();
         this._jobRepository = kernel.get<Repositories.JobRepository>(Types.JobRepository);
         this._userRepository = kernel.get<Repositories.UserRepository>(Types.UserRepository);
     };
 
-    protected getConstraints() 
-    {
+    protected getConstraints() {
         return {
             'id': 'required'
         };
     }
 
-    protected getSanitizationPattern() 
-    {
+    protected getSanitizationPattern() {
         return {};
     }
 
-    public async execute(context: ActionContext): Promise<Entities.Job[]> {
-        var userJobs: Entities.Job[];
-
+    protected async onActionExecuting(context: ActionContext): Promise<ActionContext> {
         let userFromDb = await this._userRepository.findOne({ id: context.params.id });
 
         if (!userFromDb) {
             throw new Exceptions.EntityNotFoundException('User', '');
         }
+        context.params.userFromDb = userFromDb
+        return context;
+    }
+
+    public async execute(context: ActionContext): Promise<Entities.Job[]> {
+        var userJobs: Entities.Job[];
+        let userFromDb = context.params.userFromDb;
 
         //courier user  can use generic query
         if (userFromDb.type == Entities.UserType.Courier) {

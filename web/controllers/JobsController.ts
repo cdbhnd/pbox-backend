@@ -41,7 +41,6 @@ export class JobsController {
         return createdJob;
     }
 
-    
     @Get('/v1.0/jobs')
     @UseBefore(authMiddleware)
     @HttpCode(200)

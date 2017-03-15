@@ -28,13 +28,16 @@ export class Action extends ActionBase<Entities.Box>
         return {};
     }
 
-    public async execute(context: ActionContext): Promise<Entities.Box> {
-
+    protected async onActionExecuting(context: ActionContext): Promise<ActionContext> {
         let userFromDb = await this._userRepository.findOne({ id: context.params.userId });
 
         if (!userFromDb || (userFromDb.type != Entities.UserType.Courier && userFromDb.type != Entities.UserType.Admin)) {
             throw new Exceptions.EntityNotFoundException('User', context.params.userId);
         }
+        return context;
+    }
+
+    public async execute(context: ActionContext): Promise<Entities.Box> {
 
         let box: Entities.Box = await this._boxRepository.findOne({ code: context.params.boxCode });
 

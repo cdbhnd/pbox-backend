@@ -30,13 +30,18 @@ export class Action extends ActionBase<Entities.User>
         return {};
     }
 
-    public async execute(context): Promise<Entities.User> 
-    {
+    protected async onActionExecuting(context: ActionContext): Promise<ActionContext> {
         let existingUser = await this._userRepository.findOne({ username: context.params.username });
 
         if (!!existingUser) {
             throw new Exceptions.UsernameNotAvailableException(context.params.username);
         }
+        return context;
+    }
+
+    public async execute(context): Promise<Entities.User> 
+    {
+        
 
         let user: Entities.User = {
             firstName: context.params.first_name,
