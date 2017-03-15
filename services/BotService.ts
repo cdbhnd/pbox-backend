@@ -28,8 +28,8 @@ export class BotService implements IBotService
 
         for (let i = 0; i < bot.services.length; i++) {
             let provider: IBotProvider = kernel.getNamed<IBotProvider>(Types.BotProvider, bot.services[i].provider);
-            await provider.unsubscribe(bot.services[i], box);
-            await provider.subscribe(bot.services[i], box);
+            await provider.unsubscribe(bot);
+            await provider.subscribe(bot);
         }
 
         return bot;
@@ -47,7 +47,7 @@ export class BotService implements IBotService
 
         for (let i = 0; i < bot.services.length; i++) {
             let provider: IBotProvider = kernel.getNamed<IBotProvider>(Types.BotProvider, bot.services[i].provider);
-            await provider.unsubscribe(bot.services[i], box);
+            await provider.unsubscribe(bot);
         }
 
         return bot;

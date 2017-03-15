@@ -31,7 +31,7 @@ export class Action extends ActionBase<Entities.Box>
     protected getSanitizationPattern() {
         return {};
     }
-
+    
     protected async onActionExecuting(context: ActionContext): Promise<ActionContext> {
         
         let userFromDb = await this._userRepository.findOne({ id: context.params.userId });
