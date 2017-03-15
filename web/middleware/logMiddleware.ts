@@ -1,20 +1,13 @@
-var winston = require('winston');
-require('winston-loggly-bulk');
-import * as config from 'config';
+import { Types, kernel } from "../../dependency-injection/";
+import {ILogger, HttpLogEntry} from "../../utility/ILogger";
 
-//loggly configuration
-winston.add(winston.transports.Loggly, {
-    token: String(config.get('loggly.token')),
-    subdomain: String(config.get('loggly.subdomain')),
-    tags: ["Winston-NodeJS"],
-    json: true
-});
+var logger: ILogger = kernel.get<ILogger>(Types.Logger);
 
 export async function logMiddleware(req: any, res: any, next: Function) {
     var oldWrite = res.write;
     var oldEnd = res.end;
 
-    var log = {
+    var log: HttpLogEntry = {
         createdAt: new Date(),
         request: {
             headers: req.headers,
@@ -53,13 +46,12 @@ export async function logMiddleware(req: any, res: any, next: Function) {
             log.response.headers = res._headers;
             log.response.statusCode = res.statusCode;
 
-            //record to loggly
-            winston.log('info', log);
+            logger.createHttpLog(log);
         } catch (e) {
             console.log('Error occurred in logging middleware ' + e);
         }
         oldEnd.apply(res, arguments);
     };
 
-    next();
+    next();   
 }
