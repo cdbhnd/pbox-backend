@@ -7,7 +7,7 @@ import * as DB from '../database/index';
 import * as actions from '../actions';
 import * as bootTasks from '../web/boottasks/';
 import * as backgroundTasks from '../background/tasks/';
-
+import * as Utility from '../utility/';
 var kernel = new Kernel();
 
 kernel.bind<Repositories.JobRepository>(Types.JobRepository).to(DB.Jobs);
@@ -36,5 +36,8 @@ kernel.bind<string>('providerName').toConstantValue('telegram').whenInjectedInto
 kernel.bind<backgroundTasks.ITask>(Types.BackgroundTask).to(backgroundTasks.ListenActiveBoxesTask).whenTargetNamed('ListenActiveBoxesTask');
 kernel.bind<backgroundTasks.ITask>(Types.BackgroundTask).to(backgroundTasks.ActivateBotsTask).whenTargetNamed('ActivateBotsTask');
 kernel.bind<backgroundTasks.ITask>(Types.BackgroundTask).to(backgroundTasks.DeactivateBotsTask).whenTargetNamed('DeactivateBotsTask');
+
+//utility
+kernel.bind<Utility.ILogger>(Types.Logger).to(Utility.Logger).inSingletonScope();
 
 export default kernel;

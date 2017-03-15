@@ -49,6 +49,11 @@
         }]
     },
 
+    "loggly": {
+        "token": "e020724b-a477-40fc-994a-474dcd64107e",
+        "subdomain": "pbox"
+    },
+
     "telegram": {
         "access_token": "273659408:AAFTEcp72eszzIcCJSvkfWWsRV1GXvQN-js"
     },
