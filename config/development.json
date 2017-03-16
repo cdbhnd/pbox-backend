@@ -49,6 +49,11 @@
         }]
     },
 
+    "loggly": {
+        "token": "e020724b-a477-40fc-994a-474dcd64107e",
+        "subdomain": "pbox"
+    },
+
     "telegram": {
         "access_token": "273659408:AAFTEcp72eszzIcCJSvkfWWsRV1GXvQN-js"
     },
@@ -63,5 +68,8 @@
         "boxTempChanged": "BOX_TEMPERATURE_CHANGED",
         "boxHumChanged": "BOX_HUMIDITY_CHANGED",
         "boxVibrateChanged": "BOX_VIBRATION_CHANGED"
+    },
+    "boxService": {
+        "updateThreshold": 20000 //milliseconds
     }
 }

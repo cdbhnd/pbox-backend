@@ -12,7 +12,8 @@ let Types = {
     BotRepository: Symbol("BotRepository"),
     BotProvider: Symbol("BotProvider"),
     BotService: Symbol("BotService"),
-    EventMediator: Symbol("EventMediator")
+    EventMediator: Symbol("EventMediator"),
+    Logger: Symbol("Logger")
 };
 
 export default Types;

@@ -159,52 +159,50 @@ export class BoxService implements IBoxService {
         if (!!box.topic && !!box.clientId && !!box.clientKey && !!box.deviceId) {
 
             let bot: Entities.Bot = await this._botRepository.findOne({ boxCode: box.code });
-
-            this.iotPlatform.listenBoxSensors(box, async function (boxCode: string, sensorCode: string, sensorType: string, value: any) {
+            let boxService = this;
+            this.iotPlatform.listenBoxSensors(box, async function (boxCode: string, sensorCode: string, sensorType: string, newSensorValue: any) {
                 let boxRepo: BoxRepository = kernel.get<BoxRepository>(Types.BoxRepository);
 
                 // Find the Box
                 let freshBox: Box = await boxRepo.findOne({ code: boxCode });
-                if (!freshBox || freshBox.status == BoxStatuses.IDLE) {
-                    return;
-                }
 
-                // Find the Sensor
-                let sensor: Sensor = BoxExtensions.getSensor(freshBox, sensorType);
-                if (!sensor) {
-                    return;
-                }
+                if (!!freshBox && freshBox.status != BoxStatuses.IDLE) {
+                    for (var i = 0; i < freshBox.sensors.length; i++) {
+                        if (freshBox.sensors[i].name == sensorType) {
 
-                let eventsMediator: IEventMediator = EventAggregator.getMediator();
+                            let selectedBoxSensor: Sensor = freshBox.sensors[i];
+                            let oldSensorValue = selectedBoxSensor.value;
+                            selectedBoxSensor.value = newSensorValue;
 
-                // Broadcast global sensor changed event
-                eventsMediator.broadcast(EventAggregator.boxSensorChanged, { box: boxCode, sensor: sensorType, value: value });
+                            if (selectedBoxSensor.type == SensorTypes.activator) {
+                                // if activator is set to false deactivate box
+                                if (!selectedBoxSensor.value) {
+                                    boxService.deactivateBox(freshBox);
+                                }
+                            }
 
-                // Broadcast sensor specific event
-                eventsMediator.broadcast(EventAggregator.getSensorEvent(sensor), { box: boxCode, sensor: sensorType, value: value });
+                            if (selectedBoxSensor.type == SensorTypes.vibration) {
+                                if (selectedBoxSensor.value === '1') {
+                                    for (let i = 0; i < bot.services.length; i++) {
+                                        let provider: IBotProvider = kernel.getNamed<IBotProvider>(Types.BotProvider, bot.services[i].provider);
+                                        provider.informUsers(bot, 'Strong vibration has occured !!!');
+                                    }
+                                }
+                            }
 
-                // Set sensor value
-                sensor.value = value;
-                // Set new sensor value in DB
-                boxRepo.updateBoxSensor(freshBox, sensorType, value);
+                            //update if its new value and if its sensor value older then 20 sec
+                            if (JSON.stringify(oldSensorValue) != JSON.stringify(newSensorValue)) {
+                                let timeDiff = (new Date().getTime() - selectedBoxSensor.timestamp);
+                                if (timeDiff > config.get('boxService.updateThreshold')) {
+                                    boxRepo.updateBoxSensor(freshBox, sensorType, newSensorValue);
+                                };
+                            }
 
-                // Update Box status if activator value has changed
-                if (sensor.type == SensorTypes.activator) {
-                    freshBox.status = sensor.value ? BoxStatuses.ACTIVE : BoxStatuses.SLEEP;
-                }
-
-                // Inform Chat users if vibration occurs
-                if (sensor.type == SensorTypes.vibration) {
-                    if (sensor.value === '1') {
-                        for (let i = 0; i < bot.services.length; i++) {
-                            let provider: IBotProvider = kernel.getNamed<IBotProvider>(Types.BotProvider, bot.services[i].provider);
-                            provider.informUsers(bot, 'Strong vibration has occured !!!');
+                            boxRepo.logSensorState(freshBox, selectedBoxSensor);
+                            break;
                         }
                     }
                 }
-
-                // Log sensor chnage in DB
-                boxRepo.logSensorState(freshBox, sensor);
             });
 
             return box;
@@ -229,6 +227,8 @@ export class BoxService implements IBoxService {
 
     private mapSensorDataToBox(box: Box, sensorData: any): void {
         box.sensors = [];
+        let timestamp = new Date().getTime();
+
         for (var i = 0; i < sensorData.assets.length; i++) {
             let sensor: Entitties.Sensor = {
                 name: sensorData.assets[i].title,
@@ -237,7 +237,8 @@ export class BoxService implements IBoxService {
                 value: null,
                 assetId: sensorData.assets[i].id,
                 topic: '/exchange/root/client.' + String(config.get('iot_platform.att_clientId')) + '.in.asset.' + sensorData.assets[i].id + '.state',
-                type: sensorData.assets[i].title
+                type: sensorData.assets[i].title,
+                timestamp: timestamp
             }
             box.sensors.push(sensor);
         }

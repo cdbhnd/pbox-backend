@@ -1,11 +1,13 @@
-var winston = require('winston');
-require('winston-loggly-bulk');
+import { Types, kernel } from "../../dependency-injection/";
+import {ILogger, HttpLogEntry} from "../../utility/ILogger";
+
+var logger: ILogger = kernel.get<ILogger>(Types.Logger);
 
 export async function logMiddleware(req: any, res: any, next: Function) {
     var oldWrite = res.write;
     var oldEnd = res.end;
 
-    var log = {
+    var log: HttpLogEntry = {
         createdAt: new Date(),
         request: {
             headers: req.headers,
@@ -31,26 +33,25 @@ export async function logMiddleware(req: any, res: any, next: Function) {
     };
 
     res.end = function (chunk) {
-        if (chunk)
-            chunks.push(chunk);
+        try {
+            if (chunk)
+                chunks.push(chunk);
+            //if exception is trown, chunk is string
+            if (typeof chunk == 'string') {
+                log.response.body = chunk;
+            } else {
+                log.response.body = Buffer.concat(chunks).toString('utf8');
+            }
 
-        log.response.body = Buffer.concat(chunks).toString('utf8');
-        log.response.headers = res._headers;
-        log.response.statusCode = res.statusCode;
+            log.response.headers = res._headers;
+            log.response.statusCode = res.statusCode;
 
-        //record to loggly
-        winston.add(winston.transports.Loggly, {
-            token: "e020724b-a477-40fc-994a-474dcd64107e",
-            subdomain: "pbox",
-            tags: ["Winston-NodeJS"],
-            json: true
-        });
-
-        winston.log('info', log);
-        /////////////////////////////////////////////////////////
-        
+            logger.createHttpLog(log);
+        } catch (e) {
+            console.log('Error occurred in logging middleware ' + e);
+        }
         oldEnd.apply(res, arguments);
     };
 
-    next();
+    next();   
 }
