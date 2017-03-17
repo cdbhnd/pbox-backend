@@ -10,17 +10,17 @@ import { ActionBase, ActionContext, ErrorContext } from "./ActionBase";
 
 export class Action extends ActionBase<Entities.IJob> {
     private jobService: Services.IJobService;
-    private jobRepo: Repositories.JobRepository;
-    private userRepo: Repositories.UserRepository;
-    private boxRepo: Repositories.BoxRepository;
+    private jobRepo: Repositories.IJobRepository;
+    private userRepo: Repositories.IUserRepository;
+    private boxRepo: Repositories.IBoxRepository;
     private boxService: Services.IBoxService;
 
     constructor() {
         super();
         this.jobService = kernel.get<Services.IJobService>(Types.JobService);
-        this.jobRepo = kernel.get<Repositories.JobRepository>(Types.JobRepository);
-        this.userRepo = kernel.get<Repositories.UserRepository>(Types.UserRepository);
-        this.boxRepo = kernel.get<Repositories.BoxRepository>(Types.BoxRepository);
+        this.jobRepo = kernel.get<Repositories.IJobRepository>(Types.JobRepository);
+        this.userRepo = kernel.get<Repositories.IUserRepository>(Types.UserRepository);
+        this.boxRepo = kernel.get<Repositories.IBoxRepository>(Types.BoxRepository);
         this.boxService = kernel.get<Services.IBoxService>(Types.BoxService);
     };
 

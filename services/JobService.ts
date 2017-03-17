@@ -9,14 +9,14 @@ import * as Providers from "../providers/";
 
 @injectable()
 export class JobService implements IJobService {
-    private jobRepository: Repositories.JobRepository;
+    private jobRepository: Repositories.IJobRepository;
     private quoteProvider: Providers.IQuotesProvider;
     private geocodeProvider: Providers.IGeocodeProvider;
     private iotPlatform: Providers.IIotPlatform;
     private moment: any;
 
     constructor() {
-        this.jobRepository = kernel.get<Repositories.JobRepository>(Types.JobRepository);
+        this.jobRepository = kernel.get<Repositories.IJobRepository>(Types.JobRepository);
         this.quoteProvider = kernel.get<Providers.IQuotesProvider>(Types.QuotesProvider);
         this.geocodeProvider = kernel.get<Providers.IGeocodeProvider>(Types.GeocodeProvider);
         this.iotPlatform = kernel.get<Providers.IIotPlatform>(Types.IotPlatform);

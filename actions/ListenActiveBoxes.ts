@@ -9,13 +9,13 @@ import { IBoxService } from "../services/";
 import { IIotPlatform } from "../providers/";
 
 export class Action extends ActionBase<Entities.IBox[]> {
-    private boxRepository: Repositories.BoxRepository;
+    private boxRepository: Repositories.IBoxRepository;
     private boxService: IBoxService;
     private iotPlatform: IIotPlatform;
 
     constructor() {
         super();
-        this.boxRepository = kernel.get<Repositories.BoxRepository>(Types.BoxRepository);
+        this.boxRepository = kernel.get<Repositories.IBoxRepository>(Types.BoxRepository);
         this.boxService = kernel.get<IBoxService>(Types.BoxService);
         this.iotPlatform = kernel.get<IIotPlatform>(Types.IotPlatform);
     };

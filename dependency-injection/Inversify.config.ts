@@ -10,14 +10,14 @@ import * as backgroundTasks from '../background/tasks/';
 import * as Utility from '../utility/';
 var kernel = new Kernel();
 
-kernel.bind<Repositories.JobRepository>(Types.JobRepository).to(DB.Jobs);
+kernel.bind<Repositories.IJobRepository>(Types.JobRepository).to(DB.Jobs);
 kernel.bind<string>('entityName').toConstantValue('jobs').whenInjectedInto(DB.Jobs);
-kernel.bind<Repositories.UserRepository>(Types.UserRepository).to(DB.User);
+kernel.bind<Repositories.IUserRepository>(Types.UserRepository).to(DB.User);
 kernel.bind<string>('entityName').toConstantValue('users').whenInjectedInto(DB.User);
-kernel.bind<Repositories.BoxRepository>(Types.BoxRepository).to(DB.Boxes);
+kernel.bind<Repositories.IBoxRepository>(Types.BoxRepository).to(DB.Boxes);
 kernel.bind<string>('entityName').toConstantValue('boxes').whenInjectedInto(DB.Boxes);
 
-kernel.bind<Repositories.BotRepository>(Types.BotRepository).to(DB.Bots);
+kernel.bind<Repositories.IBotRepository>(Types.BotRepository).to(DB.Bots);
 kernel.bind<string>('entityName').toConstantValue('bots').whenInjectedInto(DB.Bots);
 
 kernel.bind<Services.IJobService>(Types.JobService).to(Services.JobService);

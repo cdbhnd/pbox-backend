@@ -3,7 +3,7 @@ import { IBoxService } from "./IBoxService";
 import { IBox, ISensor, BoxStatuses, SensorTypes, SensorStatuses } from "../entities/";
 import { Types, kernel } from "../dependency-injection/";
 import { injectable } from "inversify";
-import { BoxRepository } from "../repositories/";
+import { IBoxRepository } from "../repositories/";
 import * as Repositories from "../repositories/";
 import { IIotPlatform } from "../providers/";
 import * as Entitties from "../entities";
@@ -15,13 +15,13 @@ import { IBotProvider } from "../providers/";
 @injectable()
 export class BoxService implements IBoxService {
 
-    private boxRepo: BoxRepository;
+    private boxRepo: IBoxRepository;
     private iotPlatform: IIotPlatform;
-    private botRepository: Repositories.BotRepository;
+    private botRepository: Repositories.IBotRepository;
     constructor() {
-        this.boxRepo = kernel.get<BoxRepository>(Types.BoxRepository);
+        this.boxRepo = kernel.get<IBoxRepository>(Types.BoxRepository);
         this.iotPlatform = kernel.get<IIotPlatform>(Types.IotPlatform);
-        this.botRepository = kernel.get<Repositories.BotRepository>(Types.BotRepository);
+        this.botRepository = kernel.get<Repositories.IBotRepository>(Types.BotRepository);
     }
 
     public async setBoxSensors(box: IBox): Promise<IBox> {
@@ -144,7 +144,7 @@ export class BoxService implements IBoxService {
             let bot: Entities.IBot = await this.botRepository.findOne({ boxCode: box.code });
             let boxService = this;
             this.iotPlatform.listenBoxSensors(box, async (boxCode: string, sensorCode: string, sensorType: string, newSensorValue: any) => {
-                let boxRepo: BoxRepository = kernel.get<BoxRepository>(Types.BoxRepository);
+                let boxRepo: IBoxRepository = kernel.get<IBoxRepository>(Types.BoxRepository);
                 let freshBox: IBox = await boxRepo.findOne({ code: boxCode });
                 if (!!freshBox && freshBox.status != BoxStatuses.IDLE) {
                     for (let i = 0; i < freshBox.sensors.length; i++) {

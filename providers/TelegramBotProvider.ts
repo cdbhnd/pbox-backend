@@ -2,19 +2,19 @@ import { BotBaseProvider, TextMessage, LocationMessage } from './BotBaseProvider
 import { IBot, IBox, SensorTypes, BoxStatuses } from '../entities/';
 import { Types, kernel } from "../dependency-injection/";
 import { injectable, inject } from 'inversify';
-import { BoxRepository, BotRepository } from '../repositories/';
+import { IBoxRepository, IBotRepository } from '../repositories/';
 import { IBoxService } from '../services/';
 import * as config from 'config';
 var TelegramBot = require('node-telegram-bot-api');
 
 @injectable()
 export class TelegramBotProvider extends BotBaseProvider {
-    private boxRepo: BoxRepository;
+    private boxRepo: IBoxRepository;
     private tBots: Array<TgrBot>;
 
     constructor( @inject('providerName') providerName: string) {
         super(providerName);
-        this.boxRepo = kernel.get<BoxRepository>(Types.BoxRepository);
+        this.boxRepo = kernel.get<IBoxRepository>(Types.BoxRepository);
         this.tBots = [];
     }
 

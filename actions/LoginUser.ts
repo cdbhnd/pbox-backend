@@ -8,11 +8,11 @@ import * as Password from "../utility/Password";
 import { ActionBase } from "./ActionBase";
 
 export class Action extends ActionBase<Entities.IUser> {
-    private userRepository: Repositories.UserRepository;
+    private userRepository: Repositories.IUserRepository;
 
     constructor() {
         super();
-        this.userRepository = kernel.get<Repositories.UserRepository>(Types.UserRepository);
+        this.userRepository = kernel.get<Repositories.IUserRepository>(Types.UserRepository);
     };
 
     public async execute(context): Promise<Entities.IUser> {

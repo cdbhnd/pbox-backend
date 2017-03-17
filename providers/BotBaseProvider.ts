@@ -1,7 +1,7 @@
 import { IBotProvider } from './IBotProvider';
 import { IBox, IBot, BoxStatuses, SensorTypes } from '../entities/';
 import { IBoxService } from '../services/';
-import { BotRepository, BoxRepository } from '../repositories/';
+import { IBotRepository, IBoxRepository } from '../repositories/';
 import { Types, kernel } from "../dependency-injection/";
 import { injectable } from 'inversify';
 
@@ -75,7 +75,7 @@ export abstract class BotBaseProvider implements IBotProvider {
     }
 
     protected async getLocation(boxCode: string): Promise<LocationMessage> {
-        let boxRepo: BoxRepository = this.getBoxRepository();
+        let boxRepo: IBoxRepository = this.getBoxRepository();
         let freshBox: IBox = await boxRepo.findOne({ code: boxCode });
 
         let sensorValue = this.getSensorValue(freshBox, SensorTypes.gps);
@@ -103,7 +103,7 @@ export abstract class BotBaseProvider implements IBotProvider {
     }
 
     protected async getBatteryStatus(boxCode: string): Promise<TextMessage> {
-        let boxRepo: BoxRepository = await this.getBoxRepository();
+        let boxRepo: IBoxRepository = await this.getBoxRepository();
         let freshBox: IBox = await boxRepo.findOne({ code: boxCode });
         if (freshBox.status == BoxStatuses.ACTIVE) {
             let sensorValue = this.getSensorValue(freshBox, SensorTypes.battery);
@@ -119,7 +119,7 @@ export abstract class BotBaseProvider implements IBotProvider {
     }
 
     protected async getTemperature(boxCode: string): Promise<TextMessage> {
-        let boxRepo: BoxRepository = this.getBoxRepository();
+        let boxRepo: IBoxRepository = this.getBoxRepository();
         let freshBox: IBox = await boxRepo.findOne({ code: boxCode });
         let sensorValue = this.getSensorValue(freshBox, SensorTypes.temperature);
 
@@ -134,7 +134,7 @@ export abstract class BotBaseProvider implements IBotProvider {
     }
 
     protected async getHumidity(boxCode: string): Promise<TextMessage> {
-        let boxRepo: BoxRepository = this.getBoxRepository();
+        let boxRepo: IBoxRepository = this.getBoxRepository();
         let freshBox: IBox = await boxRepo.findOne({ code: boxCode });
         let sensorValue = this.getSensorValue(freshBox, SensorTypes.temperature)
 
@@ -156,12 +156,12 @@ export abstract class BotBaseProvider implements IBotProvider {
         }
     }
 
-    private getBotRepository(): BotRepository {
-        return kernel.get<BotRepository>(Types.BotRepository);
+    private getBotRepository(): IBotRepository {
+        return kernel.get<IBotRepository>(Types.BotRepository);
     }
 
-    private getBoxRepository(): BoxRepository {
-        return kernel.get<BoxRepository>(Types.BoxRepository);
+    private getBoxRepository(): IBoxRepository {
+        return kernel.get<IBoxRepository>(Types.BoxRepository);
     }
 
     private getBoxService() {

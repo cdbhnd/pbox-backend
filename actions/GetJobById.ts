@@ -7,13 +7,13 @@ import { ActionContext } from "./ActionBase";
 import * as Exceptions from "../exceptions";
 
 export class Action extends ActionBase<Entities.IJob> {
-    private jobRepository: Repositories.JobRepository;
-    private userRepository: Repositories.UserRepository;
+    private jobRepository: Repositories.IJobRepository;
+    private userRepository: Repositories.IUserRepository;
 
     constructor() {
         super();
-        this.jobRepository = kernel.get<Repositories.JobRepository>(Types.JobRepository);
-        this.userRepository = kernel.get<Repositories.UserRepository>(Types.UserRepository);
+        this.jobRepository = kernel.get<Repositories.IJobRepository>(Types.JobRepository);
+        this.userRepository = kernel.get<Repositories.IUserRepository>(Types.UserRepository);
     };
 
     public async execute(context: ActionContext): Promise<Entities.IJob> {

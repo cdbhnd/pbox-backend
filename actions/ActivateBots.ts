@@ -9,14 +9,14 @@ import { IBotService } from "../services/";
 import { IIotPlatform } from "../providers/";
 
 export class Action extends ActionBase<Entities.IBot[]> {
-    private boxRepository: Repositories.BoxRepository;
-    private botRepository: Repositories.BotRepository;
+    private boxRepository: Repositories.IBoxRepository;
+    private botRepository: Repositories.IBotRepository;
     private botService: IBotService;
 
     constructor() {
         super();
-        this.boxRepository = kernel.get<Repositories.BoxRepository>(Types.BoxRepository);
-        this.botRepository = kernel.get<Repositories.BotRepository>(Types.BotRepository);
+        this.boxRepository = kernel.get<Repositories.IBoxRepository>(Types.BoxRepository);
+        this.botRepository = kernel.get<Repositories.IBotRepository>(Types.BotRepository);
         this.botService = kernel.get<IBotService>(Types.BotService);
     };
 

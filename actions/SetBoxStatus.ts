@@ -9,14 +9,14 @@ import * as Exceptions from "../exceptions";
 import { BoxStatuses } from "../entities";
 
 export class Action extends ActionBase<Entities.IBox> {
-    private boxRepository: Repositories.BoxRepository;
-    private userRepository: Repositories.UserRepository;
+    private boxRepository: Repositories.IBoxRepository;
+    private userRepository: Repositories.IUserRepository;
     private boxService: Services.IBoxService;
 
     constructor() {
         super();
-        this.boxRepository = kernel.get<Repositories.BoxRepository>(Types.BoxRepository);
-        this.userRepository = kernel.get<Repositories.UserRepository>(Types.UserRepository);
+        this.boxRepository = kernel.get<Repositories.IBoxRepository>(Types.BoxRepository);
+        this.userRepository = kernel.get<Repositories.IUserRepository>(Types.UserRepository);
         this.boxService = kernel.get<Services.IBoxService>(Types.BoxService);
     };
 

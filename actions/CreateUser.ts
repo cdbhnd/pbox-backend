@@ -7,11 +7,11 @@ import { ActionContext } from "./ActionBase";
 import { generateHash } from "../utility/Password";
 
 export class Action extends ActionBase<Entities.IUser> {
-    private userRepository: Repositories.UserRepository;
+    private userRepository: Repositories.IUserRepository;
 
     constructor() {
         super();
-        this.userRepository = kernel.get<Repositories.UserRepository>(Types.UserRepository);
+        this.userRepository = kernel.get<Repositories.IUserRepository>(Types.UserRepository);
     }
 
     public async execute(context): Promise<Entities.IUser> {

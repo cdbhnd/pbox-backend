@@ -3,16 +3,16 @@ import { IBot, IBox } from "../entities/";
 import { Types, kernel } from "../dependency-injection/";
 import { injectable } from "inversify";
 import { IBotProvider } from "../providers/";
-import { BoxRepository } from "../repositories/";
+import { IBoxRepository } from "../repositories/";
 import { Check } from "../utility/Check";
 import * as Exceptions from "../exceptions/";
 
 @injectable()
 export class BotService implements IBotService {
-    private boxRepo: BoxRepository;
+    private boxRepo: IBoxRepository;
 
     constructor() {
-        this.boxRepo = kernel.get<BoxRepository>(Types.BoxRepository);
+        this.boxRepo = kernel.get<IBoxRepository>(Types.BoxRepository);
     }
 
     public async activate(bot: IBot): Promise<IBot> {

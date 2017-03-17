@@ -5,7 +5,7 @@ import { BaseRepository } from './BaseRepository';
 import * as mongodb from 'mongodb';
 
 @injectable()
-export class Boxes extends BaseRepository<Entities.IBox> implements Repos.BoxRepository {
+export class Boxes extends BaseRepository<Entities.IBox> implements Repos.IBoxRepository {
 
     constructor( @inject('entityName') entityName: string) {
         super(entityName);

@@ -7,11 +7,11 @@ import { ActionContext } from "./ActionBase";
 import * as Exceptions from "../exceptions";
 
 export class Action extends ActionBase<Entities.IBox> {
-    private boxRepository: Repositories.BoxRepository;
+    private boxRepository: Repositories.IBoxRepository;
 
     constructor() {
         super();
-        this.boxRepository = kernel.get<Repositories.BoxRepository>(Types.BoxRepository);
+        this.boxRepository = kernel.get<Repositories.IBoxRepository>(Types.BoxRepository);
     };
 
     public async execute(context: ActionContext): Promise<Entities.IBox> {
