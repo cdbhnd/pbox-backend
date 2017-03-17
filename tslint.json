@@ -7,6 +7,7 @@
         "triple-equals": false,
         "no-console": [false],
         "prefer-for-of": false,
-        "max-classes-per-file": [false]
+        "max-classes-per-file": [false],
+        "object-literal-shorthand": false
     }
 }
