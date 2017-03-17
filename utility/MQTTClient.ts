@@ -8,19 +8,19 @@ export class MQTTClient {
     }
 
     public onConnect(callback: Function) {
-        this.mqttJsClient.on('connect', function(client, userdata, rc) {
+        this.mqttJsClient.on("connect", (client, userdata, rc) => {
             callback();
         });
     }
 
     public message(callback: Function) {
-        this.mqttJsClient.on('message', function(topic, message, packet) {
+        this.mqttJsClient.on("message", (topic, message, packet) => {
             callback(topic, message);
         });
     }
 
     public onDisconnect(callback: Function) {
-        this.mqttJsClient.on('close', function() {
+        this.mqttJsClient.on("close", () => {
             callback();
         });
     }

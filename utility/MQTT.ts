@@ -1,4 +1,4 @@
-import { MQTTClient } from './MQTTClient';
+import { MQTTClient } from "./MQTTClient";
 
 export class MQTT {
     private mqtt: any;
@@ -7,7 +7,7 @@ export class MQTT {
 
     constructor(host: string, port: string)  {
 
-        this.mqtt = require('mqtt');
+        this.mqtt = require("mqtt");
         this.baseMQTTUrl = host;
         this.basePort = port;
     }
@@ -16,17 +16,15 @@ export class MQTT {
 
         let mqttId: string = deviceId.length > 22 ? deviceId.substring(0, 22) : deviceId;
 
-        let brokerId: string = clientId + ':' + clientId;
+        let brokerId: string = clientId + ":" + clientId;
 
         let mqttClient = this.mqtt.createClient(this.basePort, this.baseMQTTUrl, {
                 clientId: mqttId,
                 username: brokerId,
-                password: clientKey
+                password: clientKey,
             })
             .subscribe(topic);
 
         return new MQTTClient(mqttClient);
     }
 }
-
-

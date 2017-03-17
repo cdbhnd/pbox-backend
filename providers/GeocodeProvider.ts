@@ -34,7 +34,7 @@ export class GecodeProvider implements IGeocodeProvider {
                 };
             }
         } catch (e) {
-            this.logger.createGenericLog(e);
+            this.logger.createErrorLog(e);
         }
         return null;
     }
@@ -56,7 +56,7 @@ export class GecodeProvider implements IGeocodeProvider {
                 };
             }
         } catch (e) {
-            this.logger.createGenericLog(e);
+            this.logger.createErrorLog(e);
         }
         return null;
     }

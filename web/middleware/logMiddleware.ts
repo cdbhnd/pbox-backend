@@ -1,5 +1,5 @@
 import { Types, kernel } from "../../dependency-injection/";
-import {ILogger, HttpLogEntry} from "../../utility/ILogger";
+import {ILogger, IHttpLogEntry} from "../../utility/ILogger";
 
 var logger: ILogger = kernel.get<ILogger>(Types.Logger);
 
@@ -7,7 +7,7 @@ export async function logMiddleware(req: any, res: any, next: Function) {
     var oldWrite = res.write;
     var oldEnd = res.end;
 
-    var log: HttpLogEntry = {
+    var log: IHttpLogEntry = {
         createdAt: new Date(),
         request: {
             headers: req.headers,
