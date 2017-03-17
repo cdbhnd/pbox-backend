@@ -1,16 +1,16 @@
-import {ApplicationException} from './ApplicationException';
+import {IApplicationException} from "./ApplicationException";
 
-export class InvalidCredentialsException extends Error implements ApplicationException {
-    public encrypted_password: string;
+export class InvalidCredentialsException extends Error implements IApplicationException {
+    public encryptedPassword: string;
     public username: string;
-    public data:string;
+    public data: string;
 
-    constructor(username, encrypted_password, message?, data?) {
-        super('INVALID_CREDENTIALS');
-        this.name = 'INVALID_CREDENTIALS';
+    constructor(username, encryptePassword, message?, data?) {
+        super("INVALID_CREDENTIALS");
+        this.name = "INVALID_CREDENTIALS";
         this.username = username;
-        this.encrypted_password = encrypted_password;
-        this.message = !!message ? message : 'INVALID_CREDENTIALS';
+        this.encryptedPassword = encryptePassword;
+        this.message = !!message ? message : "INVALID_CREDENTIALS";
         this.data = data;
     }
 }

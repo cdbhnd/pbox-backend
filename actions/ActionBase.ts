@@ -73,7 +73,7 @@ export class ActionContext {
 
 export class ErrorContext<T> {
     public context: ActionContext;
-    public exception: Exceptions.ApplicationException;
+    public exception: Exceptions.IApplicationException;
     public handled: boolean;
     public result: T;
 }
