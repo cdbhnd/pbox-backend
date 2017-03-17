@@ -1,5 +1,6 @@
 export interface ILogger {
-    createHttpLog(log: HttpLogEntry): void 
+    createHttpLog(log: HttpLogEntry): void;
+    createGenericLog(log: any): void;
 }
 
 export interface HttpLogEntry {

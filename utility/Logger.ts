@@ -18,6 +18,10 @@ export class Logger implements ILogger {
     }
 
     public createHttpLog(log: HttpLogEntry): void {
-        this.winston.log('info', log);
+        this.winston.log('HttpLog', log);
+    }
+
+    public createGenericLog(log: any): void {
+        this.winston.log('Generic log', log);
     }
 }
