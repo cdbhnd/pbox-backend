@@ -1,92 +1,80 @@
 import { Types, kernel } from "../dependency-injection/";
 import * as Exceptions from "../exceptions/";
-import * as Services from '../services/';
-import * as Repositories from '../repositories/';
-import * as Entities from '../entities/';
-import { ActionBase, ActionContext, ErrorContext } from './ActionBase';
+import * as Services from "../services/";
+import * as Repositories from "../repositories/";
+import * as Entities from "../entities/";
+import { ActionBase, ActionContext, ErrorContext } from "./ActionBase";
 
-export class Action extends ActionBase<Entities.Job> 
-{
-    private _jobService: Services.IJobService;
-    private _jobRepo: Repositories.JobRepository;
-    private _userRepo: Repositories.UserRepository;
+export class Action extends ActionBase<Entities.Job> {
+    private jobService: Services.IJobService;
+    private jobRepo: Repositories.JobRepository;
+    private userRepo: Repositories.UserRepository;
 
-    constructor() 
-    {
+    constructor() {
         super();
-        this._jobService = kernel.get<Services.IJobService>(Types.JobService);
-        this._jobRepo = kernel.get<Repositories.JobRepository>(Types.JobRepository);
-        this._userRepo = kernel.get<Repositories.UserRepository>(Types.UserRepository);
+        this.jobService = kernel.get<Services.IJobService>(Types.JobService);
+        this.jobRepo = kernel.get<Repositories.JobRepository>(Types.JobRepository);
+        this.userRepo = kernel.get<Repositories.UserRepository>(Types.UserRepository);
     };
 
-    protected getConstraints() 
-    {
+    public async execute(context: ActionContext): Promise<Entities.Job> {
+        let updatedJob: Entities.Job = context.params.job;
+
+        // check if pickup is updated => jobService.updatePickup
+        if (!!context.params.pickup) {
+            let pickupLocation: Entities.Geolocation = {
+                latitude: context.params.pickup.latitude,
+                longitude: context.params.pickup.longitude,
+                address: context.params.pickup.address,
+            };
+            updatedJob = await this.jobService.updatePickup(updatedJob, pickupLocation);
+        }
+
+        // check if destination is updated => jobService.updateDestination
+        if (!!context.params.destination) {
+            let destinationLocation: Entities.Geolocation = {
+                latitude: context.params.destination.latitude,
+                longitude: context.params.destination.longitude,
+                address: context.params.destination.address,
+            };
+            updatedJob = await this.jobService.updateDestination(updatedJob, destinationLocation);
+        }
+
+        return updatedJob;
+    }
+
+    protected getConstraints() {
         return {
-            'userId': 'required',
-            'jobId': 'required'
+            userId: "required",
+            jobId: "required",
         };
     }
 
-    protected getSanitizationPattern() 
-    {
+    protected getSanitizationPattern() {
         return {};
     }
 
-    protected async onActionExecuting(context: ActionContext): Promise<ActionContext>
-    {
+    protected async onActionExecuting(context: ActionContext): Promise<ActionContext> {
         // check job policies
-        let job = await this._jobRepo.findOne({ id: context.params.jobId });
-        if (!job) 
-        {
-            throw new Exceptions.EntityNotFoundException('Job', context.params.jobId);
+        let job = await this.jobRepo.findOne({ id: context.params.jobId });
+        if (!job) {
+            throw new Exceptions.EntityNotFoundException("Job", context.params.jobId);
         }
-        if (!job.courierId || job.status != Entities.JobStatuses.ACCEPTED) 
-        {
-            throw new Exceptions.ServiceLayerException('CHANGE_LOCATION_FAILED_INVALID_JOB_STATUS');
+        if (!job.courierId || job.status != Entities.JobStatuses.ACCEPTED) {
+            throw new Exceptions.ServiceLayerException("CHANGE_LOCATION_FAILED_INVALID_JOB_STATUS");
         }
         context.params.job = job;
         delete context.params.jobId;
 
         // check courier policies
-        let courier: Entities.User = await this._userRepo.findOne({ id: context.params.userId });
-        if (!courier)
-        {
-            throw new Exceptions.EntityNotFoundException('User', context.params.userId);
+        let courier: Entities.User = await this.userRepo.findOne({ id: context.params.userId });
+        if (!courier) {
+            throw new Exceptions.EntityNotFoundException("User", context.params.userId);
         }
-        if (courier.type != Entities.UserType.Courier || courier.id != job.courierId) 
-        {
-            throw new Exceptions.UserNotAuthorizedException(courier.username, 'UpdateJob');
+        if (courier.type != Entities.UserType.Courier || courier.id != job.courierId) {
+            throw new Exceptions.UserNotAuthorizedException(courier.username, "UpdateJob");
         }
 
         return super.onActionExecuting(context);
-    }
-
-    public async execute(context: ActionContext): Promise<Entities.Job> 
-    {
-        let updatedJob: Entities.Job = context.params.job;
-
-        // check if pickup is updated => jobService.updatePickup
-        if (!!context.params.pickup) 
-        {
-            let pickupLocation: Entities.Geolocation = {
-                latitude: context.params.pickup.latitude, 
-                longitude: context.params.pickup.longitude, 
-                address: context.params.pickup.address
-            };
-            updatedJob = await this._jobService.updatePickup(updatedJob, pickupLocation);
-        }
-
-        // check if destination is updated => jobService.updateDestination
-        if (!!context.params.destination) 
-        {
-            let destinationLocation: Entities.Geolocation = {
-                latitude: context.params.destination.latitude, 
-                longitude: context.params.destination.longitude, 
-                address: context.params.destination.address
-            };
-            updatedJob = await this._jobService.updateDestination(updatedJob, destinationLocation);
-        }
-
-        return updatedJob;
     }
 }

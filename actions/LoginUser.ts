@@ -1,36 +1,22 @@
 import { Types, kernel } from "../dependency-injection/";
 import { ValidationException } from "../exceptions/";
 import { InvalidCredentialsException } from "../exceptions/";
-import * as Repositories from '../repositories/';
-import * as Entities from '../entities/';
-import { validate } from '../utility/Validator';
-import * as Password from '../utility/Password';
-import { ActionBase } from './ActionBase';
+import * as Repositories from "../repositories/";
+import * as Entities from "../entities/";
+import { validate } from "../utility/Validator";
+import * as Password from "../utility/Password";
+import { ActionBase } from "./ActionBase";
 
 export class Action extends ActionBase<Entities.User> {
-    _userRepository: Repositories.UserRepository;
+    private userRepository: Repositories.UserRepository;
 
     constructor() {
         super();
-        this._userRepository = kernel.get<Repositories.UserRepository>(Types.UserRepository);
+        this.userRepository = kernel.get<Repositories.UserRepository>(Types.UserRepository);
     };
 
-    protected getConstraints() {
-        return {
-            'username': 'required',
-            'password': 'required',
-            'type': 'required'
-        };
-    }
-
-    protected getSanitizationPattern() {
-        return {
-            type: 'to_int'
-        };
-    }
-
     public async execute(context): Promise<Entities.User> {
-        let userFromDb = await this._userRepository.findOne({ username: context.params.username });
+        let userFromDb = await this.userRepository.findOne({ username: context.params.username });
 
         if (userFromDb == null) {
             throw new InvalidCredentialsException(context.params.username, context.params.password);
@@ -41,8 +27,22 @@ export class Action extends ActionBase<Entities.User> {
         if (submitedPasswordValid && context.params.type == userFromDb.type) {
             return userFromDb;
         } else {
-            // throw error 
+            // throw error
             throw new InvalidCredentialsException(context.params.username, context.params.password);
         }
+    }
+
+    protected getConstraints() {
+        return {
+            username: "required",
+            password: "required",
+            type: "required",
+        };
+    }
+
+    protected getSanitizationPattern() {
+        return {
+            type: "to_int",
+        };
     }
 }
