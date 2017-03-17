@@ -1,5 +1,5 @@
 import { IBotService } from "./IBotService";
-import { Bot, Box } from "../entities/";
+import { IBot, IBox } from "../entities/";
 import { Types, kernel } from "../dependency-injection/";
 import { injectable } from "inversify";
 import { IBotProvider } from "../providers/";
@@ -15,10 +15,10 @@ export class BotService implements IBotService {
         this.boxRepo = kernel.get<BoxRepository>(Types.BoxRepository);
     }
 
-    public async activate(bot: Bot): Promise<Bot> {
+    public async activate(bot: IBot): Promise<IBot> {
         Check.notNull(bot, "bot");
 
-        let box: Box = await this.boxRepo.findOne({ code: bot.boxCode });
+        let box: IBox = await this.boxRepo.findOne({ code: bot.boxCode });
 
         if (!box) {
             throw new Exceptions.EntityNotFoundException("Box", bot.boxCode);
@@ -33,10 +33,10 @@ export class BotService implements IBotService {
         return bot;
     }
 
-    public async deactivate(bot: Bot): Promise<Bot> {
+    public async deactivate(bot: IBot): Promise<IBot> {
         Check.notNull(bot, "bot");
 
-        let box: Box = await this.boxRepo.findOne({ code: bot.boxCode });
+        let box: IBox = await this.boxRepo.findOne({ code: bot.boxCode });
 
         if (!box) {
             throw new Exceptions.EntityNotFoundException("Box", bot.boxCode);

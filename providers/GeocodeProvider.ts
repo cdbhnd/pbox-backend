@@ -16,7 +16,7 @@ export class GecodeProvider implements IGeocodeProvider
         this._options = config.get('geocode_service');
     }
 
-    public async geocode(address: string): Promise<Entities.Geolocation> 
+    public async geocode(address: string): Promise<Entities.IGeolocation> 
     {
         Check.notNull(address, 'address');
 
@@ -38,7 +38,7 @@ export class GecodeProvider implements IGeocodeProvider
         return null;
     }
 
-    public async reverse(latitude: number, longitude: number): Promise<Entities.Geolocation>
+    public async reverse(latitude: number, longitude: number): Promise<Entities.IGeolocation>
     {
         Check.notNull(latitude, 'latitude');
         Check.notNull(longitude, 'longitude');

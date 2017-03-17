@@ -23,7 +23,7 @@ export class JobService implements IJobService {
         this.moment = require("moment-timezone");
     }
 
-    public async createJob(job: Entities.Job): Promise<Entities.Job> {
+    public async createJob(job: Entities.IJob): Promise<Entities.IJob> {
         Check.notNull(job, "job");
 
         let quote: Providers.Quote = await this.quoteProvider.getRandomQuote();
@@ -32,7 +32,7 @@ export class JobService implements IJobService {
             job.description = quote.quote;
             }
 
-        let gl: Entities.Geolocation = await this.geocodeProvider.reverse(job.pickup.latitude, job.pickup.longitude);
+        let gl: Entities.IGeolocation = await this.geocodeProvider.reverse(job.pickup.latitude, job.pickup.longitude);
         if (!!gl) {
             job.pickup.address = gl.address;
         }
@@ -43,7 +43,7 @@ export class JobService implements IJobService {
         return await this.jobRepository.create(job);
     }
 
-    public async cancelJob(job: Entities.Job): Promise<Entities.Job> {
+    public async cancelJob(job: Entities.IJob): Promise<Entities.IJob> {
         Check.notNull(job, "job");
 
         if (job.status == Entities.JobStatuses.ACCEPTED || job.status == Entities.JobStatuses.IN_PROGRESS) {
@@ -55,7 +55,7 @@ export class JobService implements IJobService {
         }
     }
 
-    public async completeJob(job: Entities.Job): Promise<Entities.Job> {
+    public async completeJob(job: Entities.IJob): Promise<Entities.IJob> {
         Check.notNull(job, "job");
 
         if (job.status != Entities.JobStatuses.IN_PROGRESS) {
@@ -68,7 +68,7 @@ export class JobService implements IJobService {
         return await this.jobRepository.update(job);
     }
 
-    public async updatePickup(job: Entities.Job, pickup: Entities.Geolocation): Promise<Entities.Job> {
+    public async updatePickup(job: Entities.IJob, pickup: Entities.IGeolocation): Promise<Entities.IJob> {
         Check.notNull(job, "job");
         Check.notNull(pickup, "pickup");
 
@@ -81,7 +81,7 @@ export class JobService implements IJobService {
         return await this.jobRepository.update(job);
     }
 
-    public async updateDestination(job: Entities.Job, destination: Entities.Geolocation): Promise<Entities.Job> {
+    public async updateDestination(job: Entities.IJob, destination: Entities.IGeolocation): Promise<Entities.IJob> {
         Check.notNull(job, "job");
         Check.notNull(destination, "destination");
 
@@ -94,7 +94,7 @@ export class JobService implements IJobService {
         return await this.jobRepository.update(job);
     }
 
-    public async updateReceiver(job: Entities.Job, receiverName: string, receiverPhone: string): Promise<Entities.Job> {
+    public async updateReceiver(job: Entities.IJob, receiverName: string, receiverPhone: string): Promise<Entities.IJob> {
         Check.notNull(job, "job");
 
         job.receiverName = receiverName ? receiverName : job.receiverName;
@@ -103,7 +103,7 @@ export class JobService implements IJobService {
         return await this.jobRepository.update(job);
     }
 
-    public async assignCourier(job: Entities.Job, courier: Entities.User): Promise<Entities.Job> {
+    public async assignCourier(job: Entities.IJob, courier: Entities.IUser): Promise<Entities.IJob> {
         Check.notNull(job, "job");
         Check.notNull(courier, "courier");
 
@@ -121,7 +121,7 @@ export class JobService implements IJobService {
         return await this.jobRepository.update(job);
     }
 
-    public async unassignCourier(job: Entities.Job): Promise<Entities.Job> {
+    public async unassignCourier(job: Entities.IJob): Promise<Entities.IJob> {
         Check.notNull(job, "job");
 
         if (job.status != Entities.JobStatuses.ACCEPTED) {
@@ -134,7 +134,7 @@ export class JobService implements IJobService {
         return await this.jobRepository.update(job);
     }
 
-    public async updateSize(job: Entities.Job, size: Entities.packageSize): Promise<Entities.Job> {
+    public async updateSize(job: Entities.IJob, size: Entities.packageSize): Promise<Entities.IJob> {
         Check.notNull(job, "job");
         Check.notNull(size, "size");
 
@@ -147,7 +147,7 @@ export class JobService implements IJobService {
         return await this.jobRepository.update(job);
     }
 
-    public async attachBox(job: Entities.Job, box: Entities.Box): Promise<Entities.Job> {
+    public async attachBox(job: Entities.IJob, box: Entities.IBox): Promise<Entities.IJob> {
         Check.notNull(job, "job");
         Check.notNull(box, "box");
 
@@ -169,13 +169,13 @@ export class JobService implements IJobService {
         return await this.jobRepository.update(job);
     }
 
-    private async resolveGeolocation(geolocation: Entities.Geolocation): Promise<Entities.Geolocation> {
+    private async resolveGeolocation(geolocation: Entities.IGeolocation): Promise<Entities.IGeolocation> {
         if (!!geolocation.address && !!geolocation.latitude && !!geolocation.longitude) {
             return geolocation;
         }
 
         if (!!geolocation.address) {
-            let coords: Entities.Geolocation = await this.geocodeProvider.geocode(geolocation.address);
+            let coords: Entities.IGeolocation = await this.geocodeProvider.geocode(geolocation.address);
             if (coords) {
                 geolocation.latitude = coords.latitude;
                 geolocation.longitude = coords.longitude;
@@ -184,7 +184,7 @@ export class JobService implements IJobService {
         }
 
         if (!!geolocation.latitude && !!geolocation.longitude) {
-            let address: Entities.Geolocation = await this.geocodeProvider.reverse(geolocation.latitude, geolocation.longitude);
+            let address: Entities.IGeolocation = await this.geocodeProvider.reverse(geolocation.latitude, geolocation.longitude);
             if (address) {
                 geolocation.address = address.address;
                 return geolocation;

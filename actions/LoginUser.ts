@@ -7,7 +7,7 @@ import { validate } from "../utility/Validator";
 import * as Password from "../utility/Password";
 import { ActionBase } from "./ActionBase";
 
-export class Action extends ActionBase<Entities.User> {
+export class Action extends ActionBase<Entities.IUser> {
     private userRepository: Repositories.UserRepository;
 
     constructor() {
@@ -15,7 +15,7 @@ export class Action extends ActionBase<Entities.User> {
         this.userRepository = kernel.get<Repositories.UserRepository>(Types.UserRepository);
     };
 
-    public async execute(context): Promise<Entities.User> {
+    public async execute(context): Promise<Entities.IUser> {
         let userFromDb = await this.userRepository.findOne({ username: context.params.username });
 
         if (userFromDb == null) {

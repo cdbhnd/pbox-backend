@@ -5,13 +5,13 @@ import { BaseRepository } from './BaseRepository';
 import * as mongodb from 'mongodb';
 
 @injectable()
-export class Boxes extends BaseRepository<Entities.Box> implements Repos.BoxRepository {
+export class Boxes extends BaseRepository<Entities.IBox> implements Repos.BoxRepository {
 
     constructor( @inject('entityName') entityName: string) {
         super(entityName);
     }
 
-    public async logSensorState(box: Entities.Box, sensor: Entities.Sensor): Promise<boolean> {
+    public async logSensorState(box: Entities.IBox, sensor: Entities.ISensor): Promise<boolean> {
 
         try {
             let boxLog: mongodb.Collection = await this.db.collection(box.code);
@@ -22,7 +22,7 @@ export class Boxes extends BaseRepository<Entities.Box> implements Repos.BoxRepo
         }
     }
 
-    public async updateBoxSensor(box: Entities.Box, sensor: Entities.SensorTypes, value: any): Promise<Entities.Box> {
+    public async updateBoxSensor(box: Entities.IBox, sensor: Entities.SensorTypes, value: any): Promise<Entities.IBox> {
         let objt = box;
         let timestamp = new Date().getTime();
 

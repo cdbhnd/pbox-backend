@@ -4,13 +4,13 @@ import { injectable, inject } from 'inversify';
 import { BaseRepository } from './BaseRepository';
 
 @injectable()
-export class Jobs extends BaseRepository<Entities.Job> implements Repos.JobRepository {
+export class Jobs extends BaseRepository<Entities.IJob> implements Repos.JobRepository {
 
     constructor( @inject('entityName') entityName: string) {
         super(entityName);
     }
 
-    public async create(job: Entities.Job): Promise<Entities.Job> {
+    public async create(job: Entities.IJob): Promise<Entities.IJob> {
         let array = [];
         array.push(job.pickup.longitude);
         array.push(job.pickup.latitude);
@@ -19,7 +19,7 @@ export class Jobs extends BaseRepository<Entities.Job> implements Repos.JobRepos
         return result;
     }
 
-    public async find(query): Promise<Entities.Job[]> {
+    public async find(query): Promise<Entities.IJob[]> {
         var result;
         if (!!query.radiusSearch) {
             let radiusSearchObj = {

@@ -5,7 +5,7 @@ import * as Repositories from "../repositories/";
 import * as Entities from "../entities/";
 import { ActionBase, ActionContext, ErrorContext } from "./ActionBase";
 
-export class Action extends ActionBase<Entities.Job> {
+export class Action extends ActionBase<Entities.IJob> {
     private jobService: Services.IJobService;
     private jobRepo: Repositories.JobRepository;
     private userRepo: Repositories.UserRepository;
@@ -17,12 +17,12 @@ export class Action extends ActionBase<Entities.Job> {
         this.userRepo = kernel.get<Repositories.UserRepository>(Types.UserRepository);
     };
 
-    public async execute(context: ActionContext): Promise<Entities.Job> {
-        let updatedJob: Entities.Job = context.params.job;
+    public async execute(context: ActionContext): Promise<Entities.IJob> {
+        let updatedJob: Entities.IJob = context.params.job;
 
         // check if pickup is updated => jobService.updatePickup
         if (!!context.params.pickup) {
-            let pickupLocation: Entities.Geolocation = {
+            let pickupLocation: Entities.IGeolocation = {
                 latitude: context.params.pickup.latitude,
                 longitude: context.params.pickup.longitude,
                 address: context.params.pickup.address,
@@ -32,7 +32,7 @@ export class Action extends ActionBase<Entities.Job> {
 
         // check if destination is updated => jobService.updateDestination
         if (!!context.params.destination) {
-            let destinationLocation: Entities.Geolocation = {
+            let destinationLocation: Entities.IGeolocation = {
                 latitude: context.params.destination.latitude,
                 longitude: context.params.destination.longitude,
                 address: context.params.destination.address,
@@ -67,7 +67,7 @@ export class Action extends ActionBase<Entities.Job> {
         delete context.params.jobId;
 
         // check courier policies
-        let courier: Entities.User = await this.userRepo.findOne({ id: context.params.userId });
+        let courier: Entities.IUser = await this.userRepo.findOne({ id: context.params.userId });
         if (!courier) {
             throw new Exceptions.EntityNotFoundException("User", context.params.userId);
         }

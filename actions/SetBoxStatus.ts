@@ -8,7 +8,7 @@ import { ActionContext } from "./ActionBase";
 import * as Exceptions from "../exceptions";
 import { BoxStatuses } from "../entities";
 
-export class Action extends ActionBase<Entities.Box> {
+export class Action extends ActionBase<Entities.IBox> {
     private boxRepository: Repositories.BoxRepository;
     private userRepository: Repositories.UserRepository;
     private boxService: Services.IBoxService;
@@ -20,7 +20,7 @@ export class Action extends ActionBase<Entities.Box> {
         this.boxService = kernel.get<Services.IBoxService>(Types.BoxService);
     };
 
-    public async execute(context: ActionContext): Promise<Entities.Box> {
+    public async execute(context: ActionContext): Promise<Entities.IBox> {
 
         let box = context.params.box;
 
@@ -62,7 +62,7 @@ export class Action extends ActionBase<Entities.Box> {
             throw new Exceptions.EntityNotFoundException("User", context.params.userId);
         }
 
-        let box: Entities.Box = await this.boxRepository.findOne({ code: context.params.boxCode });
+        let box: Entities.IBox = await this.boxRepository.findOne({ code: context.params.boxCode });
 
         if (!box) {
             throw new Exceptions.EntityNotFoundException("Box", context.params.boxCode);

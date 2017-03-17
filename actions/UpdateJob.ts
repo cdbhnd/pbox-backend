@@ -6,7 +6,7 @@ import * as Entities from "../entities/";
 import { UpdateJobStatus, UpdateJobLocations, UpdateJobCourier, AssignJobBox } from "./index";
 import { ActionBase, ActionContext, ErrorContext } from "./ActionBase";
 
-export class Action extends ActionBase<Entities.Job> {
+export class Action extends ActionBase<Entities.IJob> {
     private jobService: Services.IJobService;
     private jobRepo: Repositories.JobRepository;
     private userRepo: Repositories.UserRepository;
@@ -18,8 +18,8 @@ export class Action extends ActionBase<Entities.Job> {
         this.userRepo = kernel.get<Repositories.UserRepository>(Types.UserRepository);
     };
 
-    public async execute(context: ActionContext): Promise<Entities.Job> {
-        let updatedJob: Entities.Job = context.params.job;
+    public async execute(context: ActionContext): Promise<Entities.IJob> {
+        let updatedJob: Entities.IJob = context.params.job;
 
         // check if receiverName is updated AND/OR receiverPhone is updated => jobService.updateReceiver
         if (!!context.params.receiverName || !!context.params.receiverPhone) {
@@ -57,7 +57,7 @@ export class Action extends ActionBase<Entities.Job> {
         delete context.params.jobId;
 
         // check if user exists
-        let courier: Entities.User = await this.userRepo.findOne({ id: context.params.userId });
+        let courier: Entities.IUser = await this.userRepo.findOne({ id: context.params.userId });
         if (!courier) {
             throw new Exceptions.EntityNotFoundException("User", context.params.userId);
         }
@@ -77,15 +77,15 @@ export class Action extends ActionBase<Entities.Job> {
         return super.onActionExecuting(context);
     }
 
-    protected async onError(errorContext: ErrorContext<Entities.Job>): Promise<ErrorContext<Entities.Job>> {
+    protected async onError(errorContext: ErrorContext<Entities.IJob>): Promise<ErrorContext<Entities.IJob>> {
         if (!!errorContext.context.params && !!errorContext.context.params.job) {
             errorContext.result = await this.jobRepo.update(errorContext.context.params.job);
         }
         return super.onError(errorContext);
     }
 
-    protected subActions(): Array<ActionBase<Entities.Job>> {
-        return new Array<ActionBase<Entities.Job>>(
+    protected subActions(): Array<ActionBase<Entities.IJob>> {
+        return new Array<ActionBase<Entities.IJob>>(
             new UpdateJobStatus.Action(),
             new UpdateJobLocations.Action(),
             new UpdateJobCourier.Action(),

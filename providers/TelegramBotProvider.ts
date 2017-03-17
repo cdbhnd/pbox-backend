@@ -1,5 +1,5 @@
 import { BotBaseProvider, TextMessage, LocationMessage } from './BotBaseProvider';
-import { Bot, Box, SensorTypes, BoxStatuses } from '../entities/';
+import { IBot, IBox, SensorTypes, BoxStatuses } from '../entities/';
 import { Types, kernel } from "../dependency-injection/";
 import { injectable, inject } from 'inversify';
 import { BoxRepository, BotRepository } from '../repositories/';
@@ -18,7 +18,7 @@ export class TelegramBotProvider extends BotBaseProvider {
         this.tBots = [];
     }
 
-    public async subscribe(bot: Bot): Promise<boolean> {
+    public async subscribe(bot: IBot): Promise<boolean> {
         let box = await this.getBoxFromBot(bot);
         let serviceData = this.getBotServiceData(bot);
         let tBot = this.createTelegramBot(serviceData.accessToken);
@@ -74,7 +74,7 @@ export class TelegramBotProvider extends BotBaseProvider {
         return true;
     }
 
-    public async unsubscribe(bot: Bot): Promise<boolean> {
+    public async unsubscribe(bot: IBot): Promise<boolean> {
         let serviceData = this.getBotServiceData(bot);
         let foundIndex: number = -1;
         for (var i = 0; i < this.tBots.length; i++) {
@@ -97,7 +97,7 @@ export class TelegramBotProvider extends BotBaseProvider {
         return true;
     }
 
-    public informUsers(bot: Bot, message: string): void {
+    public informUsers(bot: IBot, message: string): void {
         for (let i = 0; i < bot.services.length; i++) {
             if (bot.services[i].provider == 'telegram') {
                 let tBot = this.getTelegramClient(bot.services[i].accessToken);
@@ -150,11 +150,11 @@ export class TelegramBotProvider extends BotBaseProvider {
         }
     }
 
-    private async  getBoxFromBot(bot: Bot): Promise<Box> {
+    private async  getBoxFromBot(bot: IBot): Promise<IBox> {
         return await this.boxRepo.findOne({ code: bot.boxCode });
     }
 
-    private getBotServiceData(bot: Bot): any {
+    private getBotServiceData(bot: IBot): any {
         for (let i = 0; i < bot.services.length; i++) {
             if (bot.services[i].provider == this.providerName) {
                 return bot.services[i];

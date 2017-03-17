@@ -1,12 +1,12 @@
 import * as Entities from "../entities/";
 
 export interface IBoxService {
-    addSensor(box: Entities.Box, sensor: Entities.Sensor): Promise<Entities.Box>;
-    removeSensor(box: Entities.Box, sensorCode: string): Promise<Entities.Box>;
-    activateBox(box: Entities.Box): Promise<Entities.Box>;
-    deactivateBox(box: Entities.Box): Promise<Entities.Box>;
-    sleepBox(box: Entities.Box): Promise<Entities.Box>;
-    listenBoxSensors(box: Entities.Box): Promise<Entities.Box>;
-    stopListenBoxSensors(box: Entities.Box): Promise<Entities.Box>;
-    setBoxSensors(box: Entities.Box): Promise<Entities.Box>;
+    addSensor(box: Entities.IBox, sensor: Entities.ISensor): Promise<Entities.IBox>;
+    removeSensor(box: Entities.IBox, sensorCode: string): Promise<Entities.IBox>;
+    activateBox(box: Entities.IBox): Promise<Entities.IBox>;
+    deactivateBox(box: Entities.IBox): Promise<Entities.IBox>;
+    sleepBox(box: Entities.IBox): Promise<Entities.IBox>;
+    listenBoxSensors(box: Entities.IBox): Promise<Entities.IBox>;
+    stopListenBoxSensors(box: Entities.IBox): Promise<Entities.IBox>;
+    setBoxSensors(box: Entities.IBox): Promise<Entities.IBox>;
 }

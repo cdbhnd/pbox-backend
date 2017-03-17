@@ -5,7 +5,7 @@ import * as Repositories from "../repositories/";
 import * as Entities from "../entities/";
 import { ActionBase, ActionContext, ErrorContext } from "./ActionBase";
 
-export class Action extends ActionBase<Entities.Job> {
+export class Action extends ActionBase<Entities.IJob> {
     private jobService: Services.IJobService;
     private jobRepo: Repositories.JobRepository;
     private userRepo: Repositories.UserRepository;
@@ -21,12 +21,12 @@ export class Action extends ActionBase<Entities.Job> {
         this.boxRepo = kernel.get<Repositories.BoxRepository>(Types.BoxRepository);
     };
 
-    public async execute(context: ActionContext): Promise<Entities.Job> {
-        let updatedJob: Entities.Job = context.params.job;
+    public async execute(context: ActionContext): Promise<Entities.IJob> {
+        let updatedJob: Entities.IJob = context.params.job;
 
         // check if status is CANCELED => jobService.cancelJob
         if (!!context.params.status && context.params.status == Entities.JobStatuses.CANCELED) {
-            let box: Entities.Box = await this.boxRepo.findOne({ code: updatedJob.box });
+            let box: Entities.IBox = await this.boxRepo.findOne({ code: updatedJob.box });
             if (!!box) {
                 await this.boxService.deactivateBox(box);
 
@@ -36,7 +36,7 @@ export class Action extends ActionBase<Entities.Job> {
 
         // check if status is COMPLETED => jobService.completeJob
         if (!!context.params.status && context.params.status == Entities.JobStatuses.COMPLETED) {
-            let box: Entities.Box = await this.boxRepo.findOne({ code: updatedJob.box });
+            let box: Entities.IBox = await this.boxRepo.findOne({ code: updatedJob.box });
             if (!!box) {
                 await this.boxService.deactivateBox(box);
             }
@@ -70,7 +70,7 @@ export class Action extends ActionBase<Entities.Job> {
         delete context.params.jobId;
 
         // check courier policies
-        let courier: Entities.User = await this.userRepo.findOne({ id: context.params.userId });
+        let courier: Entities.IUser = await this.userRepo.findOne({ id: context.params.userId });
         if (!courier) {
             throw new Exceptions.EntityNotFoundException("User", context.params.userId);
         }

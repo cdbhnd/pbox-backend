@@ -4,7 +4,7 @@ import { injectable, inject } from 'inversify';
 import { BaseRepository } from './BaseRepository';
 
 @injectable()
-export class User extends BaseRepository<Entities.User> implements Repos.UserRepository {
+export class User extends BaseRepository<Entities.IUser> implements Repos.UserRepository {
     
     constructor(@inject('entityName') entityName: string) {
         super(entityName);

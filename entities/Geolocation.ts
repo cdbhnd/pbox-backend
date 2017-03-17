@@ -1,5 +1,5 @@
-export interface Geolocation {
-    latitude: number,
-    longitude: number,
-    address: string
+export interface IGeolocation {
+    latitude: number;
+    longitude: number;
+    address: string;
 }

@@ -6,7 +6,7 @@ import { ActionBase } from "./ActionBase";
 import { ActionContext } from "./ActionBase";
 import { generateHash } from "../utility/Password";
 
-export class Action extends ActionBase<Entities.User> {
+export class Action extends ActionBase<Entities.IUser> {
     private userRepository: Repositories.UserRepository;
 
     constructor() {
@@ -14,9 +14,9 @@ export class Action extends ActionBase<Entities.User> {
         this.userRepository = kernel.get<Repositories.UserRepository>(Types.UserRepository);
     }
 
-    public async execute(context): Promise<Entities.User> {
+    public async execute(context): Promise<Entities.IUser> {
 
-        let user: Entities.User = {
+        let user: Entities.IUser = {
             firstName: context.params.first_name,
             lastName: context.params.last_name,
             username: context.params.username,

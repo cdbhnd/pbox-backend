@@ -8,7 +8,7 @@ import * as Exceptions from "../exceptions";
 import { IBotService } from "../services/";
 import { IIotPlatform } from "../providers/";
 
-export class Action extends ActionBase<Entities.Bot[]> {
+export class Action extends ActionBase<Entities.IBot[]> {
     private boxRepository: Repositories.BoxRepository;
     private botRepository: Repositories.BotRepository;
     private botService: IBotService;
@@ -20,9 +20,9 @@ export class Action extends ActionBase<Entities.Bot[]> {
         this.botService = kernel.get<IBotService>(Types.BotService);
     };
 
-    public async execute(context: ActionContext): Promise<Entities.Bot[]> {
+    public async execute(context: ActionContext): Promise<Entities.IBot[]> {
 
-        let bots: Entities.Bot[] = await this.botRepository.findAll();
+        let bots: Entities.IBot[] = await this.botRepository.findAll();
 
         for (let i = 0; i < bots.length; i++) {
             await this.botService.deactivate(bots[i]);

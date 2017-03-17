@@ -1,6 +1,5 @@
-export interface Bot 
-{
+export interface IBot {
     id: string;
     boxCode: string;
-    services: Array<any>;
+    services: any[];
 }

@@ -8,7 +8,7 @@ import * as UpdateJobLocations from "./UpdateJobLocations";
 import * as UpdateJobCourier from "./UpdateJobCourier";
 import { ActionBase, ActionContext, ErrorContext } from "./ActionBase";
 
-export class Action extends ActionBase<Entities.Job> {
+export class Action extends ActionBase<Entities.IJob> {
     private jobService: Services.IJobService;
     private jobRepo: Repositories.JobRepository;
     private userRepo: Repositories.UserRepository;
@@ -24,7 +24,7 @@ export class Action extends ActionBase<Entities.Job> {
         this.boxService = kernel.get<Services.IBoxService>(Types.BoxService);
     };
 
-    public async execute(context: ActionContext): Promise<Entities.Job> {
+    public async execute(context: ActionContext): Promise<Entities.IJob> {
 
         if (!context.params.box) {
             return context.params.job;
@@ -68,7 +68,7 @@ export class Action extends ActionBase<Entities.Job> {
         delete context.params.jobId;
 
         // check user policy
-        let courier: Entities.User = await this.userRepo.findOne({ id: context.params.userId });
+        let courier: Entities.IUser = await this.userRepo.findOne({ id: context.params.userId });
         if (!courier) {
             throw new Exceptions.EntityNotFoundException("User", context.params.userId);
         }

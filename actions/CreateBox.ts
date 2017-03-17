@@ -8,7 +8,7 @@ import { ActionContext } from "./ActionBase";
 import * as Exceptions from "../exceptions";
 import * as config from "config";
 
-export class Action extends ActionBase<Entities.Box> {
+export class Action extends ActionBase<Entities.IBox> {
     private boxRepository: Repositories.BoxRepository;
     private userRepository: Repositories.UserRepository;
     private boxService: Services.BoxService;
@@ -20,9 +20,9 @@ export class Action extends ActionBase<Entities.Box> {
         this.boxService = kernel.get<Services.BoxService>(Types.BoxService);
     };
 
-    public async execute(context: ActionContext): Promise<Entities.Box> {
+    public async execute(context: ActionContext): Promise<Entities.IBox> {
 
-        let box: Entities.Box = {
+        let box: Entities.IBox = {
             id: null,
             code: context.params.code,
             size: !!context.params.size ? context.params.size : null,
@@ -61,7 +61,7 @@ export class Action extends ActionBase<Entities.Box> {
             throw new Exceptions.EntityNotFoundException("User", context.params.userId);
         }
 
-        let box: Entities.Box = await this.boxRepository.findOne({ code: context.params.code });
+        let box: Entities.IBox = await this.boxRepository.findOne({ code: context.params.code });
 
         if (!!box) {
             throw new Exceptions.ValidationException("Box with " + context.params.code + " code already exists");

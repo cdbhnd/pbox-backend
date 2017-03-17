@@ -22,7 +22,7 @@ export class AttPlatform implements IIotPlatform {
     private enableSubscription: boolean = Boolean(config.get('iot_platform.enable_subscription'));
     private listeners: any = {};
 
-    public async getSensorData(sensor: Entities.Sensor) {
+    public async getSensorData(sensor: Entities.ISensor) {
         try {
             let url = this.apiProtocol + '://' + this.baseUrl + '/asset/' + + sensor.assetId + '/state';
             await request.get(url, this.options);
@@ -31,7 +31,7 @@ export class AttPlatform implements IIotPlatform {
         }
     }
 
-    public async sendDataToSensor(sensor: Entities.Sensor) {
+    public async sendDataToSensor(sensor: Entities.ISensor) {
         try {
             let url = this.apiProtocol + '://' + this.baseUrl + '/asset/' + sensor.assetId + '/command';
             this.options.body = JSON.stringify({
@@ -43,7 +43,7 @@ export class AttPlatform implements IIotPlatform {
         }
     }
 
-    public async getDeviceSensors(box: Entities.Box): Promise<any> {
+    public async getDeviceSensors(box: Entities.IBox): Promise<any> {
         try {
             let url = this.apiProtocol + '://' + this.baseUrl + '/device/' + box.deviceId;
             return  await request.get(url, this.options);
@@ -52,7 +52,7 @@ export class AttPlatform implements IIotPlatform {
         }
     }
 
-    public async listenBoxSensors(box: Entities.Box, callback: Function) {
+    public async listenBoxSensors(box: Entities.IBox, callback: Function) {
         if (!this.enableSubscription) {
             return;
         }
@@ -117,7 +117,7 @@ export class AttPlatform implements IIotPlatform {
         }
     }
 
-    public stopListenBoxSensors(box: Entities.Box) {
+    public stopListenBoxSensors(box: Entities.IBox) {
         try {
             if (!!this.listeners[box.id]) {
                 let client = this.listeners[box.id] as MQTTClient;

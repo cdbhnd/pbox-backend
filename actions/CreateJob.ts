@@ -5,7 +5,7 @@ import * as Entities from "../entities/";
 import { ActionBase } from "./ActionBase";
 import { ActionContext } from "./ActionBase";
 
-export class Action extends ActionBase<Entities.Job> {
+export class Action extends ActionBase<Entities.IJob> {
     private jobService: Services.IJobService;
 
     constructor() {
@@ -13,9 +13,9 @@ export class Action extends ActionBase<Entities.Job> {
         this.jobService = kernel.get<Services.IJobService>(Types.JobService);
     };
 
-    public async execute(context): Promise<Entities.Job> {
+    public async execute(context): Promise<Entities.IJob> {
 
-        let job: Entities.Job = {
+        let job: Entities.IJob = {
             id: null,
             pickup: context.params.pickup,
             name: null,

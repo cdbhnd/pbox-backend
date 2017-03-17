@@ -5,7 +5,7 @@ import * as Repositories from "../repositories/";
 import * as Entities from "../entities/";
 import { ActionBase, ActionContext, ErrorContext } from "./ActionBase";
 
-export class Action extends ActionBase<Entities.Job> {
+export class Action extends ActionBase<Entities.IJob> {
     private jobService: Services.IJobService;
     private jobRepo: Repositories.JobRepository;
     private userRepo: Repositories.UserRepository;
@@ -17,12 +17,12 @@ export class Action extends ActionBase<Entities.Job> {
         this.userRepo = kernel.get<Repositories.UserRepository>(Types.UserRepository);
     };
 
-    public async execute(context: ActionContext): Promise<Entities.Job> {
-        let updatedJob: Entities.Job = context.params.job;
+    public async execute(context: ActionContext): Promise<Entities.IJob> {
+        let updatedJob: Entities.IJob = context.params.job;
 
         // check if courierId is updated => jobService.assignCourier
         if (!!context.params.courierId) {
-            let courier: Entities.User = await this.userRepo.findOne({ id: context.params.courierId });
+            let courier: Entities.IUser = await this.userRepo.findOne({ id: context.params.courierId });
 
             updatedJob = await this.jobService.assignCourier(updatedJob, courier);
         }
@@ -59,7 +59,7 @@ export class Action extends ActionBase<Entities.Job> {
         delete context.params.jobId;
 
         // check courier policies
-        let courier: Entities.User = await this.userRepo.findOne({ id: context.params.userId });
+        let courier: Entities.IUser = await this.userRepo.findOne({ id: context.params.userId });
         if (!courier) {
             throw new Exceptions.EntityNotFoundException("User", context.params.userId);
         }

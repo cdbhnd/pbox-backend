@@ -6,7 +6,7 @@ import { ActionBase } from "./ActionBase";
 import { ActionContext } from "./ActionBase";
 import * as Exceptions from "../exceptions";
 
-export class Action extends ActionBase<Entities.Job[]> {
+export class Action extends ActionBase<Entities.IJob[]> {
     private jobRepository: Repositories.JobRepository;
     private userRepository: Repositories.UserRepository;
 
@@ -16,8 +16,8 @@ export class Action extends ActionBase<Entities.Job[]> {
         this.userRepository = kernel.get<Repositories.UserRepository>(Types.UserRepository);
     };
 
-    public async execute(context: ActionContext): Promise<Entities.Job[]> {
-        let userJobs: Entities.Job[];
+    public async execute(context: ActionContext): Promise<Entities.IJob[]> {
+        let userJobs: Entities.IJob[];
         let userFromDb = context.params.userFromDb;
 
         // courier user  can use generic query
