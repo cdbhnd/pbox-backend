@@ -1,13 +1,13 @@
 import { Types, kernel } from "../../dependency-injection/";
 import {ILogger, IHttpLogEntry} from "../../utility/ILogger";
 
-var logger: ILogger = kernel.get<ILogger>(Types.Logger);
+let logger: ILogger = kernel.get<ILogger>(Types.Logger);
 
 export async function logMiddleware(req: any, res: any, next: Function) {
-    var oldWrite = res.write;
-    var oldEnd = res.end;
+    let oldWrite = res.write;
+    let oldEnd = res.end;
 
-    var log: IHttpLogEntry = {
+    let log: IHttpLogEntry = {
         createdAt: new Date(),
         request: {
             headers: req.headers,
@@ -15,43 +15,46 @@ export async function logMiddleware(req: any, res: any, next: Function) {
             url: req.url,
             params: req.params,
             query: req.query,
-            body: req.body
+            body: req.body,
         },
         response: {
             headers: null,
             statusCode: null,
-            body: null
+            body: null,
         },
     };
 
-    var chunks = [];
+    let chunks = [];
 
-    res.write = function (chunk) {
+    res.write =  (chunk) => {
         chunks.push(chunk);
 
         oldWrite.apply(res, arguments);
     };
 
-    res.end = function (chunk) {
+    res.end = (chunk) => {
         try {
-            if (chunk)
+            if (chunk) {
                 chunks.push(chunk);
-            //if exception is trown, chunk is string
-            if (typeof chunk == 'string') {
+            }
+
+            // if exception is trown, chunk is string
+            if (typeof chunk == "string") {
                 log.response.body = chunk;
             } else {
-                log.response.body = Buffer.concat(chunks).toString('utf8');
+                log.response.body = Buffer.concat(chunks).toString("utf8");
             }
 
             log.response.headers = res._headers;
             log.response.statusCode = res.statusCode;
 
             logger.createHttpLog(log);
+
         } catch (e) {
-            console.log('Error occurred in logging middleware ' + e);
+            console.log("Error occurred in logging middleware " + e);
         }
         oldEnd.apply(res, arguments);
     };
 
-    next();   
+    next();
 }
