@@ -1,5 +1,6 @@
+// tslint:disable-next-line:no-var-requires
+require("winston-loggly-bulk");
 import { ILogger, IHttpLogEntry } from "./ILogger";
-import winstonLogglyBulk = require("winston-loggly-bulk");
 import * as config from "config";
 import { injectable } from "inversify";
 
