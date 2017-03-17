@@ -1,27 +1,27 @@
-import * as Entities from '../entities/';
-import { IBoxService } from './IBoxService';
-import { Box, Sensor, BoxStatuses, SensorTypes, SensorStatuses } from '../entities/';
+import * as Entities from "../entities/";
+import { IBoxService } from "./IBoxService";
+import { Box, Sensor, BoxStatuses, SensorTypes, SensorStatuses } from "../entities/";
 import { Types, kernel } from "../dependency-injection/";
-import { injectable } from 'inversify';
-import { BoxRepository } from '../repositories/';
-import * as Repositories from '../repositories/';
-import { IIotPlatform } from '../providers/';
-import * as Entitties from '../entities';
-import * as Exceptions from '../exceptions/';
-import { Check } from '../utility/Check';
-import * as config from 'config';
-import { IBotProvider } from '../providers/';
+import { injectable } from "inversify";
+import { BoxRepository } from "../repositories/";
+import * as Repositories from "../repositories/";
+import { IIotPlatform } from "../providers/";
+import * as Entitties from "../entities";
+import * as Exceptions from "../exceptions/";
+import { Check } from "../utility/Check";
+import * as config from "config";
+import { IBotProvider } from "../providers/";
 
 @injectable()
 export class BoxService implements IBoxService {
 
     private boxRepo: BoxRepository;
     private iotPlatform: IIotPlatform;
-    private _botRepository: Repositories.BotRepository;
+    private botRepository: Repositories.BotRepository;
     constructor() {
         this.boxRepo = kernel.get<BoxRepository>(Types.BoxRepository);
         this.iotPlatform = kernel.get<IIotPlatform>(Types.IotPlatform);
-        this._botRepository = kernel.get<Repositories.BotRepository>(Types.BotRepository);
+        this.botRepository = kernel.get<Repositories.BotRepository>(Types.BotRepository);
     }
 
     public async setBoxSensors(box: Box): Promise<Box> {
@@ -32,14 +32,14 @@ export class BoxService implements IBoxService {
 
     public async addSensor(box: Box, sensor: Sensor): Promise<Box> {
 
-        Check.notNull(box, 'Box');
-        Check.notNull(sensor, 'Sensor');
+        Check.notNull(box, "Box");
+        Check.notNull(sensor, "Sensor");
 
         box.sensors = box.sensors ? box.sensors : [];
 
-        for (var i = 0; i < box.sensors.length; i++) {
+        for (let i = 0; i < box.sensors.length; i++) {
             if (box.sensors[i].code == sensor.code) {
-                throw new Exceptions.ValidationException('Sensor with ' + sensor.code + ' code already exists');
+                throw new Exceptions.ValidationException("Sensor with " + sensor.code + " code already exists");
             }
         }
 
@@ -52,14 +52,14 @@ export class BoxService implements IBoxService {
 
     public async removeSensor(box: Box, sensorCode: string): Promise<Box> {
 
-        Check.notNull(box, 'Box');
-        Check.notNull(sensorCode, 'SensorCode');
+        Check.notNull(box, "Box");
+        Check.notNull(sensorCode, "SensorCode");
 
         box.sensors = box.sensors ? box.sensors : [];
 
         let index: number = -1;
 
-        for (var i = 0; i < box.sensors.length; i++) {
+        for (let i = 0; i < box.sensors.length; i++) {
             if (box.sensors[i].code == sensorCode) {
                 index = i;
                 break;
@@ -74,13 +74,12 @@ export class BoxService implements IBoxService {
         return box;
     }
 
-
     public async activateBox(box: Box): Promise<Box> {
 
         this.setStatusToBoxSensors(box, SensorStatuses.ACTIVE);
 
         let starterSensor = this.checkIfActivatorExist(box);
-        
+
         // set starter sensor value to true and send it to iot platform
         if (!!starterSensor) {
             starterSensor.value = true;
@@ -99,7 +98,7 @@ export class BoxService implements IBoxService {
         box.status = BoxStatuses.IDLE;
 
         this.setStatusToBoxSensors(box, SensorStatuses.IDLE);
-        
+
         box = await this.boxRepo.update(box);
 
         let starterSensor = this.checkIfActivatorExist(box);
@@ -112,11 +111,11 @@ export class BoxService implements IBoxService {
 
         return box;
     }
-    //CHECK SENSOR STATUS IF CORECT TODO
+    // CHECK SENSOR STATUS IF CORECT TODO
     public async sleepBox(box: Box): Promise<Box> {
 
-        //find starter sensor 
-        let starterSensor: Sensor = box.sensors.find(function (element) {
+        // find starter sensor
+        let starterSensor: Sensor = box.sensors.find((element) => {
             if (element.type == SensorTypes.activator) {
                 return true;
             }
@@ -138,17 +137,17 @@ export class BoxService implements IBoxService {
 
     public async listenBoxSensors(box: Box): Promise<Box> {
 
-        Check.notNull(box, 'box');
+        Check.notNull(box, "box");
 
         if (!!box.topic && !!box.clientId && !!box.clientKey && !!box.deviceId) {
 
-            let bot: Entities.Bot = await this._botRepository.findOne({ boxCode: box.code });
+            let bot: Entities.Bot = await this.botRepository.findOne({ boxCode: box.code });
             let boxService = this;
-            this.iotPlatform.listenBoxSensors(box, async function (boxCode: string, sensorCode: string, sensorType: string, newSensorValue: any) {
+            this.iotPlatform.listenBoxSensors(box, async (boxCode: string, sensorCode: string, sensorType: string, newSensorValue: any) => {
                 let boxRepo: BoxRepository = kernel.get<BoxRepository>(Types.BoxRepository);
                 let freshBox: Box = await boxRepo.findOne({ code: boxCode });
                 if (!!freshBox && freshBox.status != BoxStatuses.IDLE) {
-                    for (var i = 0; i < freshBox.sensors.length; i++) {
+                    for (let i = 0; i < freshBox.sensors.length; i++) {
                         if (freshBox.sensors[i].name == sensorType) {
 
                             let selectedBoxSensor: Sensor = freshBox.sensors[i];
@@ -163,20 +162,20 @@ export class BoxService implements IBoxService {
                             }
 
                             if (selectedBoxSensor.type == SensorTypes.vibration) {
-                                if (selectedBoxSensor.value === '1') {
-                                    for (let i = 0; i < bot.services.length; i++) {
-                                        let provider: IBotProvider = kernel.getNamed<IBotProvider>(Types.BotProvider, bot.services[i].provider);
-                                        provider.informUsers(bot, 'Strong vibration has occured !!!');
+                                if (selectedBoxSensor.value === "1") {
+                                    for (let x = 0; x < bot.services.length; x++) {
+                                        let provider: IBotProvider = kernel.getNamed<IBotProvider>(Types.BotProvider, bot.services[x].provider);
+                                        provider.informUsers(bot, "Strong vibration has occured !!!");
                                     }
                                 }
                             }
 
-                            //update if its new value and if its sensor value older then 20 sec
+                            // update if its new value and if its sensor value older then 20 sec
                             if (JSON.stringify(oldSensorValue) != JSON.stringify(newSensorValue)) {
                                 let timeDiff = (new Date().getTime() - selectedBoxSensor.timestamp);
-                                if (timeDiff > config.get('boxService.updateThreshold')) {
+                                if (timeDiff > config.get("boxService.updateThreshold")) {
                                     boxRepo.updateBoxSensor(freshBox, sensorType, newSensorValue);
-                                };
+                                }
                             }
 
                             boxRepo.logSensorState(freshBox, selectedBoxSensor);
@@ -193,9 +192,9 @@ export class BoxService implements IBoxService {
 
     public async stopListenBoxSensors(box: Box): Promise<Box> {
 
-        Check.notNull(box, 'box');
+        Check.notNull(box, "box");
 
-        for (var i = 0; i < box.sensors.length; i++) {
+        for (let i = 0; i < box.sensors.length; i++) {
             box.sensors[i].status = BoxStatuses.IDLE;
         }
 
@@ -210,30 +209,30 @@ export class BoxService implements IBoxService {
         box.sensors = [];
         let timestamp = new Date().getTime();
 
-        for (var i = 0; i < sensorData.assets.length; i++) {
+        for (let i = 0; i < sensorData.assets.length; i++) {
             let sensor: Entitties.Sensor = {
                 name: sensorData.assets[i].title,
                 code: sensorData.assets[i].name,
-                status: 'IDLE',
+                status: "IDLE",
                 value: null,
                 assetId: sensorData.assets[i].id,
-                topic: '/exchange/root/client.' + String(config.get('iot_platform.att_clientId')) + '.in.asset.' + sensorData.assets[i].id + '.state',
+                topic: "/exchange/root/client." + String(config.get("iot_platform.att_clientId")) + ".in.asset." + sensorData.assets[i].id + ".state",
                 type: sensorData.assets[i].title,
-                timestamp: timestamp
-            }
+                timestamp: timestamp,
+            };
             box.sensors.push(sensor);
         }
     }
 
     private setStatusToBoxSensors(box: Box, status: string): Box {
-        for (var i = 0; i < box.sensors.length; i++) {
+        for (let i = 0; i < box.sensors.length; i++) {
             box.sensors[i].status = status;
         }
         return box;
     }
 
     private checkIfActivatorExist(box: Box): Sensor {
-        return box.sensors.find(function (element) {
+        return box.sensors.find((element) => {
             if (element.type == SensorTypes.activator) {
                 return true;
             }
