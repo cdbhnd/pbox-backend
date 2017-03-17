@@ -6,7 +6,7 @@ import { injectable } from "inversify";
 
 @injectable()
 export class QuotesProvider implements IQuotesProvider {
-    public async getRandomQuote(): Promise<Models.Quote> {
+    public async getRandomQuote(): Promise<Models.IQuote> {
         let quotesConfig: any = config.get("quote_service");
         let quoteResponse: any = await axios.get(quotesConfig.host, { headers: { "X-Mashape-Key": quotesConfig.auth_key } });
 

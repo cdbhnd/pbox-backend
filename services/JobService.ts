@@ -26,7 +26,7 @@ export class JobService implements IJobService {
     public async createJob(job: Entities.IJob): Promise<Entities.IJob> {
         Check.notNull(job, "job");
 
-        let quote: Providers.Quote = await this.quoteProvider.getRandomQuote();
+        let quote: Providers.IQuote = await this.quoteProvider.getRandomQuote();
         if (!!quote) {
             job.name = quote.author;
             job.description = quote.quote;
