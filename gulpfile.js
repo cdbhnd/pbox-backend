@@ -2,8 +2,19 @@ var gulp = require('gulp');
 var exec = require('child_process').exec;
 var clean = require('gulp-clean');
 var gulpSequence = require('gulp-sequence');
+var tslint = require("gulp-tslint");
 
-gulp.task('default', gulpSequence('clean', 'compile', 'copy', 'copy-assets'));
+gulp.task('default', gulpSequence('tslint', 'clean', 'compile', 'copy', 'copy-assets'));
+
+gulp.task('tslint', function () {
+    return gulp.src(['./**/*.ts', '!./node_modules/**', '!./typings/**'])
+        .pipe(tslint({
+            configuration: "./tslint.json"
+        }))
+        .pipe(tslint.report({
+            summarizeFailureOutput: true
+        }));
+});
 
 gulp.task('copy', function (done) {
     return gulp.src(['./**/*.json', './Procfile', './**/*.wsdl', '!./dist/**/*.wsdl'])
@@ -49,11 +60,11 @@ gulp.task('deploy-clean', function () {
 
 gulp.task('deploy-copy', function () {
     return gulp.src([
-        '!./dist/dist/', 
+        '!./dist/dist/',
         '!./dist/dist/**',
-        '!./dist/node_modules/', 
+        '!./dist/node_modules/',
         '!./dist/node_modules/**',
-        '!./dist/deploy/', 
+        '!./dist/deploy/',
         '!./dist/deploy/**',
         './dist/**'])
         .pipe(gulp.dest('./deploy'));
