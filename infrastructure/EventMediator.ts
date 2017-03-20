@@ -7,7 +7,7 @@ import { IEventMediator } from "./IEventMediator";
 export class EventMediator implements IEventMediator {
 
     public subscribe(eventName: string, callback: Function): string {
-        return PubSub.subscribe(event, callback);
+        return PubSub.subscribe(eventName, callback);
     }
 
     public unsubscribe(indentifier: string): void {
