@@ -8,6 +8,9 @@ import * as actions from "../actions";
 import * as bootTasks from "../web/boottasks/";
 import * as backgroundTasks from "../background/tasks/";
 import * as Utility from "../utility/";
+import {IEventMediator} from "../infrastructure/IEventMediator";
+import {EventMediator} from "../infrastructure/EventMediator";
+
 let kernel = new Kernel();
 
 kernel.bind<Repositories.IJobRepository>(Types.JobRepository).to(DB.Jobs);
@@ -39,5 +42,6 @@ kernel.bind<backgroundTasks.ITask>(Types.BackgroundTask).to(backgroundTasks.Deac
 
 // utility
 kernel.bind<Utility.ILogger>(Types.Logger).to(Utility.Logger).inSingletonScope();
+kernel.bind<IEventMediator>(Types.EventMediator).to(EventMediator);
 
 export default kernel;
