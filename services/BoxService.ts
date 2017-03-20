@@ -163,6 +163,9 @@ export class BoxService implements IBoxService {
             this.iotPlatform.listenBoxSensors(box, async function (boxCode: string, sensorCode: string, sensorType: string, newSensorValue: any) {
                 let boxRepo: BoxRepository = kernel.get<BoxRepository>(Types.BoxRepository);
 
+                let mediator: IEventMediator = EventAggregator.getMediator();
+                mediator.broadcast(EventAggregator.BOX_SENSOR_CHANGED, {  });
+
                 // Find the Box
                 let freshBox: Box = await boxRepo.findOne({ code: boxCode });
 

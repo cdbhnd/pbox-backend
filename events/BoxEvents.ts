@@ -1,13 +1,15 @@
-import { IEventSubscriber, IEventMediator, EventAggregator } from './';
+import { EventListener } from "./EventListener";
+import { EventAggregator } from "./EventAggregator";
 
-export class BoxEvents implements IEventSubscriber {
+export class BoxEvents {
 
-    public initialize(): void {
-        let mediator: IEventMediator = EventAggregator.getMediator();
-        mediator.subscribe(EventAggregator.boxSensorChanged, this.storeBoxSensorChange);
+    @EventListener(EventAggregator.BOX_SENSOR_CHANGED)
+    public async storeBoxSensorChange(event: string, data: any) {
+        // if the value has changed call UpdateSensorValue action
     }
 
-    public async storeBoxSensorChange(event: string, data: any) {
-        
+    @EventListener(EventAggregator.BOX_ACTIVATOR_CHANGED)
+    public async deactivateBox(event: string, data: any) {
+        // if ACTIVATOR value is false call deactivateBox action
     }
 }

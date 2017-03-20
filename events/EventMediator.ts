@@ -5,7 +5,7 @@ import { Types, kernel } from '../dependency-injection/';
 import { injectable } from 'inversify';
 
 @injectable()
-export class EventMediator implements EventMediator {
+export class EventMediator implements IEventMediator {
 
     public async subscribe(event: string, callback: (event: string, payload: any) => void): Promise<boolean> {
         
