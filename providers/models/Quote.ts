@@ -1,5 +1,5 @@
-export interface Quote {
-    quote: string,
-    author: string,
-    category: string
+export interface IQuote {
+    quote: string;
+    author: string;
+    category: string;
 }

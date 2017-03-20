@@ -1,6 +1,5 @@
-import * as Models from './models/';
+import * as Models from "./models/";
 
-export interface IQuotesProvider 
-{
-    getRandomQuote(): Promise<Models.Quote>
+export interface IQuotesProvider {
+    getRandomQuote(): Promise<Models.IQuote>;
 }

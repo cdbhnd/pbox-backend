@@ -1,56 +1,52 @@
 import { Types, kernel } from "../dependency-injection/";
 import { ValidationException } from "../exceptions/";
-import * as Repositories from '../repositories/';
-import * as Entities from '../entities/';
-import { ActionBase } from './ActionBase';
-import { ActionContext } from './ActionBase';
-import * as Exceptions from '../exceptions';
-import { IBoxService } from '../services/';
-import { IIotPlatform } from '../providers/';
+import * as Repositories from "../repositories/";
+import * as Entities from "../entities/";
+import { ActionBase } from "./ActionBase";
+import { ActionContext } from "./ActionBase";
+import * as Exceptions from "../exceptions";
+import { IBoxService } from "../services/";
+import { IIotPlatform } from "../providers/";
 
-export class Action extends ActionBase<Entities.Box[]> 
-{
-    private _boxRepository: Repositories.BoxRepository;
-    private _boxService: IBoxService;
-    private _iotPlatform: IIotPlatform;
+export class Action extends ActionBase<Entities.IBox[]> {
+    private boxRepository: Repositories.IBoxRepository;
+    private boxService: IBoxService;
+    private iotPlatform: IIotPlatform;
 
-    constructor() 
-    {
+    constructor() {
         super();
-        this._boxRepository = kernel.get<Repositories.BoxRepository>(Types.BoxRepository);
-        this._boxService = kernel.get<IBoxService>(Types.BoxService);
-        this._iotPlatform = kernel.get<IIotPlatform>(Types.IotPlatform);
+        this.boxRepository = kernel.get<Repositories.IBoxRepository>(Types.BoxRepository);
+        this.boxService = kernel.get<IBoxService>(Types.BoxService);
+        this.iotPlatform = kernel.get<IIotPlatform>(Types.IotPlatform);
     };
 
-    protected getConstraints() 
-    {
-        return {}
-    }
+    public async execute(context: ActionContext): Promise<Entities.IBox[]> {
 
-    protected getSanitizationPattern() 
-    {
-        return {};
-    }
-
-    public async execute(context: ActionContext): Promise<Entities.Box[]> {
-
-        let activeBoxes: Entities.Box[] = await this._boxRepository.find({ status: { '$in': [ Entities.BoxStatuses.ACTIVE, Entities.BoxStatuses.SLEEP ] } });
+        let activeBoxes: Entities.IBox[] = await this.boxRepository.find({ status: { $in: [Entities.BoxStatuses.ACTIVE, Entities.BoxStatuses.SLEEP] } });
 
         if (!activeBoxes) {
             return [];
         }
 
-        let result: Entities.Box[] = [];
+        let result: Entities.IBox[] = [];
 
-        for (var i = 0; i < activeBoxes.length; i++) {
-            this._iotPlatform.stopListenBoxSensors(activeBoxes[i]);
-            let box: Entities.Box = await this._boxService.listenBoxSensors(activeBoxes[i]);
+        for (let i = 0; i < activeBoxes.length; i++) {
+            this.iotPlatform.stopListenBoxSensors(activeBoxes[i]);
+            let box: Entities.IBox = await this.boxService.listenBoxSensors(activeBoxes[i]);
             if (!!box) {
                 result.push(box);
-                console.log('Listening ' + box.code);
+                console.log("Listening " + box.code);
             }
         }
 
         return result;
+    }
+
+    protected getConstraints() {
+        return {};
+    }
+
+    protected getSanitizationPattern() {
+        return {};
     }
 }

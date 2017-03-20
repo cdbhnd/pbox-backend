@@ -1,50 +1,48 @@
 import { Types, kernel } from "../dependency-injection/";
 import { ValidationException } from "../exceptions/";
-import * as Repositories from '../repositories/';
-import * as Entities from '../entities/';
-import { ActionBase } from './ActionBase';
-import { ActionContext } from './ActionBase';
-import * as Exceptions from '../exceptions';
+import * as Repositories from "../repositories/";
+import * as Entities from "../entities/";
+import { ActionBase } from "./ActionBase";
+import { ActionContext } from "./ActionBase";
+import * as Exceptions from "../exceptions";
 
-export class Action extends ActionBase<Entities.Job> 
-{
-    private _jobRepository: Repositories.JobRepository;
-    private _userRepository: Repositories.UserRepository;
+export class Action extends ActionBase<Entities.IJob> {
+    private jobRepository: Repositories.IJobRepository;
+    private userRepository: Repositories.IUserRepository;
 
-    constructor() 
-    {
+    constructor() {
         super();
-        this._jobRepository = kernel.get<Repositories.JobRepository>(Types.JobRepository);
-        this._userRepository = kernel.get<Repositories.UserRepository>(Types.UserRepository);
+        this.jobRepository = kernel.get<Repositories.IJobRepository>(Types.JobRepository);
+        this.userRepository = kernel.get<Repositories.IUserRepository>(Types.UserRepository);
     };
 
-    protected getConstraints() 
-    {
+    public async execute(context: ActionContext): Promise<Entities.IJob> {
+        let user = context.params.user;
+        let job: Entities.IJob = await this.jobRepository.findOne({ id: context.params.jobId });
+
+        if (user.type != Entities.UserType.Courier && job.userId != user.id) {
+            throw new Exceptions.UserNotAuthorizedException(user.username, "Get job by Id");
+        }
+        return job;
+    }
+
+    protected getConstraints() {
         return {
-            'userId': 'required',
-            'jobId': 'required'
+            userId: "required",
+            jobId: "required",
         };
     }
 
-    protected getSanitizationPattern() 
-    {
+    protected getSanitizationPattern() {
         return {};
     }
 
-    public async execute(context: ActionContext): Promise<Entities.Job> {
-
-        let user: Entities.User = await this._userRepository.findOne({ id: context.params.userId });
-
+    protected async onActionExecuting(context: ActionContext): Promise<ActionContext> {
+        let user: Entities.IUser = await this.userRepository.findOne({ id: context.params.userId });
         if (!user) {
-            throw new Exceptions.EntityNotFoundException('User', '');
+            throw new Exceptions.EntityNotFoundException("User", "");
         }
-        
-        var job: Entities.Job = await this._jobRepository.findOne({ id: context.params.jobId });
-
-        if (user.type != Entities.UserType.Courier && job.userId != user.id) {
-            throw new Exceptions.UserNotAuthorizedException(user.username, 'Get job by Id');
-        }
-
-        return job;
+        context.params.user = user;
+        return context;
     }
 }

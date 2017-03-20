@@ -1,51 +1,52 @@
 import { Types, kernel } from "../dependency-injection/";
 import { ValidationException } from "../exceptions/";
-import * as Repositories from '../repositories/';
-import * as Entities from '../entities/';
-import { ActionBase } from './ActionBase';
-import { ActionContext } from './ActionBase';
-import * as Exceptions from '../exceptions';
+import * as Repositories from "../repositories/";
+import * as Entities from "../entities/";
+import { ActionBase } from "./ActionBase";
+import { ActionContext } from "./ActionBase";
+import * as Exceptions from "../exceptions";
 
-export class Action extends ActionBase<Entities.Job[]> 
-{
-    private _jobRepository: Repositories.JobRepository;
-    private _userRepository: Repositories.UserRepository;
+export class Action extends ActionBase<Entities.IJob[]> {
+    private jobRepository: Repositories.IJobRepository;
+    private userRepository: Repositories.IUserRepository;
 
-    constructor() 
-    {
+    constructor() {
         super();
-        this._jobRepository = kernel.get<Repositories.JobRepository>(Types.JobRepository);
-        this._userRepository = kernel.get<Repositories.UserRepository>(Types.UserRepository);
+        this.jobRepository = kernel.get<Repositories.IJobRepository>(Types.JobRepository);
+        this.userRepository = kernel.get<Repositories.IUserRepository>(Types.UserRepository);
     };
 
-    protected getConstraints() 
-    {
-        return {
-            'id': 'required'
-        };
-    }
+    public async execute(context: ActionContext): Promise<Entities.IJob[]> {
+        let userJobs: Entities.IJob[];
+        let userFromDb = context.params.userFromDb;
 
-    protected getSanitizationPattern() 
-    {
-        return {};
-    }
-
-    public async execute(context: ActionContext): Promise<Entities.Job[]> {
-        var userJobs: Entities.Job[];
-
-        let userFromDb = await this._userRepository.findOne({ id: context.params.id });
-
-        if (!userFromDb) {
-            throw new Exceptions.EntityNotFoundException('User', '');
-        }
-
-        //courier user  can use generic query
+        // courier user  can use generic query
         if (userFromDb.type == Entities.UserType.Courier) {
-            userJobs = await this._jobRepository.find(context.query);
+            userJobs = await this.jobRepository.find(context.query);
         } else {
-            userJobs = await this._jobRepository.find({ userId: context.params.id });
+            userJobs = await this.jobRepository.find({ userId: context.params.id });
         }
 
         return userJobs;
+    }
+
+    protected getConstraints() {
+        return {
+            id: "required",
+        };
+    }
+
+    protected getSanitizationPattern() {
+        return {};
+    }
+
+    protected async onActionExecuting(context: ActionContext): Promise<ActionContext> {
+        let userFromDb = await this.userRepository.findOne({ id: context.params.id });
+
+        if (!userFromDb) {
+            throw new Exceptions.EntityNotFoundException("User", "");
+        }
+        context.params.userFromDb = userFromDb;
+        return context;
     }
 }

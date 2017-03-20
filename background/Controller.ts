@@ -1,20 +1,20 @@
-import { IBotProvider } from '../providers/';
+import { IBotProvider } from "../providers/";
 import { Types, kernel } from "../dependency-injection/";
-import * as tasks from './tasks/';
-import * as config from 'config';
-import * as schedule from 'node-schedule';
+import * as tasks from "./tasks/";
+import * as config from "config";
+import * as schedule from "node-schedule";
 
 export class Controller {
 
-    private bootTasks: Array<string> = config.get('background_tasks.boot') as Array<string>;
-    private cronTasks: Array<any> = config.get('background_tasks.cron') as Array<any>;
+    private bootTasks: string[] = config.get("background_tasks.boot") as string[];
+    private cronTasks: any[] = config.get("background_tasks.cron") as any[];
 
     public runBootTasks() {
         for (let i = 0; i < this.bootTasks.length; i++) {
             try {
                 let task: tasks.ITask = kernel.getNamed<tasks.ITask>(Types.BackgroundTask, this.bootTasks[i]);
                 task.execute();
-                console.log(this.bootTasks[i] + ' task executed');
+                console.log(this.bootTasks[i] + " task executed");
             } catch (e) {
                 console.log(e);
             }
@@ -27,7 +27,7 @@ export class Controller {
             try {
                 let task: tasks.ITask = kernel.getNamed<tasks.ITask>(Types.BackgroundTask, this.cronTasks[i].name);
                 job = schedule.scheduleJob(this.cronTasks[i].rule, task.execute);
-                console.log(this.cronTasks[i].name + ' task scheduled');
+                console.log(this.cronTasks[i].name + " task scheduled");
             } catch (e) {
                 console.log(e);
                 if (!!job) {
@@ -51,17 +51,17 @@ export class Controller {
 
     public handleNewMessage(providerName: string, token: string, payload: any): boolean {
 
-        console.log('Webhook triggered');
+        console.log("Webhook triggered");
         console.log(providerName);
         console.log(token);
         console.log(payload);
-        console.log('--------------------------');
+        console.log("--------------------------");
 
         try {
             let provider: IBotProvider = kernel.getNamed<IBotProvider>(Types.BotProvider, providerName);
             provider.update(token, payload);
             return true;
-        } catch(e) {
+        } catch (e) {
             console.log(e);
             return false;
         }

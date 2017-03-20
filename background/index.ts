@@ -1,3 +1,3 @@
 export class Tasks {
-    public static ListenActiveBoxesTask: string = 'ListenActiveBoxesTask';
+    public static ListenActiveBoxesTask: string = "ListenActiveBoxesTask";
 }

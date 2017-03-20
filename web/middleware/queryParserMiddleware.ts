@@ -1,9 +1,8 @@
-import {Parser} from '../../utility/Parser';
+import { Parser } from "../../utility/Parser";
 
-export async function queryParserMiddleware(req: any, res: any, next: Function)
-{
+export async function queryParserMiddleware(req: any, res: any, next: Function) {
     let radiusSerach;
-    if(!!req.query.radiusSearch) {
+    if (!!req.query.radiusSearch) {
         radiusSerach = JSON.parse(req.query.radiusSearch);
         delete req.query.radiusSearch;
     }
@@ -11,7 +10,7 @@ export async function queryParserMiddleware(req: any, res: any, next: Function)
     let parser = new Parser();
     req.parsedQuery = parser.mongodb(req.query);
 
-    if(!!radiusSerach) {
+    if (!!radiusSerach) {
         req.parsedQuery.radiusSearch = radiusSerach;
     }
 

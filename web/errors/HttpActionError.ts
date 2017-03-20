@@ -1,5 +1,5 @@
-export interface HttpActionError {
-    code: number,
-    exception: string,
-    actionName: string
+export interface IHttpActionError {
+    code: number;
+    exception: string;
+    actionName: string;
 }

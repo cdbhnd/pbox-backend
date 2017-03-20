@@ -1,7 +1,6 @@
-import { Bot } from '../entities/';
+import { IBot } from "../entities/";
 
-export interface IBotService 
-{
-    activate(bot: Bot);
-    deactivate(bot: Bot);
+export interface IBotService {
+    activate(bot: IBot);
+    deactivate(bot: IBot);
 }

@@ -1,22 +1,23 @@
 export interface ILogger {
-    createHttpLog(log: HttpLogEntry): void 
+    createHttpLog(log: IHttpLogEntry): void;
+    createErrorLog(log: any): void;
 }
 
-export interface HttpLogEntry {
-    createdAt: Date,
-    request: LogRequest,
-    response: LogResponse
+export interface IHttpLogEntry {
+    createdAt: Date;
+    request: ILogRequest;
+    response: ILogResponse;
 }
-interface LogResponse {
-    headers: any,
-    statusCode: number,
-    body: any
+interface ILogResponse {
+    headers: any;
+    statusCode: number;
+    body: any;
 }
-interface LogRequest {
-    headers: any,
-    method: string,
-    url: string,
-    params: any,
-    query: string,
-    body: any
+interface ILogRequest {
+    headers: any;
+    method: string;
+    url: string;
+    params: any;
+    query: string;
+    body: any;
 }

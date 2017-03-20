@@ -1,13 +1,12 @@
-import 'reflect-metadata';
-import {DB} from './database/DB';
-import { Process } from './background/Process';
-import { ListenActiveBoxes } from './actions/';
+import "reflect-metadata";
+import {DB} from "./database/DB";
+import { Process } from "./background/Process";
+import { ListenActiveBoxes } from "./actions/";
 
 DB.init()
-    .then(function () {
+    .then(() => {
         let backgroundPorcess = new Process();
         backgroundPorcess.run();
-        //let action = new ListenActiveBoxes.Action();
-        //action.run();
+        // let action = new ListenActiveBoxes.Action();
+        // action.run();
     });
-

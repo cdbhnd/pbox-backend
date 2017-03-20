@@ -1,27 +1,26 @@
-import {HttpActionError} from './HttpActionError'
+import { IHttpActionError } from "./HttpActionError";
 
 export class HttpActionErrorConfiguration {
 
-    private static singleInstance: HttpActionErrorConfiguration;
+    public static getInstance(): HttpActionErrorConfiguration {
 
-    static getInstance(): HttpActionErrorConfiguration {
-        
         if (!HttpActionErrorConfiguration.singleInstance) {
             HttpActionErrorConfiguration.singleInstance = new HttpActionErrorConfiguration();
         }
-        
+
         return HttpActionErrorConfiguration.singleInstance;
     }
 
+    private static singleInstance: HttpActionErrorConfiguration;
     ///////////////////////////////////////////////////////////////
 
-    private registryArray: HttpActionError[] = [];
+    private registryArray: IHttpActionError[] = [];
 
-    setInConfigurations(actionError: HttpActionError) {
+    public setInConfigurations(actionError: IHttpActionError) {
         this.registryArray.push(actionError);
     }
 
-    getFromConfigurations(exception: string, actionName: string): HttpActionError {
+    public getFromConfigurations(exception: string, actionName: string): IHttpActionError {
         for (let i = 0; i < this.registryArray.length; i++) {
             if (this.registryArray[i].exception == exception && this.registryArray[i].actionName == actionName) {
                 return this.registryArray[i];

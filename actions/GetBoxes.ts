@@ -1,44 +1,42 @@
 import { Types, kernel } from "../dependency-injection/";
 import { ValidationException } from "../exceptions/";
-import * as Repositories from '../repositories/';
-import * as Entities from '../entities/';
-import { ActionBase } from './ActionBase';
-import { ActionContext } from './ActionBase';
-import * as Exceptions from '../exceptions';
+import * as Repositories from "../repositories/";
+import * as Entities from "../entities/";
+import { ActionBase } from "./ActionBase";
+import { ActionContext } from "./ActionBase";
+import * as Exceptions from "../exceptions";
 
-export class Action extends ActionBase<Entities.Box[]> 
-{
-    private _boxRepository: Repositories.BoxRepository;
-    private _userRepository: Repositories.UserRepository;
+export class Action extends ActionBase<Entities.IBox[]> {
+    private boxRepository: Repositories.IBoxRepository;
+    private userRepository: Repositories.IUserRepository;
 
-    constructor() 
-    {
+    constructor() {
         super();
-        this._boxRepository = kernel.get<Repositories.BoxRepository>(Types.BoxRepository);
-        this._userRepository = kernel.get<Repositories.UserRepository>(Types.UserRepository);
+        this.boxRepository = kernel.get<Repositories.IBoxRepository>(Types.BoxRepository);
+        this.userRepository = kernel.get<Repositories.IUserRepository>(Types.UserRepository);
     };
 
-    protected getConstraints() 
-    {
+    public async execute(context: ActionContext): Promise<Entities.IBox[]> {
+        let boxes = await this.boxRepository.find(context.query);
+        return boxes;
+    }
+
+    protected getConstraints() {
         return {
-            'id': 'required'
+            id: "required",
         };
     }
 
-    protected getSanitizationPattern() 
-    {
+    protected getSanitizationPattern() {
         return {};
     }
 
-    public async execute(context: ActionContext): Promise<Entities.Box[]> {
-
-        let userFromDb = await this._userRepository.findOne({ id: context.params.id });
+    protected async onActionExecuting(context: ActionContext): Promise<ActionContext> {
+        let userFromDb = await this.userRepository.findOne({ id: context.params.id });
 
         if (!userFromDb || (userFromDb.type != Entities.UserType.Courier && userFromDb.type != Entities.UserType.Admin)) {
-            throw new Exceptions.EntityNotFoundException('User', '');
+            throw new Exceptions.EntityNotFoundException("User", "");
         }
-
-        let boxes = await this._boxRepository.find(context.query);
-        return boxes;
+        return context;
     }
 }

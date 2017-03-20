@@ -12,7 +12,7 @@ let Types = {
     BotRepository: Symbol("BotRepository"),
     BotProvider: Symbol("BotProvider"),
     BotService: Symbol("BotService"),
-    Logger: Symbol("Logger")
+    Logger: Symbol("Logger"),
 };
 
 export default Types;

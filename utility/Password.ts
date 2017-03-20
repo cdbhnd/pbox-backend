@@ -1,7 +1,7 @@
-import * as config from 'config';
-import * as bcrypt from 'bcryptjs';
+import * as config from "config";
+import * as bcrypt from "bcryptjs";
 
-const saltRounds: number = Number(config.get('password.saltRounds'));
+const saltRounds: number = Number(config.get("password.saltRounds"));
 
 export async function generateHash(password: string): Promise<string> {
     return new Promise<string>((resolve, reject) => {
