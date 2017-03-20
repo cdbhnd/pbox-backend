@@ -19,10 +19,10 @@ export class Logger implements ILogger {
     }
 
     public createHttpLog(log: IHttpLogEntry): void {
-        this.winston.log("HttpLog", log);
+        this.winston.log("info", log);
     }
 
     public createErrorLog(log: any): void {
-        this.winston.log("Error log", log);
+        this.winston.log("info", log);
     }
 }

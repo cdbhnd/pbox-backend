@@ -26,10 +26,9 @@ export async function logMiddleware(req: any, res: any, next: Function) {
 
     let chunks = [];
 
-    res.write =  (chunk) => {
+    res.write = (chunk) => {
         chunks.push(chunk);
-
-        oldWrite.apply(res, arguments);
+        oldWrite.call(res, chunk);
     };
 
     res.end = (chunk) => {
@@ -53,7 +52,7 @@ export async function logMiddleware(req: any, res: any, next: Function) {
         } catch (e) {
             console.log("Error occurred in logging middleware " + e);
         }
-        oldEnd.apply(res, arguments);
+        oldEnd.call(res, chunk);
     };
 
     next();

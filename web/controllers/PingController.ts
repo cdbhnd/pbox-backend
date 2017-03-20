@@ -9,7 +9,7 @@ export class PingController {
 
     @Get("/ping")
     @HttpCode(200)
-    public printHello() {
+    public async printHello() {
         return "Pong!!!";
     }
 }
