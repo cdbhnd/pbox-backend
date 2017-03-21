@@ -1,4 +1,4 @@
-import { ValidationException } from "../exceptions";
+import { ValidationException } from "../infrastructure/exceptions";
 import indicative = require("indicative");
 
 // TODO Custom rules

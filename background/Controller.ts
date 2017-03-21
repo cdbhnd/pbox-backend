@@ -1,5 +1,5 @@
 import { IBotProvider } from "../providers/";
-import { Types, kernel } from "../dependency-injection/";
+import { Types, kernel } from "../infrastructure/dependency-injection/";
 import * as tasks from "./tasks/";
 import * as config from "config";
 import * as schedule from "node-schedule";

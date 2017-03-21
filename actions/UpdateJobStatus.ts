@@ -1,5 +1,5 @@
-import { Types, kernel } from "../dependency-injection/";
-import * as Exceptions from "../exceptions/";
+import { Types, kernel } from "../infrastructure/dependency-injection/";
+import * as Exceptions from "../infrastructure/exceptions/";
 import * as Services from "../services/";
 import * as Repositories from "../repositories/";
 import * as Entities from "../entities/";

@@ -1,4 +1,4 @@
-import { Types, kernel } from "../dependency-injection/";
+import { Types, kernel } from "../../infrastructure/dependency-injection/";
 import { IEventMediator } from "./IEventMediator";
 
 export class EventAggregator {

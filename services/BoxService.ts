@@ -1,13 +1,13 @@
 import * as Entities from "../entities/";
 import { IBoxService } from "./IBoxService";
 import { IBox, ISensor, BoxStatuses, SensorTypes, SensorStatuses } from "../entities/";
-import { Types, kernel } from "../dependency-injection/";
+import { Types, kernel } from "../infrastructure/dependency-injection/";
 import { injectable } from "inversify";
 import { IBoxRepository } from "../repositories/";
 import * as Repositories from "../repositories/";
 import { IIotPlatform } from "../providers/";
 import * as Entitties from "../entities";
-import * as Exceptions from "../exceptions/";
+import * as Exceptions from "../infrastructure/exceptions/";
 import { Check } from "../utility/Check";
 import * as config from "config";
 import { IBotProvider } from "../providers/";

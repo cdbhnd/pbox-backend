@@ -1,4 +1,4 @@
-import { Types, kernel } from "../dependency-injection/";
+import { Types, kernel } from "../../infrastructure/dependency-injection/";
 import { injectable } from "inversify";
 import * as PubSub from "pubsub-js";
 import { IEventMediator } from "./IEventMediator";

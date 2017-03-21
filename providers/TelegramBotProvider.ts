@@ -1,6 +1,6 @@
 import { BotBaseProvider, TextMessage, LocationMessage } from "./BotBaseProvider";
 import { IBot, IBox, SensorTypes, BoxStatuses } from "../entities/";
-import { Types, kernel } from "../dependency-injection/";
+import { Types, kernel } from "../infrastructure/dependency-injection/";
 import { injectable, inject } from "inversify";
 import { IBoxRepository, IBotRepository } from "../repositories/";
 import { IBoxService } from "../services/";

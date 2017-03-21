@@ -1,5 +1,5 @@
 import { validate } from "../utility/Validator";
-import * as Exceptions from "../exceptions/";
+import * as Exceptions from "../infrastructure/exceptions/";
 import { sanitize } from "../utility/Sanitizor";
 
 export abstract class ActionBase<TOut> {

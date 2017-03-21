@@ -1,5 +1,5 @@
-import { Types, kernel } from "../../dependency-injection/";
-import {ILogger, IHttpLogEntry} from "../../utility/ILogger";
+import { Types, kernel } from "../../infrastructure/dependency-injection/";
+import {ILogger, IHttpLogEntry} from "../../infrastructure/logger/ILogger";
 
 let logger: ILogger = kernel.get<ILogger>(Types.Logger);
 

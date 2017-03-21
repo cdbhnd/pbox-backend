@@ -1,7 +1,7 @@
 import { Req, Res, Controller, Param, Body, Get, Post, Put, Delete, HttpCode, JsonController, UseBefore } from "routing-controllers";
 import * as actions from "../../actions/";
 import { HttpError } from "../decorators/httpError";
-import { ExceptionTypes } from "../../exceptions";
+import { ExceptionTypes } from "../../infrastructure/exceptions";
 import { AuthMiddleware } from "../middleware/authMiddleware";
 import { Request, Response } from "express";
 

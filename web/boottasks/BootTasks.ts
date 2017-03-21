@@ -1,6 +1,6 @@
-import { Types, kernel } from "../../dependency-injection/";
+import { Types, kernel } from "../../infrastructure/dependency-injection/";
 import { IBootTask } from "./IBootTask";
-import { ILogger } from "../../utility";
+import { ILogger } from "../../infrastructure/logger/ILogger";
 
 export class BootTasks {
 
