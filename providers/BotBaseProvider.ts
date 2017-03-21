@@ -2,7 +2,7 @@ import { IBotProvider } from "./IBotProvider";
 import { IBox, IBot, BoxStatuses, SensorTypes } from "../entities/";
 import { IBoxService } from "../services/";
 import { IBotRepository, IBoxRepository } from "../repositories/";
-import { Types, kernel } from "../dependency-injection/";
+import { Types, kernel } from "../infrastructure/dependency-injection/";
 import { injectable } from "inversify";
 
 @injectable()

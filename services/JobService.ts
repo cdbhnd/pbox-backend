@@ -1,9 +1,9 @@
-import { Types, kernel } from "../dependency-injection/";
+import { Types, kernel } from "../infrastructure/dependency-injection/";
 import { IJobService } from "./IJobService";
 import * as Entities from "../entities/";
 import * as Repositories from "../repositories/";
 import { Check } from "../utility/Check";
-import * as Exceptions from "../exceptions/";
+import * as Exceptions from "../infrastructure/exceptions/";
 import { injectable } from "inversify";
 import * as Providers from "../providers/";
 

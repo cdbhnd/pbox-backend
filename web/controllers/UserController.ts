@@ -1,5 +1,5 @@
 import * as actions from "../../actions/";
-import {ExceptionTypes} from "../../exceptions/";
+import {ExceptionTypes} from "../../infrastructure/exceptions/";
 import {JsonController, Param, Body, Get, Post, Put, Delete, Req, Res, HttpCode, UseBefore} from "routing-controllers";
 import {AuthMiddleware} from  "../middleware/authMiddleware";
 import * as jwt from "jwt-simple";

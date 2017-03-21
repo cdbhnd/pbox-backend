@@ -1,5 +1,5 @@
-import { Types, kernel } from "../dependency-injection/";
-import { ValidationException } from "../exceptions/";
+import { Types, kernel } from "../infrastructure/dependency-injection/";
+import { ValidationException } from "../infrastructure/exceptions/";
 import * as Services from "../services/";
 import * as Entities from "../entities/";
 import { ActionBase } from "./ActionBase";

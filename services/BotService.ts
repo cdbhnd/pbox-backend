@@ -1,11 +1,11 @@
 import { IBotService } from "./IBotService";
 import { IBot, IBox } from "../entities/";
-import { Types, kernel } from "../dependency-injection/";
+import { Types, kernel } from "../infrastructure/dependency-injection/";
 import { injectable } from "inversify";
 import { IBotProvider } from "../providers/";
 import { IBoxRepository } from "../repositories/";
 import { Check } from "../utility/Check";
-import * as Exceptions from "../exceptions/";
+import * as Exceptions from "../infrastructure/exceptions/";
 
 @injectable()
 export class BotService implements IBotService {

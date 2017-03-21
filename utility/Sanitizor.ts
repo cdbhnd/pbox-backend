@@ -1,4 +1,4 @@
-import { ValidationException } from "../exceptions";
+import { ValidationException } from "../infrastructure/exceptions";
 import  indicative = require("indicative");
 
 export async function sanitize(params: any, sanitizationRules: any) {

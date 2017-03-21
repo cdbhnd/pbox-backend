@@ -1,6 +1,6 @@
-import { Types, kernel } from "../dependency-injection/";
-import { ValidationException } from "../exceptions/";
-import { InvalidCredentialsException } from "../exceptions/";
+import { Types, kernel } from "../infrastructure/dependency-injection/";
+import { ValidationException } from "../infrastructure/exceptions/";
+import { InvalidCredentialsException } from "../infrastructure/exceptions/";
 import * as Repositories from "../repositories/";
 import * as Entities from "../entities/";
 import { validate } from "../utility/Validator";

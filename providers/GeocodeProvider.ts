@@ -3,8 +3,8 @@ import { IGeocodeProvider } from "./IGeocodeProvider";
 import * as config from "config";
 import { injectable } from "inversify";
 import { Check } from "../utility/Check";
-import { ILogger } from "../utility";
-import { Types, kernel } from "../dependency-injection/";
+import { ILogger } from "../infrastructure/logger/ILogger";
+import { Types, kernel } from "../infrastructure/dependency-injection/";
 
 @injectable()
 export class GecodeProvider implements IGeocodeProvider {

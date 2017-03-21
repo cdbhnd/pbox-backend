@@ -1,13 +1,17 @@
 import { Kernel } from "inversify";
 import Types from "./Types";
-import * as Repositories from "../repositories/index";
-import * as Services from "../services/index";
-import * as Providers from "../providers/index";
-import * as DB from "../database/index";
-import * as actions from "../actions";
-import * as bootTasks from "../web/boottasks/";
-import * as backgroundTasks from "../background/tasks/";
-import * as Utility from "../utility/";
+import * as Repositories from "../../repositories/index";
+import * as Services from "../../services/index";
+import * as Providers from "../../providers/index";
+import * as DB from "../../database/index";
+import * as actions from "../../actions";
+import * as bootTasks from "../../web/boottasks/";
+import * as backgroundTasks from "../../background/tasks/";
+import {Logger} from "../logger/Logger";
+import {ILogger} from "../logger/ILogger";
+import {IEventMediator} from "../eventEngine/IEventMediator";
+import {EventMediator} from "../eventEngine/EventMediator";
+
 let kernel = new Kernel();
 
 kernel.bind<Repositories.IJobRepository>(Types.JobRepository).to(DB.Jobs);
@@ -38,6 +42,7 @@ kernel.bind<backgroundTasks.ITask>(Types.BackgroundTask).to(backgroundTasks.Acti
 kernel.bind<backgroundTasks.ITask>(Types.BackgroundTask).to(backgroundTasks.DeactivateBotsTask).whenTargetNamed("DeactivateBotsTask");
 
 // utility
-kernel.bind<Utility.ILogger>(Types.Logger).to(Utility.Logger).inSingletonScope();
+kernel.bind<ILogger>(Types.Logger).to(Logger).inSingletonScope();
+kernel.bind<IEventMediator>(Types.EventMediator).to(EventMediator);
 
 export default kernel;
