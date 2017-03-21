@@ -24,7 +24,6 @@ export class EventMediator implements IEventMediator {
         let systemsToBeNotified: string[] = config.get("eventSettings.instance_urls") as string[];
         let options: any = {
             headers: {
-                // "Authorization": "Bearer " + config.get("system_http_credentials"),
                 "Content-Type": "application/json",
             },
             body: JSON.stringify({
