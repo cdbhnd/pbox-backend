@@ -23,4 +23,13 @@ export interface IEventMediator {
      * @memberOf IEventMediator
      */
     boradcastEvent(eventName: string, data: any): void;
+
+    /**
+     *
+     * @param {string} eventName
+     * @param {*} data
+     *
+     * @memberOf IEventMediator
+     */
+    broadcastEventToHooks(eventName: string, data: any): void;
 }

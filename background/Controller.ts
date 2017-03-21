@@ -3,6 +3,7 @@ import { Types, kernel } from "../dependency-injection/";
 import * as tasks from "./tasks/";
 import * as config from "config";
 import * as schedule from "node-schedule";
+import * as actions from "../actions/";
 
 export class Controller {
 
@@ -65,5 +66,14 @@ export class Controller {
             console.log(e);
             return false;
         }
+    }
+
+    public async broadcastEvent(body: any): Promise<boolean> {
+        let broadcastEventAction = new actions.BroadcastEvent.Action();
+        let actionContext = new actions.ActionContext();
+        actionContext.params = {};
+        actionContext.params.data = body.data;
+        actionContext.params.eventName = body.eventName;
+        return await broadcastEventAction.run(actionContext);
     }
 }

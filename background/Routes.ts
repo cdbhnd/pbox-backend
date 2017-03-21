@@ -30,6 +30,21 @@ export class Routes {
         });
         server.route({
             method: "POST",
+            path: "/hooks/broadcast",
+            handler: async (request, reply) => {
+
+                let ctrl: Controller = new Controller();
+                let result: boolean =  await ctrl.broadcastEvent(request.payload);
+
+                if (result) {
+                    return reply("Message handled");
+                } else {
+                    return reply("Message not handled");
+                }
+            },
+        });
+        server.route({
+            method: "POST",
             path: "/hooks/{provider}",
             handler: (request, reply) => {
 
