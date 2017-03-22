@@ -1,5 +1,6 @@
 import * as express from "express";
 import "./controllers/";
+import "../eventHandlers";
 import * as config from "config";
 import { queryParserMiddleware } from "./middleware/queryParserMiddleware";
 import { corsMiddleware } from "./middleware/corsMiddleware";
