@@ -11,6 +11,7 @@ import * as Exceptions from "../infrastructure/exceptions/";
 import { Check } from "../utility/Check";
 import * as config from "config";
 import { IBotProvider } from "../providers/";
+import { EventAggregator } from "../infrastructure/eventEngine/EventAggregator";
 
 @injectable()
 export class BoxService implements IBoxService {
@@ -136,48 +137,33 @@ export class BoxService implements IBoxService {
     }
 
     public async listenBoxSensors(box: IBox): Promise<IBox> {
-
         Check.notNull(box, "box");
+        let eventMediator = EventAggregator.getMediator();
 
         if (!!box.topic && !!box.clientId && !!box.clientKey && !!box.deviceId) {
-
-            let bot: Entities.IBot = await this.botRepository.findOne({ boxCode: box.code });
-            let boxService = this;
             this.iotPlatform.listenBoxSensors(box, async (boxCode: string, sensorCode: string, sensorType: string, newSensorValue: any) => {
                 let boxRepo: IBoxRepository = kernel.get<IBoxRepository>(Types.BoxRepository);
                 let freshBox: IBox = await boxRepo.findOne({ code: boxCode });
+
                 if (!!freshBox && freshBox.status != BoxStatuses.IDLE) {
                     for (let i = 0; i < freshBox.sensors.length; i++) {
                         if (freshBox.sensors[i].name == sensorType) {
-
                             let selectedBoxSensor: ISensor = freshBox.sensors[i];
                             let oldSensorValue = selectedBoxSensor.value;
                             selectedBoxSensor.value = newSensorValue;
 
                             if (selectedBoxSensor.type == SensorTypes.activator) {
-                                // if activator is set to false deactivate box
-                                if (!selectedBoxSensor.value) {
-                                    boxService.deactivateBox(freshBox);
-                                }
+                                eventMediator.broadcastEventToHooks(EventAggregator.ATT_ACTIVATOR_NEW_READING, { box: freshBox, sensorType: sensorType, newSensorValue: newSensorValue });
                             }
 
                             if (selectedBoxSensor.type == SensorTypes.vibration) {
-                                if (selectedBoxSensor.value === "1") {
-                                    for (let x = 0; x < bot.services.length; x++) {
-                                        let provider: IBotProvider = kernel.getNamed<IBotProvider>(Types.BotProvider, bot.services[x].provider);
-                                        provider.informUsers(bot, "Strong vibration has occured !!!");
-                                    }
-                                }
+                                eventMediator.broadcastEventToHooks(EventAggregator.ATT_VIBRATION_NEW_READING, { box: freshBox, sensorType: sensorType, newSensorValue: newSensorValue });
                             }
 
-                            // update if its new value and if its sensor value older then 20 sec
+                            // broadcast value if its changed from old one
                             if (JSON.stringify(oldSensorValue) != JSON.stringify(newSensorValue)) {
-                                let timeDiff = (new Date().getTime() - selectedBoxSensor.timestamp);
-                                if (timeDiff > config.get("boxService.updateThreshold")) {
-                                    boxRepo.updateBoxSensor(freshBox, sensorType, newSensorValue);
-                                }
+                                eventMediator.broadcastEventToHooks(EventAggregator.ATT_NEW_SENSOR_VALUE, { box: freshBox, sensorType: sensorType, newSensorValue: newSensorValue });
                             }
-
                             boxRepo.logSensorState(freshBox, selectedBoxSensor);
                             break;
                         }

@@ -2,7 +2,6 @@ import "reflect-metadata";
 import {DB} from "./database/DB";
 import { Process } from "./background/Process";
 import { ListenActiveBoxes } from "./actions/";
-import "./eventHandlers";
 
 DB.init()
     .then(() => {
