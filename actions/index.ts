@@ -24,7 +24,9 @@ import * as ActivateBots from "./ActivateBots";
 import * as DeactivateBots from "./DeactivateBots";
 import * as SyncBox from "./SyncBox";
 import * as BroadcastEvent from "./BroadcastEvent";
+import * as DeactivateBox from "./DeactivateBox";
+import * as SaveBoxSensorChange from "./SaveBoxSensorChange";
 export {CreateJob, ActionBase, CreateUser, LoginUser, ActionContext, GetJobs, UpdateJob,
     UpdateJobStatus, UpdateJobLocations, UpdateJobCourier, AssignJobBox, GetBoxes, GetJobById, GetBoxByCode,
     CreateBox, CreateBoxSensor, RemoveBoxSensor, RemoveBox, UpdateBox, ListenActiveBoxes, ReactivateBox,
-    SetBoxStatus, SyncBox, ActivateBots, DeactivateBots, BroadcastEvent};
+    SetBoxStatus, SyncBox, ActivateBots, DeactivateBots, BroadcastEvent, DeactivateBox, SaveBoxSensorChange};
