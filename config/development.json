@@ -38,15 +38,12 @@
         "host": "localhost",
         "port": 8765,
         "path": "/execute",
-        "boot": ["ListenActiveBoxesTask", "ActivateBotsTask"],
+        "boot": ["ListenActiveBoxesTask"],
         "telegram": {
             "polling": true,
             "webhook": "http://ec2-35-156-247-206.eu-central-1.compute.amazonaws.com:8765/hooks/telegram"
         },
-        "cron": [{
-            "rule": "30 * * * *",
-            "name": "ActivateBotsTask"
-        }]
+        "cron": []
     },
 
     "loggly": {

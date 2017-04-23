@@ -32,8 +32,7 @@
         "port": 8765,
         "path": "/execute",
         "boot": [
-            "ListenActiveBoxesTask",
-            "ActivateBotsTask"
+            "ListenActiveBoxesTask"
         ],
         "telegram": {
             "polling": false,

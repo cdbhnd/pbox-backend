@@ -33,7 +33,6 @@
         "path": "/execute",
         "boot": [
             "ListenActiveBoxesTask",
-            "ActivateBotsTask"
         ],
         "telegram": {
             "polling": false,

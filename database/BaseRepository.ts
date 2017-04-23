@@ -9,7 +9,6 @@ export class BaseRepository<T> {
     protected db: mongodb.Db;
 
     constructor(entityName: string) {
-        DB.init();
         this.entityName = entityName;
         this.db = DB.db;
     }
