@@ -98,6 +98,9 @@ export class TelegramBotProvider extends BotBaseProvider {
         for (let i = 0; i < bot.services.length; i++) {
             if (bot.services[i].provider == 'telegram') {
                 let tBot = this.getTelegramClient(bot.services[i].accessToken);
+                if (!tBot) {
+                    tBot = this.createTelegramBot(bot.services[i].accessToken)
+                }
                 for (let x = 0; x < bot.services[i].chatIds.length; x++) {
                     tBot.sendMessage(bot.services[i].chatIds[x], message);
                 }

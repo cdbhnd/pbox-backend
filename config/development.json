@@ -40,8 +40,8 @@
         "path": "/execute",
         "boot": ["ListenActiveBoxesTask"],
         "telegram": {
-            "polling": true,
-            "webhook": "http://ec2-35-156-247-206.eu-central-1.compute.amazonaws.com:8765/hooks/telegram"
+            "polling": false,
+            "webhook": "https://pbox-server.herokuapp.com/v1.0/hooks/telegram"
         },
         "cron": []
     },
