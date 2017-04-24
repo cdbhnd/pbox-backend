@@ -131,7 +131,7 @@ export class TelegramBotProvider extends BotBaseProvider {
             });
         } else {
             bot = new TelegramBot(token);
-            bot.setWebHook(telegramConfig.webhook + '?token=' + token);
+            bot.setWebHook(telegramConfig.webhook + '/' + token);
             this.tBots.push({
                 token: token,
                 bot: bot,
