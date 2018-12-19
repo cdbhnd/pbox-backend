@@ -40,7 +40,11 @@ jspm_packages
 .vscode
 
 # TypeScript definitions
-typings
+typings/
+typings/**
 
 # Compiled js files
 dist
+dist/**
+deploy
+deploy/**

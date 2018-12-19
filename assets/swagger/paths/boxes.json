@@ -1,0 +1,123 @@
+{
+    "get": {
+        "consumes": [
+            "application/json"
+        ],
+        "description": "Returns all boxes in the system",
+        "parameters": [
+            {
+                "description": "Bearer access token (e.g. Bearer [token])",
+                "in": "header",
+                "name": "Authorization",
+                "required": true,
+                "type": "string"
+            }
+        ],
+        "produces": [
+            "application/json"
+        ],
+        "responses": {
+            "200": {
+                "description": "OK",
+                "schema": {
+                    "$ref": "../definitions/box.json"
+                }
+            },
+            "401": {
+                "description": "Unauthorized"
+            },
+            "500": {
+                "description": "Internal server error"
+            }
+        },
+        "tags": [
+            "v1.0"
+        ]
+    },
+    "post": {
+        "consumes": [
+            "application/json"
+        ],
+        "description": "Creates new box in the system",
+        "parameters": [
+            {
+                "description": "Bearer access token (e.g. Bearer [token])",
+                "in": "header",
+                "name": "Authorization",
+                "required": true,
+                "type": "string"
+            },
+            {
+                "name": "boxData",
+                "in": "body",
+                "description": "New box data",
+                "required": true,
+                "schema": {
+                    "type": "object",
+                    "description": "New box data",
+                    "properties": {
+                        "code": {
+                            "required": true,
+                            "type": "string"
+                        },
+                        "size": {
+                            "required": true,
+                            "type": "string"
+                        },
+                        "host": {
+                            "required": false,
+                            "type": "string"
+                        },
+                        "topic": {
+                            "required": false,
+                            "type": "string"
+                        },
+                        "groundId": {
+                            "required": false,
+                            "type": "string"
+                        },
+                        "clientId": {
+                            "required": false,
+                            "type": "string"
+                        },
+                        "clientKey": {
+                            "required": false,
+                            "type": "string"
+                        },
+                        "deviceId": {
+                            "required": false,
+                            "type": "string"
+                        },
+                        "deviceName": {
+                            "required": false,
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        ],
+        "produces": [
+            "application/json"
+        ],
+        "responses": {
+            "200": {
+                "description": "OK",
+                "schema": {
+                    "$ref": "../definitions/box.json"
+                }
+            },
+            "401": {
+                "description": "Unauthorized"
+            },
+            "400": {
+                "description": "Bad Request"
+            },
+            "500": {
+                "description": "Internal server error"
+            }
+        },
+        "tags": [
+            "v1.0"
+        ]
+    }
+}

@@ -1,0 +1,53 @@
+{
+    "type": "object",
+    "description": "Box data",
+    "properties": {
+        "id": {
+            "description": "Box unique identifier",
+            "type": "string"
+        },
+        "code": {
+            "description": "Box unique hash code",
+            "type": "string"
+        },
+        "size": {
+            "description": "Box size",
+            "type": "string"
+        },
+        "status": {
+            "description": "Box status",
+            "type": "string"
+        },
+        "sensors": {
+            "$ref": "./sensor.json"
+        },
+        "host": {
+            "description": "Box feed topic host (ATT)",
+            "type": "string"
+        },
+        "topic": {
+            "description": "Box feed topic (ATT)",
+            "type": "string"
+        },
+        "groundId": {
+            "description": "Box ground id (ATT)",
+            "type": "string"
+        },
+        "clientId": {
+            "description": "Box client Id (ATT)",
+            "type": "string"
+        },
+        "clientKey": {
+            "description": "Box client key (ATT)",
+            "type": "string"
+        },
+        "deviceId": {
+            "description": "Box device Id (ATT)",
+            "type": "string"
+        },
+        "deviceName": {
+            "description": "Box device name (ATT)",
+            "type": "string"
+        }
+    }
+}

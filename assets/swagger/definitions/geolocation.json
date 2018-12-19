@@ -1,0 +1,14 @@
+{
+    "type": "object",
+    "description": "Geolocation data",
+    "properties": {
+        "latitude": {
+            "description": "Latitude segment of single geocoordinates",
+            "type": "number"
+        },
+        "longitude": {
+            "description": "Longitude segment of single geocoordinates",
+            "type": "number"
+        }
+    }
+}
